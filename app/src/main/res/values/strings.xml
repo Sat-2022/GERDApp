@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">GERDApp</string>
+
+    <!-- strings for main menu cards -->
+    <string name="symptoms">症狀</string>
+    <string name="sleep">平躺睡眠</string>
+    <string name="food">飲食</string>
+    <string name="others">其他活動</string>
+
+    <!-- strings for time record -->
+    <string name="year">年</string>
+    <string name="month">月</string>
+    <string name="date">日</string>
+    <string name="hour">時</string>
+    <string name="minute">分</string>
+    <string name="second">秒</string>
+    <string name="am">上午</string>
+    <string name="pm">下午</string>
+
+    <!-- strings for sleep fragment -->
+    <string name="sleep_record_title">睡眠平躺</string>
+    <string name="sleep_record_start">開始就寢時間</string>
+    <string name="sleep_record_end">結束就寢時間</string>
+
+    <!-- string for other fragment -->
+    <string name="event_record_title">其他活動或事件</string>
+    <string name="event_record_content">項目</string>
+
+    <!-- string for symptoms -->
+    <string name="cough">咳嗽</string>
+    <string name="heart_burn">火燒心</string>
+    <string name="acid_reflux">胃酸逆流</string>
+    <string name="hurt">胸痛</string>
+    <string name="sour_mouth">口有酸味</string>
+    <string name="hoarseness">聲音沙啞</string>
+    <string name="stomach_gas">吞嚥困難</string>
+    <string name="appetite_loss">嘔氣</string>
+
+</resources>
