@@ -9,17 +9,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.databinding.FragmentOthersBinding
+import java.sql.Time
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.util.*
 
 
 class OthersFragment: Fragment() {
     private var _binding: FragmentOthersBinding? = null
     private val binding get() = _binding!!
-
-    private lateinit var datePickerDialog: DatePickerDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,13 +37,16 @@ class OthersFragment: Fragment() {
 
         binding.apply {
 
+            val calendar = Calendar.getInstance()
+            val current = calendar.time
+
             val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val currentDate = formatDate.format(Date())
+            val currentDate = formatDate.format(current)
             othersTextStartDate.text = currentDate.toString()
             othersTextEndDate.text = currentDate.toString()
 
-            val formatTime = SimpleDateFormat("hh:MM", Locale.getDefault())
-            val currentTime = formatTime.format(Date())
+            val formatTime = SimpleDateFormat("hh:mm", Locale.getDefault())
+            val currentTime = formatTime.format(current)
             othersTextEndTime.text = currentTime.toString()
             othersTextStartTime.text = currentTime.toString()
 
