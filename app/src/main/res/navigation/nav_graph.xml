@@ -26,6 +26,12 @@
         <action
             android:id="@+id/action_mainFragment_self"
             app:destination="@id/mainFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_chartFragment"
+            app:destination="@id/chartFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_othersFragment"
+            app:destination="@id/othersFragment" />
     </fragment>
     <fragment
         android:id="@+id/foodFragment"
@@ -48,12 +54,22 @@
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar" >
         <action
-            android:id="@+id/action_calendarFragment_to_chartFragment"
-            app:destination="@id/chartFragment" />
+            android:id="@+id/action_calendarFragment_to_questionnaireFragment"
+            app:destination="@id/questionnaireFragment" />
     </fragment>
     <fragment
         android:id="@+id/chartFragment"
         android:name="com.example.gerdapp.ui.main.ChartFragment"
         android:label="fragment_chart"
         tools:layout="@layout/fragment_chart" />
+    <fragment
+        android:id="@+id/othersFragment"
+        android:name="com.example.gerdapp.ui.main.OthersFragment"
+        android:label="fragment_others"
+        tools:layout="@layout/fragment_others" />
+    <fragment
+        android:id="@+id/questionnaireFragment"
+        android:name="com.example.gerdapp.ui.main.QuestionnaireFragment"
+        android:label="fragment_questionnaire"
+        tools:layout="@layout/fragment_questionnaire" />
 </navigation>

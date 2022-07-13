@@ -2,10 +2,12 @@
     <string name="app_name">GERDApp</string>
 
     <!-- strings for main menu cards -->
+    <string name="questionnaire">問卷</string>
     <string name="symptoms">症狀</string>
     <string name="sleep">平躺睡眠</string>
     <string name="food">飲食</string>
     <string name="others">其他活動</string>
+    <string name="chart">事件內容查詢</string>
 
     <!-- strings for time record -->
     <string name="year">年</string>
@@ -25,6 +27,9 @@
     <!-- string for other fragment -->
     <string name="event_record_title">其他活動或事件</string>
     <string name="event_record_content">項目</string>
+
+    <!-- string for others fragment -->
+    <string name="others_record_title">其他活動或事件</string>
 
     <!-- string for symptoms -->
     <string name="cough">咳嗽</string>
