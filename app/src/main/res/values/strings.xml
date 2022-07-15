@@ -19,6 +19,9 @@
     <string name="am">上午</string>
     <string name="pm">下午</string>
 
+    <!-- string for symptoms fragment -->
+    <string name="symptoms_record_other_symptom_headline">其他症狀</string>
+
     <!-- strings for sleep fragment -->
     <string name="sleep_record_title">睡眠平躺</string>
     <string name="sleep_record_start_headline">開始就寢時間</string>
