@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentOthersBinding
 import java.sql.Time
 import java.text.SimpleDateFormat
@@ -38,7 +40,7 @@ class OthersFragment: Fragment() {
         binding.apply {
 
             val calendar = Calendar.getInstance()
-            val current = calendar.time
+            val current = calendar.time // TODO: Check if the time match the device time zone
 
             val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val currentDate = formatDate.format(current)
@@ -102,6 +104,14 @@ class OthersFragment: Fragment() {
                         othersTextEndTime.text = format
                     }
                 }, hour, min, true).show()
+            }
+
+            othersButtonCancel.setOnClickListener {
+                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
+            }
+
+            othersButtonDone.setOnClickListener {
+                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
             }
         }
 

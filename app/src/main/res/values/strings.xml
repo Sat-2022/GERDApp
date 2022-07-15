@@ -21,8 +21,8 @@
 
     <!-- strings for sleep fragment -->
     <string name="sleep_record_title">睡眠平躺</string>
-    <string name="sleep_record_start">開始就寢時間</string>
-    <string name="sleep_record_end">結束就寢時間</string>
+    <string name="sleep_record_start_headline">開始就寢時間</string>
+    <string name="sleep_record_end_headline">結束就寢時間</string>
 
     <!-- string for other fragment -->
     <string name="event_record_title">其他活動或事件</string>
@@ -30,6 +30,13 @@
 
     <!-- string for others fragment -->
     <string name="others_record_title">其他活動或事件</string>
+    <string name="others_record_start_headline">開始活動時間</string>
+    <string name="others_record_end_headline">結束活動時間</string>
+
+    <!-- string for food fragment -->
+    <string name="food_record_title">進食</string>
+    <string name="food_record_start_headline">開始進食時間</string>
+    <string name="food_record_end_headline">結束進食時間</string>
 
     <!-- string for symptoms -->
     <string name="cough">咳嗽</string>
