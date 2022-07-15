@@ -1,17 +1,13 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.adapter
 
-import android.content.Context
-import android.speech.RecognitionListener
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ExpandableListView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
-import com.example.gerdapp.databinding.ListItemCardBinding
+import com.example.gerdapp.data.CardDataSource
+import com.example.gerdapp.data.CardItem
 
 class CardItemAdapter(
     private val clickListener: (CardItem) -> Unit

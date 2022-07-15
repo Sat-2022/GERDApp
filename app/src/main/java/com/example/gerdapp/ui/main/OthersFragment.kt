@@ -1,5 +1,6 @@
 package com.example.gerdapp.ui.main
 
+import android.app.Application
 import android.app.DatePickerDialog
 import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
@@ -8,9 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.R
+import com.example.gerdapp.data.Others
 import com.example.gerdapp.databinding.FragmentOthersBinding
+import com.example.gerdapp.viewmodel.OthersViewModel
+import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.sql.Time
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -22,6 +28,32 @@ import java.util.*
 class OthersFragment: Fragment() {
     private var _binding: FragmentOthersBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: OthersViewModel by activityViewModels {
+        OthersViewModelFactory(
+            (activity?.application as BasicApplication).othersDatabase.othersDao()
+        )
+    }
+
+    lateinit var others: Others
+
+    private fun isEntryValid(): Boolean {
+        return viewModel.isEntryValid(
+            binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
+            binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
+            binding.othersRecordInput.text.toString()
+        )
+    }
+
+    private fun addNewItem(){
+        if(isEntryValid()) {
+            viewModel.addOthersRecord(
+                binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
+                binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
+                binding.othersRecordInput.text.toString()
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,6 +143,7 @@ class OthersFragment: Fragment() {
             }
 
             othersButtonDone.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
             }
         }

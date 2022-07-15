@@ -1,6 +1,7 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.data
 
 import com.example.gerdapp.R
+import com.example.gerdapp.data.CardItem
 
 class CardDataSource {
     fun loadCards(): List<CardItem> {

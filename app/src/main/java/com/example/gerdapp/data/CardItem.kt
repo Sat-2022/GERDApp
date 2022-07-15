@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.data
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes

@@ -7,15 +7,49 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.R
+import com.example.gerdapp.data.Food
+import com.example.gerdapp.data.Others
 import com.example.gerdapp.databinding.FragmentFoodBinding
+import com.example.gerdapp.viewmodel.FoodViewModel
+import com.example.gerdapp.viewmodel.FoodViewModelFactory
+import com.example.gerdapp.viewmodel.OthersViewModel
+import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
 class FoodFragment: Fragment() {
     private var _binding: FragmentFoodBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: FoodViewModel by activityViewModels {
+        FoodViewModelFactory(
+            (activity?.application as BasicApplication).foodDatabase.foodDao()
+        )
+    }
+
+    lateinit var food: Food
+
+    private fun isEntryValid(): Boolean {
+        return viewModel.isEntryValid(
+            binding.foodTextStartDate.text.toString()+" "+binding.foodTextStartTime.text.toString(),
+            binding.foodTextEndDate.text.toString()+" "+binding.foodTextEndTime.text.toString(),
+            binding.foodRecordInput.text.toString()
+        )
+    }
+
+    private fun addNewItem(){
+        if(isEntryValid()) {
+            viewModel.addFoodRecord(
+                binding.foodTextStartDate.text.toString()+" "+binding.foodTextStartTime.text.toString(),
+                binding.foodTextEndDate.text.toString()+" "+binding.foodTextEndTime.text.toString(),
+                binding.foodRecordInput.text.toString()
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +135,7 @@ class FoodFragment: Fragment() {
             }
 
             foodButtonCancel.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
 

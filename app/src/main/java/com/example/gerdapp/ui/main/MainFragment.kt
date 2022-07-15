@@ -1,23 +1,15 @@
 package com.example.gerdapp.ui.main
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
-import android.webkit.WebResourceRequest
-import android.webkit.WebView
-import android.webkit.WebViewClient
-import android.widget.Toast
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
+import com.example.gerdapp.adapter.CardItemAdapter
 import com.example.gerdapp.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {

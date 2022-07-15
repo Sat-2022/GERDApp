@@ -7,15 +7,46 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.R
+import com.example.gerdapp.data.Others
 import com.example.gerdapp.databinding.FragmentSleepBinding
+import com.example.gerdapp.viewmodel.OthersViewModel
+import com.example.gerdapp.viewmodel.OthersViewModelFactory
+import com.example.gerdapp.viewmodel.SleepViewModel
+import com.example.gerdapp.viewmodel.SleepViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
 class SleepFragment: Fragment() {
     private var _binding: FragmentSleepBinding? = null
     private val binding get() = _binding!!
+
+    private val viewModel: SleepViewModel by activityViewModels {
+        SleepViewModelFactory(
+            (activity?.application as BasicApplication).sleepDatabase.sleepDao()
+        )
+    }
+
+    lateinit var others: Others
+
+    private fun isEntryValid(): Boolean {
+        return viewModel.isEntryValid(
+            binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
+            binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
+        )
+    }
+
+    private fun addNewItem(){
+        if(isEntryValid()) {
+            viewModel.addSleepRecord(
+                binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
+                binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
+            )
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,6 +132,7 @@ class SleepFragment: Fragment() {
             }
 
             sleepButtonCancel.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
 
