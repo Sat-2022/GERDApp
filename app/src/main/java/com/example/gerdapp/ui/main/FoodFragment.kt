@@ -9,15 +9,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.gerdapp.BasicApplication
-import com.example.gerdapp.R
+import com.example.gerdapp.*
 import com.example.gerdapp.data.Food
-import com.example.gerdapp.data.Others
 import com.example.gerdapp.databinding.FragmentFoodBinding
 import com.example.gerdapp.viewmodel.FoodViewModel
 import com.example.gerdapp.viewmodel.FoodViewModelFactory
-import com.example.gerdapp.viewmodel.OthersViewModel
-import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -70,12 +66,12 @@ class FoodFragment: Fragment() {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone
 
-            val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
             foodTextStartDate.text = currentDate.toString()
             foodTextEndDate.text = currentDate.toString()
 
-            val formatTime = SimpleDateFormat("hh:mm", Locale.getDefault())
+            val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
             foodTextEndTime.text = currentTime.toString()
             foodTextStartTime.text = currentTime.toString()
@@ -88,7 +84,7 @@ class FoodFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${setDateFormat(year, month, day)}"
+                        val format = "${getString(R.string.date_format, year, month, day)}"
                         foodTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -102,7 +98,7 @@ class FoodFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${setDateFormat(year, month, day)}"
+                        val format = "${getString(R.string.date_format, year, month, day)}"
                         foodTextEndDate.text = format
                     }
                 }, year, month, day).show()
@@ -115,7 +111,7 @@ class FoodFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${setTimeFormat(hour, min)}"
+                        val format = "${getString(R.string.time_format, hour, min)}"
                         foodTextStartTime.text = format
                     }
                 }, hour, min, true).show()
@@ -128,7 +124,7 @@ class FoodFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${setTimeFormat(hour, min)}"
+                        val format = "${getString(R.string.time_format, hour, min)}"
                         foodTextEndTime.text = format
                     }
                 }, hour, min, true).show()
@@ -144,13 +140,5 @@ class FoodFragment: Fragment() {
             }
         }
 
-    }
-    private fun setDateFormat(year: Int, month: Int, day: Int): String {
-        return String.format("%04d-%02d-%02d", year, month+1, day)
-    }
-
-    private fun setTimeFormat(hour: Int, min: Int): String {
-        return String.format("%02d:%02d", hour, min)
-        //"$year-${month + 1}-$day"
     }
 }

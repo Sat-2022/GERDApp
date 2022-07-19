@@ -1,8 +1,6 @@
 package com.example.gerdapp.ui.main
 
-import android.app.Application
 import android.app.DatePickerDialog
-import android.app.DatePickerDialog.OnDateSetListener
 import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,11 +15,7 @@ import com.example.gerdapp.data.Others
 import com.example.gerdapp.databinding.FragmentOthersBinding
 import com.example.gerdapp.viewmodel.OthersViewModel
 import com.example.gerdapp.viewmodel.OthersViewModelFactory
-import java.sql.Time
 import java.text.SimpleDateFormat
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 import java.util.*
 
 
@@ -74,12 +68,12 @@ class OthersFragment: Fragment() {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone
 
-            val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
             othersTextStartDate.text = currentDate.toString()
             othersTextEndDate.text = currentDate.toString()
 
-            val formatTime = SimpleDateFormat("hh:mm", Locale.getDefault())
+            val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
             othersTextEndTime.text = currentTime.toString()
             othersTextStartTime.text = currentTime.toString()
@@ -92,7 +86,7 @@ class OthersFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${setDateFormat(year, month, day)}"
+                        val format = "${getString(R.string.date_format, year, month, day)}"
                         othersTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -106,7 +100,7 @@ class OthersFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${setDateFormat(year, month, day)}"
+                        val format = "${getString(R.string.date_format, year, month, day)}"
                         othersTextEndDate.text = format
                     }
                 }, year, month, day).show()
@@ -119,7 +113,7 @@ class OthersFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${setTimeFormat(hour, min)}"
+                        val format = "${getString(R.string.time_format, hour, min)}"
                         othersTextStartTime.text = format
                     }
                 }, hour, min, true).show()
@@ -132,7 +126,7 @@ class OthersFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${setTimeFormat(hour, min)}"
+                        val format = "${getString(R.string.time_format, hour, min)}"
                         othersTextEndTime.text = format
                     }
                 }, hour, min, true).show()
@@ -148,13 +142,5 @@ class OthersFragment: Fragment() {
             }
         }
 
-    }
-    private fun setDateFormat(year: Int, month: Int, day: Int): String {
-        return String.format("%04d-%02d-%02d", year, month+1, day)
-    }
-
-    private fun setTimeFormat(hour: Int, min: Int): String {
-        return String.format("%02d:%02d", hour, min)
-        //"$year-${month + 1}-$day"
     }
 }

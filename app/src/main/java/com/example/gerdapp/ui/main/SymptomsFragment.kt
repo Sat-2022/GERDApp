@@ -36,12 +36,12 @@ class SymptomsFragment: Fragment() {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone
 
-            val formatDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
             symptomsTextStartDate.text = currentDate.toString()
 //            symptomsTextEndDate.text = currentDate.toString()
 
-            val formatTime = SimpleDateFormat("hh:mm", Locale.getDefault())
+            val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
 //            symptomsTextEndTime.text = currentTime.toString()
             symptomsTextStartTime.text = currentTime.toString()
@@ -54,7 +54,7 @@ class SymptomsFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${setDateFormat(year, month, day)}"
+                        val format = "${getString(R.string.date_format, year, month, day)}"
                         symptomsTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -68,7 +68,7 @@ class SymptomsFragment: Fragment() {
 //
 //                DatePickerDialog(requireContext(), { _, year, month, day ->
 //                    run {
-//                        val format = "${setDateFormat(year, month, day)}"
+//                        val format = "${getString(R.string.date_format, year, month, day)}"
 //                        symptomsTextEndDate.text = format
 //                    }
 //                }, year, month, day).show()
@@ -81,7 +81,7 @@ class SymptomsFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${setTimeFormat(hour, min)}"
+                        val format = "${getString(R.string.time_format, hour, min)}"
                         symptomsTextStartTime.text = format
                     }
                 }, hour, min, true).show()
@@ -94,7 +94,7 @@ class SymptomsFragment: Fragment() {
 //
 //                TimePickerDialog(requireContext(), { _, hour, min ->
 //                    run {
-//                        val format = "${setTimeFormat(hour, min)}"
+//                        val format = "${getString(R.string.time_format, hour, min)}"
 //                        symptomsTextEndTime.text = format
 //                    }
 //                }, hour, min, true).show()
@@ -109,13 +109,5 @@ class SymptomsFragment: Fragment() {
             }
         }
 
-    }
-    private fun setDateFormat(year: Int, month: Int, day: Int): String {
-        return String.format("%04d-%02d-%02d", year, month+1, day)
-    }
-
-    private fun setTimeFormat(hour: Int, min: Int): String {
-        return String.format("%02d:%02d", hour, min)
-        //"$year-${month + 1}-$day"
     }
 }
