@@ -43,7 +43,7 @@ class QuestionnaireFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         webView= binding.webview
-        webView.loadUrl("https://ithelp.ithome.com.tw/articles/10239717")
+        webView.loadUrl("https://egerd.bml.lab.nycu.edu.tw/GERD/Login.aspx")
         // bind to the JavaScript that runs the webView
         webView.addJavascriptInterface(WebInterface(context), "android")
 

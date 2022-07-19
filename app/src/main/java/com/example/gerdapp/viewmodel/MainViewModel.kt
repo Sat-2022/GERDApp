@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.viewmodel
 
 import androidx.lifecycle.ViewModel
 
