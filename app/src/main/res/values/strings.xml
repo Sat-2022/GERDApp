@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">GERDApp</string>
 
+    <!-- strings for bottom app bar -->
+    <string name="home">首頁</string>
+    <string name="list">問卷</string>
+    <string name="stat">圖表</string>
+    <string name="prof">我的</string>
+
     <!-- date / time format -->
     <string name="simple_date_format">yyyy/MM/dd</string>
     <string name="simple_time_format">hh:mm</string>

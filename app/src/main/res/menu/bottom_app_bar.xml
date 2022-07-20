@@ -3,27 +3,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/list"
-        android:icon="@drawable/ic_baseline_insert_chart_outlined_24"
-        android:title="list"
-        android:contentDescription="list" />
+        android:id="@+id/bottom_nav_home"
+        android:icon="@drawable/ic_baseline_home_24"
+        android:title="@string/home"
+        android:contentDescription="@string/home" />
 
     <item
-        android:id="@+id/questionnaire"
-        android:icon="@drawable/ic_baseline_insert_chart_outlined_24"
-        android:title="questionnaire"
-        android:contentDescription="questionnaire" />
+        android:id="@+id/bottom_nav_list"
+        android:icon="@drawable/ic_baseline_featured_play_list_24"
+        android:title="@string/list"
+        android:contentDescription="@string/list" />
 
     <item
-        android:id="@+id/statistics"
-        android:icon="@drawable/ic_baseline_insert_chart_outlined_24"
-        android:title="statistics"
-        android:contentDescription="statistics" />
+        android:id="@+id/bottom_nav_stat"
+        android:icon="@drawable/ic_baseline_bar_chart_24"
+        android:title="@string/stat"
+        android:contentDescription="@string/stat" />
 
     <item
-        android:id="@+id/setting"
-        android:icon="@drawable/ic_baseline_insert_chart_outlined_24"
-        android:title="setting"
-        android:contentDescription="setting" />
+        android:id="@+id/bottom_nav_prof"
+        android:icon="@drawable/ic_baseline_person_24"
+        android:title="@string/prof"
+        android:contentDescription="@string/prof" />
 
 </menu>
