@@ -19,4 +19,7 @@ interface FoodDao {
 
  @Query("SELECT * from food")
  fun getRecords(): Flow<List<Food>>
+
+ @Query("SELECT * from food ORDER BY start_time DESC LIMIT 1")
+ fun getRecent(): Flow<Food>
 }

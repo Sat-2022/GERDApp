@@ -87,7 +87,7 @@ class FoodFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = getString(R.string.date_format, year, month, day)
+                        val format = getString(R.string.date_format, year, month+1, day)
                         foodTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -101,7 +101,7 @@ class FoodFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = getString(R.string.date_format, year, month, day)
+                        val format = getString(R.string.date_format, year, month+1, day)
                         foodTextEndDate.text = format
                     }
                 }, year, month, day).show()

@@ -54,7 +54,7 @@ class SymptomsFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = getString(R.string.date_format, year, month, day)
+                        val format = getString(R.string.date_format, year, month+1, day)
                         symptomsTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -68,7 +68,7 @@ class SymptomsFragment: Fragment() {
 //
 //                DatePickerDialog(requireContext(), { _, year, month, day ->
 //                    run {
-//                        val format = getString(R.string.date_format, year, month, day)
+//                        val format = getString(R.string.date_format, year, month+1, day)
 //                        symptomsTextEndDate.text = format
 //                    }
 //                }, year, month, day).show()

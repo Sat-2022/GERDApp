@@ -19,4 +19,7 @@ interface OthersDao {
 
     @Query("SELECT * from others")
     fun getRecords(): Flow<List<Others>>
+
+    @Query("SELECT * from others ORDER BY start_time DESC LIMIT 1")
+    fun getRecent(): Flow<Others>
 }

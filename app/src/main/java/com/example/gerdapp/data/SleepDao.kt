@@ -19,4 +19,7 @@ interface SleepDao {
 
     @Query("SELECT * from sleep")
     fun getRecords(): Flow<List<Sleep>>
+
+    @Query("SELECT * from sleep ORDER BY start_time DESC LIMIT 1")
+    fun getRecent(): Flow<Sleep>
 }

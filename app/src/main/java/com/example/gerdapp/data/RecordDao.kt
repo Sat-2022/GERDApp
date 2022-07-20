@@ -19,4 +19,7 @@ interface RecordDao {
 
     @Query("SELECT * from record")
     fun getRecords(): Flow<List<Record>>
+
+    @Query("SELECT * from record ORDER BY time DESC LIMIT 1")
+    fun getRecent(): Flow<Record>
 }

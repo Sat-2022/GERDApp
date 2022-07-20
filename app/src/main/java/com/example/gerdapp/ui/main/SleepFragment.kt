@@ -87,7 +87,7 @@ class SleepFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = getString(R.string.date_format, year, month, day)
+                        val format = getString(R.string.date_format, year, month+1, day)
                         sleepTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -101,7 +101,7 @@ class SleepFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = getString(R.string.date_format, year, month, day)
+                        val format = getString(R.string.date_format, year, month+1, day)
                         sleepTextEndDate.text = format
                     }
                 }, year, month, day).show()
