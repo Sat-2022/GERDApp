@@ -44,12 +44,10 @@ class MainFragment : Fragment() {
 
         val adapter = CardItemAdapter { cardItem ->
             val action = when(cardItem.stringResourceId){
-                R.string.questionnaire -> MainFragmentDirections.actionMainFragmentToCalendarFragment()
                 R.string.symptoms -> MainFragmentDirections.actionMainFragmentToSymptomsFragment()
                 R.string.food -> MainFragmentDirections.actionMainFragmentToFoodFragment()
                 R.string.sleep -> MainFragmentDirections.actionMainFragmentToSleepFragment()
                 R.string.others -> MainFragmentDirections.actionMainFragmentToOthersFragment()
-                R.string.chart -> MainFragmentDirections.actionMainFragmentToChartFragment()
                 else -> MainFragmentDirections.actionMainFragmentSelf()
             }
             findNavController().navigate(action)
