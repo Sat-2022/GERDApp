@@ -43,8 +43,8 @@ class SymptomsFragment: Fragment() {
 
             val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
-//            symptomsTextEndTime.text = currentTime.toString()
             symptomsTextStartTime.text = currentTime.toString()
+//            symptomsTextEndTime.text = currentTime.toString()
 
             symptomsTextStartDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
@@ -54,7 +54,7 @@ class SymptomsFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${getString(R.string.date_format, year, month, day)}"
+                        val format = getString(R.string.date_format, year, month, day)
                         symptomsTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -68,7 +68,7 @@ class SymptomsFragment: Fragment() {
 //
 //                DatePickerDialog(requireContext(), { _, year, month, day ->
 //                    run {
-//                        val format = "${getString(R.string.date_format, year, month, day)}"
+//                        val format = getString(R.string.date_format, year, month, day)
 //                        symptomsTextEndDate.text = format
 //                    }
 //                }, year, month, day).show()
@@ -81,7 +81,7 @@ class SymptomsFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${getString(R.string.time_format, hour, min)}"
+                        val format = getString(R.string.time_format, hour, min)
                         symptomsTextStartTime.text = format
                     }
                 }, hour, min, true).show()
@@ -94,7 +94,7 @@ class SymptomsFragment: Fragment() {
 //
 //                TimePickerDialog(requireContext(), { _, hour, min ->
 //                    run {
-//                        val format = "${getString(R.string.time_format, hour, min)}"
+//                        val format = getString(R.string.time_format, hour, min)
 //                        symptomsTextEndTime.text = format
 //                    }
 //                }, hour, min, true).show()

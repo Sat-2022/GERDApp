@@ -6,12 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Others
+import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentSleepBinding
 import com.example.gerdapp.viewmodel.SleepViewModel
 import com.example.gerdapp.viewmodel.SleepViewModelFactory
@@ -28,7 +29,7 @@ class SleepFragment: Fragment() {
         )
     }
 
-    lateinit var others: Others
+    lateinit var others: Sleep
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
@@ -43,6 +44,9 @@ class SleepFragment: Fragment() {
                 binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
                 binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
             )
+            Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -83,7 +87,7 @@ class SleepFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${getString(R.string.date_format, year, month, day)}"
+                        val format = getString(R.string.date_format, year, month, day)
                         sleepTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -97,7 +101,7 @@ class SleepFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${getString(R.string.date_format, year, month, day)}"
+                        val format = getString(R.string.date_format, year, month, day)
                         sleepTextEndDate.text = format
                     }
                 }, year, month, day).show()
@@ -110,7 +114,7 @@ class SleepFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${getString(R.string.time_format, hour, min)}"
+                        val format = getString(R.string.time_format, hour, min)
                         sleepTextStartTime.text = format
                     }
                 }, hour, min, true).show()
@@ -123,18 +127,18 @@ class SleepFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${getString(R.string.time_format, hour, min)}"
+                        val format = getString(R.string.time_format, hour, min)
                         sleepTextEndTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
             sleepButtonCancel.setOnClickListener {
-                addNewItem()
                 findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
 
             sleepButtonDone.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
         }

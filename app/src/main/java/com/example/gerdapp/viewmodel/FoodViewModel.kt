@@ -5,8 +5,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.gerdapp.data.Food
 import com.example.gerdapp.data.FoodDao
-import com.example.gerdapp.data.Sleep
-import com.example.gerdapp.data.SleepDao
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 

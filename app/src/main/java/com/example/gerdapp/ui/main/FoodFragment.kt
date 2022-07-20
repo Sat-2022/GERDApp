@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -44,6 +45,8 @@ class FoodFragment: Fragment() {
                 binding.foodTextEndDate.text.toString()+" "+binding.foodTextEndTime.text.toString(),
                 binding.foodRecordInput.text.toString()
             )
+        } else {
+            Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -84,7 +87,7 @@ class FoodFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${getString(R.string.date_format, year, month, day)}"
+                        val format = getString(R.string.date_format, year, month, day)
                         foodTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -98,7 +101,7 @@ class FoodFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${getString(R.string.date_format, year, month, day)}"
+                        val format = getString(R.string.date_format, year, month, day)
                         foodTextEndDate.text = format
                     }
                 }, year, month, day).show()
@@ -111,7 +114,7 @@ class FoodFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${getString(R.string.time_format, hour, min)}"
+                        val format = getString(R.string.time_format, hour, min)
                         foodTextStartTime.text = format
                     }
                 }, hour, min, true).show()
@@ -124,18 +127,18 @@ class FoodFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${getString(R.string.time_format, hour, min)}"
+                        val format = getString(R.string.time_format, hour, min)
                         foodTextEndTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
             foodButtonCancel.setOnClickListener {
-                addNewItem()
                 findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
 
             foodButtonDone.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
         }

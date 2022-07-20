@@ -3,7 +3,8 @@ package com.example.gerdapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.gerdapp.data.*
+import com.example.gerdapp.data.Sleep
+import com.example.gerdapp.data.SleepDao
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 

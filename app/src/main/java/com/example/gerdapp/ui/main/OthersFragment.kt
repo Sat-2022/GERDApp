@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -46,6 +47,8 @@ class OthersFragment: Fragment() {
                 binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
                 binding.othersRecordInput.text.toString()
             )
+        } else {
+            Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -86,7 +89,7 @@ class OthersFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${getString(R.string.date_format, year, month, day)}"
+                        val format = getString(R.string.date_format, year, month, day)
                         othersTextStartDate.text = format
                     }
                 }, year, month, day).show()
@@ -100,7 +103,7 @@ class OthersFragment: Fragment() {
 
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
-                        val format = "${getString(R.string.date_format, year, month, day)}"
+                        val format = getString(R.string.date_format, year, month, day)
                         othersTextEndDate.text = format
                     }
                 }, year, month, day).show()
@@ -113,7 +116,7 @@ class OthersFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${getString(R.string.time_format, hour, min)}"
+                        val format = getString(R.string.time_format, hour, min)
                         othersTextStartTime.text = format
                     }
                 }, hour, min, true).show()
@@ -126,7 +129,7 @@ class OthersFragment: Fragment() {
 
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
-                        val format = "${getString(R.string.time_format, hour, min)}"
+                        val format = getString(R.string.time_format, hour, min)
                         othersTextEndTime.text = format
                     }
                 }, hour, min, true).show()

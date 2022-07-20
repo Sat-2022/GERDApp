@@ -3,8 +3,6 @@ package com.example.gerdapp.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.gerdapp.data.Food
-import com.example.gerdapp.data.FoodDao
 import com.example.gerdapp.data.Others
 import com.example.gerdapp.data.OthersDao
 import kotlinx.coroutines.launch
