@@ -4,6 +4,7 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
+//    id("com.apollographql.apollo3").version("3.4.0")
 }
 
 android {
@@ -64,4 +65,18 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
+
+    // MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
+    // Apollo setup
+//    implementation("com.apollographql.apollo3:apollo-runtime:3.4.0")
 }
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+//apollo {
+//    packageName.set("com.example.gerdapp")
+//}
