@@ -1,9 +1,7 @@
-package com.example.gerdapp.ui.main.records
+package com.example.gerdapp.ui.main
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
-import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,34 +11,17 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSymptomsBinding
+import com.example.gerdapp.databinding.TimeCardBinding
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SymptomsFragment: Fragment() {
-    private var _binding: FragmentSymptomsBinding? = null
+class TimeCard: Fragment() {
+    private var _binding: TimeCardBinding? = null
     private val binding get() = _binding!!
-
-    private var bottomNavigationViewVisibility = View.GONE
-
-    private fun setBottomNavigationVisibility() {
-        var mainActivity = activity as MainActivity
-        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
-    }
-    
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-        setBottomNavigationVisibility()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        setBottomNavigationVisibility()
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        _binding = FragmentSymptomsBinding.inflate(inflater, container, false)
+        _binding = TimeCardBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,6 +29,7 @@ class SymptomsFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone
 
@@ -113,10 +95,6 @@ class SymptomsFragment: Fragment() {
                         endTime.text = format
                     }
                 }, hour, min, true).show()
-            }
-
-            completeButton.setOnClickListener {
-                findNavController().navigate(R.id.action_symptomsFragment_to_mainFragment)
             }
         }
 
