@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.ui.chart
 
 import android.graphics.Color
 import android.graphics.Typeface
@@ -7,8 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentChartBinding
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis

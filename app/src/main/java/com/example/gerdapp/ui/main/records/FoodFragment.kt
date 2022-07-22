@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -10,56 +10,62 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.gerdapp.BasicApplication
-import com.example.gerdapp.R
-import com.example.gerdapp.data.Others
-import com.example.gerdapp.databinding.FragmentOthersBinding
-import com.example.gerdapp.viewmodel.OthersViewModel
-import com.example.gerdapp.viewmodel.OthersViewModelFactory
+import com.example.gerdapp.*
+import com.example.gerdapp.data.Food
+import com.example.gerdapp.databinding.FragmentFoodBinding
+import com.example.gerdapp.viewmodel.FoodViewModel
+import com.example.gerdapp.viewmodel.FoodViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class OthersFragment: Fragment() {
-    private var _binding: FragmentOthersBinding? = null
+class FoodFragment: Fragment() {
+    private var _binding: FragmentFoodBinding? = null
     private val binding get() = _binding!!
+    
+    private var bottomNavigationViewVisibility = View.GONE
 
-    private val viewModel: OthersViewModel by activityViewModels {
-        OthersViewModelFactory(
-            (activity?.application as BasicApplication).othersDatabase.othersDao()
+    private val viewModel: FoodViewModel by activityViewModels {
+        FoodViewModelFactory(
+            (activity?.application as BasicApplication).foodDatabase.foodDao()
         )
     }
 
-    lateinit var others: Others
+    lateinit var food: Food
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
-            binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
-            binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
-            binding.othersRecordInput.text.toString()
+            binding.foodTextStartDate.text.toString()+" "+binding.foodTextStartTime.text.toString(),
+            binding.foodTextEndDate.text.toString()+" "+binding.foodTextEndTime.text.toString(),
+            binding.foodRecordInput.text.toString()
         )
     }
 
     private fun addNewItem(){
         if(isEntryValid()) {
-            viewModel.addOthersRecord(
-                binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
-                binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
-                binding.othersRecordInput.text.toString()
+            viewModel.addFoodRecord(
+                binding.foodTextStartDate.text.toString()+" "+binding.foodTextStartTime.text.toString(),
+                binding.foodTextEndDate.text.toString()+" "+binding.foodTextEndTime.text.toString(),
+                binding.foodRecordInput.text.toString()
             )
         } else {
             Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun setBottomNavigationVisibility() {
+        var mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        setHasOptionsMenu(false)
+        setBottomNavigationVisibility()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        _binding = FragmentOthersBinding.inflate(inflater, container, false)
+        _binding = FragmentFoodBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -73,15 +79,15 @@ class OthersFragment: Fragment() {
 
             val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
-            othersTextStartDate.text = currentDate.toString()
-            othersTextEndDate.text = currentDate.toString()
+            foodTextStartDate.text = currentDate.toString()
+            foodTextEndDate.text = currentDate.toString()
 
             val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
-            othersTextEndTime.text = currentTime.toString()
-            othersTextStartTime.text = currentTime.toString()
+            foodTextEndTime.text = currentTime.toString()
+            foodTextStartTime.text = currentTime.toString()
 
-            othersTextStartDate.setOnClickListener {
+            foodTextStartDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -90,12 +96,12 @@ class OthersFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        othersTextStartDate.text = format
+                        foodTextStartDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            othersTextEndDate.setOnClickListener {
+            foodTextEndDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -104,12 +110,12 @@ class OthersFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        othersTextEndDate.text = format
+                        foodTextEndDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            othersTextStartTime.setOnClickListener {
+            foodTextStartTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -117,12 +123,12 @@ class OthersFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        othersTextStartTime.text = format
+                        foodTextStartTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            othersTextEndTime.setOnClickListener {
+            foodTextEndTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -130,18 +136,18 @@ class OthersFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        othersTextEndTime.text = format
+                        foodTextEndTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            othersButtonCancel.setOnClickListener {
-                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
+            foodButtonCancel.setOnClickListener {
+                findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
 
-            othersButtonDone.setOnClickListener {
+            foodButtonDone.setOnClickListener {
                 addNewItem()
-                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
+                findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
         }
 

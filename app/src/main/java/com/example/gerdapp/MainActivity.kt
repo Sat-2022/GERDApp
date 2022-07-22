@@ -66,4 +66,8 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return super.onSupportNavigateUp() || navController.navigateUp(appBarConfiguration)
     }
+
+    fun setBottomNavigationVisibility(visibility: Int) {
+        binding.navView.visibility = visibility
+    }
 }

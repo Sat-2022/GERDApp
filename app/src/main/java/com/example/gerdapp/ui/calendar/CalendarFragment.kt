@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.ui.calendar
 
 import android.os.Bundle
 import android.view.LayoutInflater

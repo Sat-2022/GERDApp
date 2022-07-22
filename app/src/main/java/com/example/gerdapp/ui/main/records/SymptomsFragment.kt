@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSymptomsBinding
 import java.text.SimpleDateFormat
@@ -17,9 +18,22 @@ class SymptomsFragment: Fragment() {
     private var _binding: FragmentSymptomsBinding? = null
     private val binding get() = _binding!!
 
+    private var bottomNavigationViewVisibility = View.GONE
+
+    private fun setBottomNavigationVisibility() {
+        var mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+    }
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        setBottomNavigationVisibility()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBottomNavigationVisibility()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

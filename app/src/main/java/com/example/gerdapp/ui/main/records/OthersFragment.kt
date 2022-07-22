@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -11,53 +11,64 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.BasicApplication
+import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Sleep
-import com.example.gerdapp.databinding.FragmentSleepBinding
-import com.example.gerdapp.viewmodel.SleepViewModel
-import com.example.gerdapp.viewmodel.SleepViewModelFactory
+import com.example.gerdapp.data.Others
+import com.example.gerdapp.databinding.FragmentOthersBinding
+import com.example.gerdapp.viewmodel.OthersViewModel
+import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
-class SleepFragment: Fragment() {
-    private var _binding: FragmentSleepBinding? = null
+
+class OthersFragment: Fragment() {
+    private var _binding: FragmentOthersBinding? = null
     private val binding get() = _binding!!
 
-    private val viewModel: SleepViewModel by activityViewModels {
-        SleepViewModelFactory(
-            (activity?.application as BasicApplication).sleepDatabase.sleepDao()
+    private var bottomNavigationViewVisibility = View.GONE
+
+    private val viewModel: OthersViewModel by activityViewModels {
+        OthersViewModelFactory(
+            (activity?.application as BasicApplication).othersDatabase.othersDao()
         )
     }
 
-    lateinit var others: Sleep
+    lateinit var others: Others
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
-            binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
-            binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
+            binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
+            binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
+            binding.othersRecordInput.text.toString()
         )
     }
 
     private fun addNewItem(){
         if(isEntryValid()) {
-            viewModel.addSleepRecord(
-                binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
-                binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
+            viewModel.addOthersRecord(
+                binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
+                binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
+                binding.othersRecordInput.text.toString()
             )
-            Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
         }
     }
 
+    private fun setBottomNavigationVisibility() {
+        var mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        setBottomNavigationVisibility()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        _binding = FragmentSleepBinding.inflate(inflater, container, false)
+        _binding = FragmentOthersBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -71,15 +82,15 @@ class SleepFragment: Fragment() {
 
             val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
-            sleepTextStartDate.text = currentDate.toString()
-            sleepTextEndDate.text = currentDate.toString()
+            othersTextStartDate.text = currentDate.toString()
+            othersTextEndDate.text = currentDate.toString()
 
             val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
-            sleepTextEndTime.text = currentTime.toString()
-            sleepTextStartTime.text = currentTime.toString()
+            othersTextEndTime.text = currentTime.toString()
+            othersTextStartTime.text = currentTime.toString()
 
-            sleepTextStartDate.setOnClickListener {
+            othersTextStartDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -88,12 +99,12 @@ class SleepFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        sleepTextStartDate.text = format
+                        othersTextStartDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            sleepTextEndDate.setOnClickListener {
+            othersTextEndDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -102,12 +113,12 @@ class SleepFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        sleepTextEndDate.text = format
+                        othersTextEndDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            sleepTextStartTime.setOnClickListener {
+            othersTextStartTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -115,12 +126,12 @@ class SleepFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        sleepTextStartTime.text = format
+                        othersTextStartTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            sleepTextEndTime.setOnClickListener {
+            othersTextEndTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -128,18 +139,18 @@ class SleepFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        sleepTextEndTime.text = format
+                        othersTextEndTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            sleepButtonCancel.setOnClickListener {
-                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+            othersButtonCancel.setOnClickListener {
+                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
             }
 
-            sleepButtonDone.setOnClickListener {
+            othersButtonDone.setOnClickListener {
                 addNewItem()
-                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
             }
         }
 
