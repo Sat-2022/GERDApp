@@ -13,43 +13,41 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Others
-import com.example.gerdapp.databinding.FragmentOthersBinding
-import com.example.gerdapp.viewmodel.OthersViewModel
-import com.example.gerdapp.viewmodel.OthersViewModelFactory
+import com.example.gerdapp.data.Sleep
+import com.example.gerdapp.databinding.FragmentSleepRecordBinding
+import com.example.gerdapp.viewmodel.SleepViewModel
+import com.example.gerdapp.viewmodel.SleepViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
-
-class OthersFragment: Fragment() {
-    private var _binding: FragmentOthersBinding? = null
+class SleepRecordFragment: Fragment() {
+    private var _binding: FragmentSleepRecordBinding? = null
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
 
-    private val viewModel: OthersViewModel by activityViewModels {
-        OthersViewModelFactory(
-            (activity?.application as BasicApplication).othersDatabase.othersDao()
+    private val viewModel: SleepViewModel by activityViewModels {
+        SleepViewModelFactory(
+            (activity?.application as BasicApplication).sleepDatabase.sleepDao()
         )
     }
 
-    lateinit var others: Others
+    lateinit var others: Sleep
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
-            binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
-            binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
-            binding.othersRecordInput.text.toString()
+            binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
+            binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
         )
     }
 
     private fun addNewItem(){
         if(isEntryValid()) {
-            viewModel.addOthersRecord(
-                binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
-                binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
-                binding.othersRecordInput.text.toString()
+            viewModel.addSleepRecord(
+                binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
+                binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
             )
+            Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
         } else {
             Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
         }
@@ -68,7 +66,7 @@ class OthersFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        _binding = FragmentOthersBinding.inflate(inflater, container, false)
+        _binding = FragmentSleepRecordBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -82,15 +80,15 @@ class OthersFragment: Fragment() {
 
             val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
-            othersTextStartDate.text = currentDate.toString()
-            othersTextEndDate.text = currentDate.toString()
+            sleepTextStartDate.text = currentDate.toString()
+            sleepTextEndDate.text = currentDate.toString()
 
             val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
-            othersTextEndTime.text = currentTime.toString()
-            othersTextStartTime.text = currentTime.toString()
+            sleepTextEndTime.text = currentTime.toString()
+            sleepTextStartTime.text = currentTime.toString()
 
-            othersTextStartDate.setOnClickListener {
+            sleepTextStartDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -99,12 +97,12 @@ class OthersFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        othersTextStartDate.text = format
+                        sleepTextStartDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            othersTextEndDate.setOnClickListener {
+            sleepTextEndDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -113,12 +111,12 @@ class OthersFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        othersTextEndDate.text = format
+                        sleepTextEndDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            othersTextStartTime.setOnClickListener {
+            sleepTextStartTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -126,12 +124,12 @@ class OthersFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        othersTextStartTime.text = format
+                        sleepTextStartTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            othersTextEndTime.setOnClickListener {
+            sleepTextEndTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -139,18 +137,18 @@ class OthersFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        othersTextEndTime.text = format
+                        sleepTextEndTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            othersButtonCancel.setOnClickListener {
-                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
+            sleepButtonCancel.setOnClickListener {
+                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
 
-            othersButtonDone.setOnClickListener {
+            sleepButtonDone.setOnClickListener {
                 addNewItem()
-                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
+                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
         }
 
