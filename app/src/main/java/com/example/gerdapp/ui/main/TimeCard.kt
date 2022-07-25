@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
-import com.example.gerdapp.databinding.FragmentSymptomsBinding
 import com.example.gerdapp.databinding.TimeCardBinding
 import java.text.SimpleDateFormat
 import java.util.*

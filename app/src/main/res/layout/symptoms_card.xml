@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:ignore="MissingConstraints">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <FrameLayout
+                    android:layout_width="48dp"
+                    android:layout_height="48dp">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_baseline_eco_24"
+                        android:layout_gravity="center"/>
+                </FrameLayout>
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/symptoms_record_main_symptom_headline"
+                        android:layout_gravity="center_vertical"
+                        android:textStyle="bold"/>
+                </FrameLayout>
+            </LinearLayout>
+            <include layout="@layout/divider"/>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/symptoms"
+                android:padding="8dp">
+
+
+
+                <TableLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center">
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+
+                        <LinearLayout
+                            android:layout_width="76dp"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_cough"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/cough" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/cough" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_heart_burn"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/heart_burn" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/heart_burn" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_acid_reflux"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/acid_reflux" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/acid_reflux" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_chest_pain"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/chest_pain" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/chest_pain" />
+
+                        </LinearLayout>
+
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_sour_mouth"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/sour_mouth" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/sour_mouth" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_hoarseness"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/hoarseness" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/hoarseness" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_appetite_loss"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/appetite_lose" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/appetite_loss" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="4dp">
+
+                            <ImageView
+                                android:id="@+id/symptoms_stomach_gas"
+                                android:layout_width="72dp"
+                                android:layout_height="72dp"
+                                app:srcCompat="@drawable/stomach_gas" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_horizontal"
+                                android:text="@string/stomach_gas" />
+
+                        </LinearLayout>
+                    </TableRow>
+
+                </TableLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
