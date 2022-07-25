@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.main
+package com.example.gerdapp.ui.questionnaire
 
 import android.content.Context
 import android.os.Bundle
@@ -10,9 +10,6 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentQuestionnaireBinding
 
 class QuestionnaireFragment: Fragment() {

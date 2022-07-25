@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.CardItemAdapter
 import com.example.gerdapp.databinding.FragmentMainBinding
@@ -17,11 +18,23 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
+    private var bottomNavigationViewVisibility = View.VISIBLE
+
     private lateinit var recyclerView: RecyclerView
+
+    private fun setBottomNavigationVisibility() {
+        var mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBottomNavigationVisibility()
     }
     
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
