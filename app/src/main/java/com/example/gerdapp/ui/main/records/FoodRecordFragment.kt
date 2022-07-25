@@ -34,18 +34,18 @@ class FoodRecordFragment: Fragment() {
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
-            binding.foodTextStartDate.text.toString()+" "+binding.foodTextStartTime.text.toString(),
-            binding.foodTextEndDate.text.toString()+" "+binding.foodTextEndTime.text.toString(),
-            binding.foodRecordInput.text.toString()
+            binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+            binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
+            ""//binding.foodRecordInput.text.toString()
         )
     }
 
     private fun addNewItem(){
         if(isEntryValid()) {
             viewModel.addFoodRecord(
-                binding.foodTextStartDate.text.toString()+" "+binding.foodTextStartTime.text.toString(),
-                binding.foodTextEndDate.text.toString()+" "+binding.foodTextEndTime.text.toString(),
-                binding.foodRecordInput.text.toString()
+                binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+                binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
+                ""//binding.foodRecordInput.text.toString()
             )
         } else {
             Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
@@ -73,21 +73,31 @@ class FoodRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+            completeButton.setOnClickListener {
+                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+            }
+        }
 
+        dateTimePicker()
+
+    }
+
+    fun dateTimePicker() {
+        binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone
 
             val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
-            foodTextStartDate.text = currentDate.toString()
-            foodTextEndDate.text = currentDate.toString()
+            timeCard.startDate.text = currentDate.toString()
+            timeCard.endDate.text = currentDate.toString()
 
             val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
-            foodTextEndTime.text = currentTime.toString()
-            foodTextStartTime.text = currentTime.toString()
+            timeCard.startTime.text = currentTime.toString()
+            timeCard.endTime.text = currentTime.toString()
 
-            foodTextStartDate.setOnClickListener {
+            timeCard.startDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -96,12 +106,12 @@ class FoodRecordFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        foodTextStartDate.text = format
+                        timeCard.startDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            foodTextEndDate.setOnClickListener {
+            timeCard.endDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -110,12 +120,12 @@ class FoodRecordFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        foodTextEndDate.text = format
+                        timeCard.endDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            foodTextStartTime.setOnClickListener {
+            timeCard.startTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -123,12 +133,12 @@ class FoodRecordFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        foodTextStartTime.text = format
+                        timeCard.startTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            foodTextEndTime.setOnClickListener {
+            timeCard.endTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -136,20 +146,11 @@ class FoodRecordFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        foodTextEndTime.text = format
+                        timeCard.endTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            foodButtonCancel.setOnClickListener {
-                findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
-            }
-
-            foodButtonDone.setOnClickListener {
-                addNewItem()
-                findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
-            }
         }
-
     }
 }

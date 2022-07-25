@@ -1,5 +1,7 @@
 package com.example.gerdapp.ui.main
 
+import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -12,11 +14,22 @@ import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.CardItemAdapter
 import com.example.gerdapp.databinding.FragmentMainBinding
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import java.text.SimpleDateFormat
+import java.util.*
 
 class MainFragment : Fragment() {
     
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
+
+    private lateinit var barChart: BarChart
 
     private var bottomNavigationViewVisibility = View.VISIBLE
 
@@ -40,6 +53,10 @@ class MainFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
+
+        barChart = binding.chartCard.barChart
+        initBarChart()
+
         return binding.root
     }
 
@@ -67,5 +84,88 @@ class MainFragment : Fragment() {
         }
 
         recyclerView.adapter = adapter
+
+        binding.apply {
+            val calendar = Calendar.getInstance()
+            val current = calendar.time
+            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
+            val currentDate = formatDate.format(current)
+            chartCard.chartDate.text = currentDate.toString()
+        }
+    }
+
+    private fun initBarChart(){
+        // set data
+        setBarChartData()
+
+        barChart.setBackgroundColor(Color.WHITE)
+        barChart.description.isEnabled = false
+//        chart.setTouchEnabled(false)
+//        chart.isDragEnabled = false
+
+
+        // add animation
+        barChart.animateY(1400)
+
+//        val l: Legend = chart.legend
+//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+//        l.orientation = Legend.LegendOrientation.HORIZONTAL
+//        l.setDrawInside(false)
+//        l.typeface = Typeface.DEFAULT //
+//        l.xEntrySpace = 7f
+//        l.yEntrySpace = 5f
+//        //l.form = Legend.LegendForm.LINE
+//        l.textColor = Color.BLACK
+        // remove legend
+        barChart.legend.isEnabled = false
+
+        val xAxis: XAxis = barChart.xAxis
+        xAxis.typeface = Typeface.DEFAULT
+        xAxis.textSize = 12f
+        xAxis.yOffset = 0f
+        xAxis.xOffset = 0f
+        xAxis.setDrawGridLines(false)
+//        xAxis.textColor = Color.BLACK
+//        xAxis.setDrawGridLines(true)
+//        xAxis.position = XAxis.XAxisPosition.BOTTOM
+//        xAxis.setLabelCount(5, true)
+
+        val mActivities = arrayOf("一", "二", "三", "四", "五", "六", "日")
+        val formatter = IAxisValueFormatter{ value, axis ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = formatter
+
+        val yAxis = barChart.axisLeft
+        yAxis.axisMaximum = 5f
+        yAxis.axisMinimum = 0f
+        yAxis.setLabelCount(4, false)
+        yAxis.setDrawAxisLine(false)
+        //yAxis.setDrawLabels(false)
+        barChart.axisRight.isEnabled = false
+    }
+
+    private fun setBarChartData() {
+        val entries1: MutableList<BarEntry> = ArrayList()
+        for (i in 0..6) entries1.add(BarEntry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
+
+        val data1 = BarDataSet(entries1, "Label")
+        //data1.setCircleColor(Color.BLUE)
+        data1.setColor(Color.BLUE)
+
+        val dataset = ArrayList<IBarDataSet>()
+        dataset.add(data1)
+
+        val data = BarData(dataset)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        data.setDrawValues(true)
+
+        barChart.data = data
+        barChart.invalidate()
     }
 }

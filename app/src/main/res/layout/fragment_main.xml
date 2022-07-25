@@ -7,14 +7,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#D8D8D8"
+    android:padding="8dp"
     tools:context=".ui.main.MainFragment">
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/chart_card"
+            layout="@layout/chart_card" />
+
+    </FrameLayout>
+
+    <include layout="@layout/card_divider"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/main_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
-        app:layoutManager="LinearLayoutManager"/>
+        app:layoutManager="LinearLayoutManager" />
     <!--
     <TextView
         android:id="@+id/message"

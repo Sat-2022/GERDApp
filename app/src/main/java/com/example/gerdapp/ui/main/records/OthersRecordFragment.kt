@@ -37,18 +37,18 @@ class OthersRecordFragment: Fragment() {
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
-            binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
-            binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
-            binding.othersRecordInput.text.toString()
+            binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+            binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
+            ""//binding.othersRecordInput.text.toString()
         )
     }
 
     private fun addNewItem(){
         if(isEntryValid()) {
             viewModel.addOthersRecord(
-                binding.othersTextStartDate.text.toString()+" "+binding.othersTextStartTime.text.toString(),
-                binding.othersTextEndDate.text.toString()+" "+binding.othersTextEndTime.text.toString(),
-                binding.othersRecordInput.text.toString()
+                binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+                binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
+                ""//binding.othersRecordInput.text.toString()
             )
         } else {
             Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
@@ -76,21 +76,31 @@ class OthersRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+            completeButton.setOnClickListener {
+                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
+            }
+        }
 
+        dateTimePicker()
+
+    }
+
+    fun dateTimePicker() {
+        binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone
 
             val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
-            othersTextStartDate.text = currentDate.toString()
-            othersTextEndDate.text = currentDate.toString()
+            timeCard.startDate.text = currentDate.toString()
+            timeCard.endDate.text = currentDate.toString()
 
             val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
-            othersTextEndTime.text = currentTime.toString()
-            othersTextStartTime.text = currentTime.toString()
+            timeCard.startTime.text = currentTime.toString()
+            timeCard.endTime.text = currentTime.toString()
 
-            othersTextStartDate.setOnClickListener {
+            timeCard.startDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -99,12 +109,12 @@ class OthersRecordFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        othersTextStartDate.text = format
+                        timeCard.startDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            othersTextEndDate.setOnClickListener {
+            timeCard.endDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -113,12 +123,12 @@ class OthersRecordFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        othersTextEndDate.text = format
+                        timeCard.endDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            othersTextStartTime.setOnClickListener {
+            timeCard.startTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -126,12 +136,12 @@ class OthersRecordFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        othersTextStartTime.text = format
+                        timeCard.startTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            othersTextEndTime.setOnClickListener {
+            timeCard.endTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -139,20 +149,11 @@ class OthersRecordFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        othersTextEndTime.text = format
+                        timeCard.endTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            othersButtonCancel.setOnClickListener {
-                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
-            }
-
-            othersButtonDone.setOnClickListener {
-                addNewItem()
-                findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
-            }
         }
-
     }
 }

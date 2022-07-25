@@ -36,16 +36,16 @@ class SleepRecordFragment: Fragment() {
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
-            binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
-            binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
+            binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+            binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString()
         )
     }
 
     private fun addNewItem(){
         if(isEntryValid()) {
             viewModel.addSleepRecord(
-                binding.sleepTextStartDate.text.toString()+" "+binding.sleepTextStartTime.text.toString(),
-                binding.sleepTextEndDate.text.toString()+" "+binding.sleepTextEndTime.text.toString()
+                binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+                binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString()
             )
             Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
         } else {
@@ -73,22 +73,31 @@ class SleepRecordFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.apply {
+        dateTimePicker()
 
+        binding.apply {
+            completeButton.setOnClickListener {
+                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+            }
+        }
+    }
+
+    fun dateTimePicker() {
+        binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone
 
             val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
-            sleepTextStartDate.text = currentDate.toString()
-            sleepTextEndDate.text = currentDate.toString()
+            timeCard.startDate.text = currentDate.toString()
+            timeCard.endDate.text = currentDate.toString()
 
             val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
             val currentTime = formatTime.format(current)
-            sleepTextEndTime.text = currentTime.toString()
-            sleepTextStartTime.text = currentTime.toString()
+            timeCard.startTime.text = currentTime.toString()
+            timeCard.endTime.text = currentTime.toString()
 
-            sleepTextStartDate.setOnClickListener {
+            timeCard.startDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -97,12 +106,12 @@ class SleepRecordFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        sleepTextStartDate.text = format
+                        timeCard.startDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            sleepTextEndDate.setOnClickListener {
+            timeCard.endDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val day = calendar[Calendar.DAY_OF_MONTH]
                 val month = calendar[Calendar.MONTH]
@@ -111,12 +120,12 @@ class SleepRecordFragment: Fragment() {
                 DatePickerDialog(requireContext(), { _, year, month, day ->
                     run {
                         val format = getString(R.string.date_format, year, month+1, day)
-                        sleepTextEndDate.text = format
+                        timeCard.endDate.text = format
                     }
                 }, year, month, day).show()
             }
 
-            sleepTextStartTime.setOnClickListener {
+            timeCard.startTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -124,12 +133,12 @@ class SleepRecordFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        sleepTextStartTime.text = format
+                        timeCard.startTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            sleepTextEndTime.setOnClickListener {
+            timeCard.endTime.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 val hour = calendar[Calendar.HOUR_OF_DAY]
                 val min = calendar[Calendar.MINUTE]
@@ -137,20 +146,11 @@ class SleepRecordFragment: Fragment() {
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
-                        sleepTextEndTime.text = format
+                        timeCard.endTime.text = format
                     }
                 }, hour, min, true).show()
             }
 
-            sleepButtonCancel.setOnClickListener {
-                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
-            }
-
-            sleepButtonDone.setOnClickListener {
-                addNewItem()
-                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
-            }
         }
-
     }
 }
