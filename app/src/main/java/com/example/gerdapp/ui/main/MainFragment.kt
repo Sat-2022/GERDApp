@@ -31,6 +31,8 @@ class MainFragment : Fragment() {
 
     private lateinit var barChart: BarChart
 
+    private var symptomsNum = 10
+
     private var bottomNavigationViewVisibility = View.VISIBLE
 
     private lateinit var recyclerView: RecyclerView
@@ -131,7 +133,10 @@ class MainFragment : Fragment() {
 //        xAxis.position = XAxis.XAxisPosition.BOTTOM
 //        xAxis.setLabelCount(5, true)
 
-        val mActivities = arrayOf("一", "二", "三", "四", "五", "六", "日")
+        val mActivities = arrayOf(
+            getString(R.string.cough), getString(R.string.heart_burn), getString(R.string.acid_reflux), getString(R.string.chest_pain),
+            getString(R.string.sour_mouth), getString(R.string.hoarseness), getString(R.string.appetite_loss), getString(R.string.stomach_gas),
+            getString(R.string.cough_night), getString(R.string.acid_reflux_night))
         val formatter = IAxisValueFormatter{ value, axis ->
             mActivities[value.toInt() % mActivities.size]
         }
@@ -148,7 +153,7 @@ class MainFragment : Fragment() {
 
     private fun setBarChartData() {
         val entries1: MutableList<BarEntry> = ArrayList()
-        for (i in 0..6) entries1.add(BarEntry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
+        for (i in 0 until symptomsNum) entries1.add(BarEntry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
 
         val data1 = BarDataSet(entries1, "Label")
         //data1.setCircleColor(Color.BLUE)

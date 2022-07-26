@@ -27,11 +27,13 @@
 
             <include layout="@layout/card_divider" />
 
+            <!--
             <include
                 android:id="@+id/other_symptoms_card"
                 layout="@layout/other_symptoms_card" />
 
             <include layout="@layout/card_divider" />
+            -->
 
             <include
                 android:id="@+id/time_card"

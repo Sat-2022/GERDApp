@@ -23,11 +23,12 @@
                 <FrameLayout
                     android:layout_width="48dp"
                     android:layout_height="48dp">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_baseline_eco_24"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_baseline_eco_24" />
                 </FrameLayout>
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -39,7 +40,9 @@
                         android:layout_gravity="center_vertical"
                         android:textStyle="bold"/>
                 </FrameLayout>
+
             </LinearLayout>
+
             <include layout="@layout/divider"/>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -231,6 +234,25 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <include layout="@layout/divider"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/other_symptoms_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout
+                android:id="@+id/add_other_symptoms"
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/symptoms_record_add_other_symptom"
+                    android:textColor="#09ADEA" />
+            </FrameLayout>
 
         </LinearLayout>
 
