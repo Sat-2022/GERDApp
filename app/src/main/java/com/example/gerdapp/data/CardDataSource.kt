@@ -1,7 +1,7 @@
 package com.example.gerdapp.data
 
 import com.example.gerdapp.R
-import com.example.gerdapp.data.CardItem
+import com.example.gerdapp.viewmodel.*
 
 class CardDataSource {
     fun loadCards(): List<CardItem> {

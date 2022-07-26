@@ -7,20 +7,25 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.CardItemAdapter
+import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentMainBinding
+import com.example.gerdapp.viewmodel.OthersViewModel
+import com.example.gerdapp.viewmodel.OthersViewModelFactory
+import com.example.gerdapp.viewmodel.SleepViewModel
+import com.example.gerdapp.viewmodel.SleepViewModelFactory
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +41,18 @@ class MainFragment : Fragment() {
     private var bottomNavigationViewVisibility = View.VISIBLE
 
     private lateinit var recyclerView: RecyclerView
+
+    private val sleepViewModel: SleepViewModel by activityViewModels {
+        SleepViewModelFactory(
+            (activity?.application as BasicApplication).sleepDatabase.sleepDao()
+        )
+    }
+
+    private val othersViewModel: OthersViewModel by activityViewModels {
+        OthersViewModelFactory(
+            (activity?.application as BasicApplication).othersDatabase.othersDao()
+        )
+    }
 
     private fun setBottomNavigationVisibility() {
         var mainActivity = activity as MainActivity
@@ -75,7 +92,7 @@ class MainFragment : Fragment() {
 
 
         val adapter = CardItemAdapter { cardItem ->
-            val action = when(cardItem.stringResourceId){
+            val action = when (cardItem.stringResourceId) {
                 R.string.symptoms -> MainFragmentDirections.actionMainFragmentToSymptomsFragment()
                 R.string.food -> MainFragmentDirections.actionMainFragmentToFoodFragment()
                 R.string.sleep -> MainFragmentDirections.actionMainFragmentToSleepFragment()
