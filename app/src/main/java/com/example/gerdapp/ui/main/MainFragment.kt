@@ -84,8 +84,8 @@ class MainFragment : Fragment() {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         barChart = binding.chartCard.barChart
         initBarChart()
-        initBarChartData()
-        //setResultData()
+
+        //initResultData()
         return binding.root
     }
 
@@ -97,10 +97,18 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        var text = "text no data"
+        resultViewModel.getResultById(1).observe(this.viewLifecycleOwner) {
+            text = it.symptomAcidReflux.toString()
+        }
+
+        initBarChartData()
+
+
+
         recyclerView = binding.mainRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        var text = "text no data"
         var sleepRecentData = "sleep data"
 
         sleepViewModel.getRecentRecord().observe(this.viewLifecycleOwner) {
@@ -138,9 +146,7 @@ class MainFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
-        resultViewModel.getResultById(1).observe(this.viewLifecycleOwner) {
-            text = it.symptomAcidReflux.toString()
-        }
+
 
         binding.apply {
             val calendar = Calendar.getInstance()
@@ -158,7 +164,7 @@ class MainFragment : Fragment() {
 
     private fun initBarChart() {
         // set data
-        initBarChartData()
+        //initBarChartData()
 
         barChart.setBackgroundColor(Color.WHITE)
         barChart.description.isEnabled = false
@@ -227,19 +233,19 @@ class MainFragment : Fragment() {
         val barDataSet = BarDataSet(entries, "")
         barDataSet.color = Color.BLUE
 
-        val data = BarData(barDataSet)
+        val barData = BarData(barDataSet)
 
         /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
         mv.chartView = lineChart
         lineChart.marker = mv*/
 
-        data.setDrawValues(true)
+        barData.setDrawValues(true)
 
-        barChart.data = data
+        barChart.data = barData
         barChart.invalidate()
     }
 
-    private fun setResultData() {
+    private fun initResultData() {
         resultViewModel.addResultRecord(
             "2022/07/20 03:01",
             (Math.random() * 5f).toInt(),
@@ -275,7 +281,7 @@ class MainFragment : Fragment() {
             addBarEntry(entries, 8, data.symptomHeartBurn)
             addBarEntry(entries, 9, data.symptomHeartBurn)
         } else {
-            for (i in 0 until symptomsNum) addBarEntry(entries, i, (Math.random()*5f).toInt())
+            for (i in 0 until symptomsNum) addBarEntry(entries, i, 1)
         }
 
 
