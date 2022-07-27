@@ -1,8 +1,6 @@
 package com.example.gerdapp.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.gerdapp.data.Others
 import com.example.gerdapp.data.OthersDao
 import kotlinx.coroutines.launch
@@ -25,6 +23,8 @@ class OthersViewModel(private val othersDao: OthersDao): ViewModel() {
         if(startTime.isBlank() || endTime.isBlank() || others.isBlank()) return false
         return true
     }
+
+    fun getRecentRecord(): LiveData<Others> = othersDao.getRecent().asLiveData()
 }
 
 class OthersViewModelFactory(private val othersDao: OthersDao): ViewModelProvider.Factory {

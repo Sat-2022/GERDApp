@@ -16,6 +16,7 @@ import com.example.gerdapp.viewmodel.SleepViewModel
 
 class CardItemAdapter(
     private val clickListener: (CardItem) -> Unit,
+    private val subtitle: (CardItem) -> String
 ): RecyclerView.Adapter<CardItemAdapter.CardItemViewHolder>() {
 
     private val dataset = CardDataSource().loadCards()
@@ -38,7 +39,12 @@ class CardItemAdapter(
         holder.textView.text = holder.textView.context.getString(item.stringResourceId)
         holder.imageView.setImageDrawable(holder.imageView.context.getDrawable(item.imageResourceId))
 
-        holder.recentTextView.text
+        val recentRecord = subtitle(item)
+
+        holder.recentTextView.text = when(recentRecord) {
+            "" -> "no data"
+            else -> recentRecord
+        }
 
         holder.itemView.setOnClickListener {
             clickListener(item)
