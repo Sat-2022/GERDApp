@@ -77,6 +77,7 @@ class SleepRecordFragment: Fragment() {
 
         binding.apply {
             completeButton.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
         }

@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,20 +15,18 @@ import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.CardItemAdapter
-import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentMainBinding
 import com.example.gerdapp.viewmodel.*
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
 
 class MainFragment : Fragment() {
-    
+
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
@@ -44,6 +41,12 @@ class MainFragment : Fragment() {
     private val sleepViewModel: SleepViewModel by activityViewModels {
         SleepViewModelFactory(
             (activity?.application as BasicApplication).sleepDatabase.sleepDao()
+        )
+    }
+
+    private val resultViewModel: ResultViewModel by activityViewModels {
+        ResultViewModelFactory(
+            (activity?.application as BasicApplication).resultDatabase.resultDao()
         )
     }
 
@@ -73,14 +76,16 @@ class MainFragment : Fragment() {
         super.onResume()
         setBottomNavigationVisibility()
     }
-    
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
-        _binding = FragmentMainBinding.inflate(inflater, container, false)
 
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMainBinding.inflate(inflater, container, false)
         barChart = binding.chartCard.barChart
         initBarChart()
-
+        initBarChartData()
+        //setResultData()
         return binding.root
     }
 
@@ -119,36 +124,41 @@ class MainFragment : Fragment() {
                 else -> MainFragmentDirections.actionMainFragmentSelf()
             }
             findNavController().navigate(action)
-        }, { cardItem ->
+        }) { cardItem ->
             val recentRecord = when (cardItem.stringResourceId) {
                 R.string.symptoms -> ""
 //                R.string.food -> foodRecentData
-                R.string.sleep -> sleepRecentData
+                R.string.sleep -> sleepViewModel.getRecentRecord().value?.startTime
 //                R.string.others -> othersRecentData
                 else -> ""
             }
 //            text = recentRecord.toString()
             recentRecord
-        })
+        }
 
         recyclerView.adapter = adapter
+
+        resultViewModel.getResultById(1).observe(this.viewLifecycleOwner) {
+            text = it.symptomAcidReflux.toString()
+        }
 
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time
-            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
+            val formatDate =
+                SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
             chartCard.chartDate.text = currentDate.toString()
             testButton.setOnClickListener { view ->
-                Snackbar.make(view, sleepRecentData, Snackbar.LENGTH_LONG)
+                Snackbar.make(view, text, Snackbar.LENGTH_LONG)
                     .setAction("Action", null).show()
             }
         }
     }
 
-    private fun initBarChart(){
+    private fun initBarChart() {
         // set data
-        setBarChartData()
+        initBarChartData()
 
         barChart.setBackgroundColor(Color.WHITE)
         barChart.description.isEnabled = false
@@ -184,10 +194,18 @@ class MainFragment : Fragment() {
 //        xAxis.setLabelCount(5, true)
 
         val mActivities = arrayOf(
-            getString(R.string.cough), getString(R.string.heart_burn), getString(R.string.acid_reflux), getString(R.string.chest_pain),
-            getString(R.string.sour_mouth), getString(R.string.hoarseness), getString(R.string.appetite_loss), getString(R.string.stomach_gas),
-            getString(R.string.cough_night), getString(R.string.acid_reflux_night))
-        val formatter = IAxisValueFormatter{ value, axis ->
+            getString(R.string.cough),
+            getString(R.string.heart_burn),
+            getString(R.string.acid_reflux),
+            getString(R.string.chest_pain),
+            getString(R.string.sour_mouth),
+            getString(R.string.hoarseness),
+            getString(R.string.appetite_loss),
+            getString(R.string.stomach_gas),
+            getString(R.string.cough_night),
+            getString(R.string.acid_reflux_night)
+        )
+        val formatter = IAxisValueFormatter { value, axis ->
             mActivities[value.toInt() % mActivities.size]
         }
         xAxis.valueFormatter = formatter
@@ -201,18 +219,15 @@ class MainFragment : Fragment() {
         barChart.axisRight.isEnabled = false
     }
 
-    private fun setBarChartData() {
-        val entries1: MutableList<BarEntry> = ArrayList()
-        for (i in 0 until symptomsNum) entries1.add(BarEntry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
+    private fun initBarChartData() {
+        val entries: ArrayList<BarEntry> = ArrayList()
 
-        val data1 = BarDataSet(entries1, "Label")
-        //data1.setCircleColor(Color.BLUE)
-        data1.setColor(Color.BLUE)
+        setResultData(entries, 1)
 
-        val dataset = ArrayList<IBarDataSet>()
-        dataset.add(data1)
+        val barDataSet = BarDataSet(entries, "")
+        barDataSet.color = Color.BLUE
 
-        val data = BarData(dataset)
+        val data = BarData(barDataSet)
 
         /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
         mv.chartView = lineChart
@@ -222,5 +237,59 @@ class MainFragment : Fragment() {
 
         barChart.data = data
         barChart.invalidate()
+    }
+
+    private fun setResultData() {
+        resultViewModel.addResultRecord(
+            "2022/07/20 03:01",
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+            (Math.random() * 5f).toInt(),
+        )
+    }
+
+    private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
+        if (data == null) entries.add(BarEntry(index.toFloat(), 0f))
+        else entries.add(BarEntry(index.toFloat(), data.toFloat()))
+    }
+
+    private fun setResultData(entries: ArrayList<BarEntry>, id: Int) {
+        val result = resultViewModel.getResultById(id)
+        val data = result.value
+        if (data != null) {
+            addBarEntry(entries, 0, data.symptomCough)
+            addBarEntry(entries, 1, data.symptomHeartBurn)
+            addBarEntry(entries, 2, data.symptomAcidReflux)
+            addBarEntry(entries, 3, data.symptomHeartBurn)
+            addBarEntry(entries, 4, data.symptomHeartBurn)
+            addBarEntry(entries, 5, data.symptomHeartBurn)
+            addBarEntry(entries, 6, data.symptomHeartBurn)
+            addBarEntry(entries, 7, data.symptomHeartBurn)
+            addBarEntry(entries, 8, data.symptomHeartBurn)
+            addBarEntry(entries, 9, data.symptomHeartBurn)
+        } else {
+            for (i in 0 until symptomsNum) addBarEntry(entries, i, (Math.random()*5f).toInt())
+        }
+
+
+        //        resultViewModel.getResultById(id).observe(this.viewLifecycleOwner) {
+//            addBarEntry(entries, 0, it.symptomCough)
+//            addBarEntry(entries, 1, it.symptomHeartBurn)
+//            addBarEntry(entries, 2, it.symptomAcidReflux)
+//            addBarEntry(entries, 3, it.symptomHeartBurn)
+//            addBarEntry(entries, 4, it.symptomHeartBurn)
+//            addBarEntry(entries, 5, it.symptomHeartBurn)
+//            addBarEntry(entries, 6, it.symptomHeartBurn)
+//            addBarEntry(entries, 7, it.symptomHeartBurn)
+//            addBarEntry(entries, 8, it.symptomHeartBurn)
+//            addBarEntry(entries, 9, it.symptomHeartBurn)
+//        }
     }
 }

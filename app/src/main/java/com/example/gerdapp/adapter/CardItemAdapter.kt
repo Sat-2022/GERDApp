@@ -16,7 +16,7 @@ import com.example.gerdapp.viewmodel.SleepViewModel
 
 class CardItemAdapter(
     private val clickListener: (CardItem) -> Unit,
-    private val subtitle: (CardItem) -> String
+    private val subtitle: (CardItem) -> String?
 ): RecyclerView.Adapter<CardItemAdapter.CardItemViewHolder>() {
 
     private val dataset = CardDataSource().loadCards()

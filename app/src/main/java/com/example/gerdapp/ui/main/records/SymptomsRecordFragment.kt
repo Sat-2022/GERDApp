@@ -7,11 +7,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSymptomsRecordBinding
+import com.example.gerdapp.viewmodel.RecordViewModel
+import com.example.gerdapp.viewmodel.RecordViewModelFactory
+import com.example.gerdapp.viewmodel.SleepViewModel
+import com.example.gerdapp.viewmodel.SleepViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -30,6 +37,31 @@ class SymptomsRecordFragment: Fragment() {
         var hoarsenessScore: Int = 0
         var appetiteLossScore: Int = 0
         var stomachGasScore: Int = 0
+    }
+
+    private val viewModel: RecordViewModel by activityViewModels {
+        RecordViewModelFactory(
+            (activity?.application as BasicApplication).recordDatabase.recordDao()
+        )
+    }
+
+    private fun isEntryValid(): Boolean {
+        return viewModel.isEntryValid(
+            binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString()
+        )
+    }
+
+    private fun addNewItem(){
+        if(isEntryValid()) {
+            viewModel.addSymptomRecord(
+                binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+                SymptomsScore.coughScore, SymptomsScore.heartBurnScore, SymptomsScore.acidRefluxScore, SymptomsScore.chestPainScore,
+                SymptomsScore.sourMouthScore, SymptomsScore.hoarsenessScore, SymptomsScore.appetiteLossScore, SymptomsScore.stomachGasScore
+            )
+            Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
+        }
     }
 
 
@@ -60,6 +92,7 @@ class SymptomsRecordFragment: Fragment() {
 
         binding.apply {
             completeButton.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_symptomsFragment_to_mainFragment)
             }
         }

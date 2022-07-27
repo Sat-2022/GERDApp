@@ -77,6 +77,7 @@ class OthersRecordFragment: Fragment() {
 
         binding.apply {
             completeButton.setOnClickListener {
+                addNewItem()
                 findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
             }
         }
@@ -153,7 +154,6 @@ class OthersRecordFragment: Fragment() {
                     }
                 }, hour, min, true).show()
             }
-
         }
     }
 }
