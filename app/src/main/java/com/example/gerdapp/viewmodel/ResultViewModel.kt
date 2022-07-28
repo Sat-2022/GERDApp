@@ -18,8 +18,8 @@ class ResultViewModel(private val resultDao: ResultDao): ViewModel() {
         return resultDao.getRecord(id).asLiveData()
     }
 
-    fun getFirstResult(): LiveData<Result> {
-        return resultDao.getFirst().asLiveData()
+    fun getRecentResult(): LiveData<List<Result>> {
+        return resultDao.getRecent().asLiveData()
     }
 
     fun addResultRecord(time: String, symptomCough: Int?, symptomHeartBurn: Int?, symptomAcidReflux: Int?,

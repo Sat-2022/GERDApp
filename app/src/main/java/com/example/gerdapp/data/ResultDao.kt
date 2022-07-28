@@ -20,8 +20,8 @@ interface ResultDao {
     @Query("SELECT * from result")
     fun getRecords(): Flow<List<Result>>
 
-    @Query("SELECT * from result ORDER BY time DESC LIMIT 1")
-    fun getRecent(): Flow<Result>
+    @Query("SELECT * from result ORDER BY time")
+    fun getRecent(): Flow<List<Result>>
 
     @Query("SELECT * from result WHERE id = 1")
     fun getFirst(): Flow<Result>

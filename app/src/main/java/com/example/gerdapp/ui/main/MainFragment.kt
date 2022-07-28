@@ -3,11 +3,14 @@ package com.example.gerdapp.ui.main
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,6 +18,8 @@ import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.CardItemAdapter
+import com.example.gerdapp.data.Result
+import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentMainBinding
 import com.example.gerdapp.viewmodel.*
 import com.github.mikephil.charting.charts.BarChart
@@ -24,6 +29,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.android.material.snackbar.Snackbar
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainFragment : Fragment() {
 
@@ -37,6 +43,8 @@ class MainFragment : Fragment() {
     private var bottomNavigationViewVisibility = View.VISIBLE
 
     private lateinit var recyclerView: RecyclerView
+
+    private var currentResult = ArrayList<Result>()
 
     private val sleepViewModel: SleepViewModel by activityViewModels {
         SleepViewModelFactory(
@@ -83,9 +91,10 @@ class MainFragment : Fragment() {
     ): View {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         barChart = binding.chartCard.barChart
+//        currentResult = setResultData(1)
         initBarChart()
-
-        //initResultData()
+//        initBarChartData()
+//        initResultData()
         return binding.root
     }
 
@@ -98,11 +107,15 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         var text = "text no data"
-        resultViewModel.getResultById(1).observe(this.viewLifecycleOwner) {
-            text = it.symptomAcidReflux.toString()
+        try {
+            resultViewModel.getResultById(1).observe(this.viewLifecycleOwner) {
+                text = it.symptomAcidReflux.toString()
+            }
+        } catch(e: NullPointerException) {
+            text = "No current data"
         }
 
-        initBarChartData()
+        // initBarChartData()
 
 
 
@@ -111,9 +124,9 @@ class MainFragment : Fragment() {
 
         var sleepRecentData = "sleep data"
 
-        sleepViewModel.getRecentRecord().observe(this.viewLifecycleOwner) {
-            sleepRecentData = it.startTime
-        }
+//        sleepViewModel.getRecentRecord().observe(this.viewLifecycleOwner) {
+//            sleepRecentData = it.startTime
+//        }
 //        var othersRecentData = "others data"
 //        othersViewModel.getRecentRecord().observe(this.viewLifecycleOwner) {
 //            othersRecentData = it.startTime
@@ -136,7 +149,13 @@ class MainFragment : Fragment() {
             val recentRecord = when (cardItem.stringResourceId) {
                 R.string.symptoms -> ""
 //                R.string.food -> foodRecentData
-                R.string.sleep -> sleepViewModel.getRecentRecord().value?.startTime
+                R.string.sleep -> {
+                    try {
+                        sleepViewModel.getRecentRecord().value?.startTime
+                    } catch (e: NullPointerException) {
+                        "No Current Data"
+                    }
+                }
 //                R.string.others -> othersRecentData
                 else -> ""
             }
@@ -227,8 +246,16 @@ class MainFragment : Fragment() {
 
     private fun initBarChartData() {
         val entries: ArrayList<BarEntry> = ArrayList()
-
-        setResultData(entries, 1)
+        addBarEntry(entries, 0, currentResult.first().symptomCough)
+        addBarEntry(entries, 1, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 2, currentResult.first().symptomAcidReflux)
+        addBarEntry(entries, 3, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 4, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 5, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 6, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 7, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 8, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 9, currentResult.first().symptomHeartBurn)
 
         val barDataSet = BarDataSet(entries, "")
         barDataSet.color = Color.BLUE
@@ -266,24 +293,28 @@ class MainFragment : Fragment() {
         else entries.add(BarEntry(index.toFloat(), data.toFloat()))
     }
 
-    private fun setResultData(entries: ArrayList<BarEntry>, id: Int) {
-        val result = resultViewModel.getResultById(id)
-        val data = result.value
-        if (data != null) {
-            addBarEntry(entries, 0, data.symptomCough)
-            addBarEntry(entries, 1, data.symptomHeartBurn)
-            addBarEntry(entries, 2, data.symptomAcidReflux)
-            addBarEntry(entries, 3, data.symptomHeartBurn)
-            addBarEntry(entries, 4, data.symptomHeartBurn)
-            addBarEntry(entries, 5, data.symptomHeartBurn)
-            addBarEntry(entries, 6, data.symptomHeartBurn)
-            addBarEntry(entries, 7, data.symptomHeartBurn)
-            addBarEntry(entries, 8, data.symptomHeartBurn)
-            addBarEntry(entries, 9, data.symptomHeartBurn)
-        } else {
-            for (i in 0 until symptomsNum) addBarEntry(entries, i, 1)
-        }
-
+    private fun setResultData(id: Int): ArrayList<Result> {
+        val recentResults: LiveData<List<Result>> = resultViewModel.getRecentResult()
+        val data: List<Result> = recentResults.value!!
+        currentResult.add(Result(data.first().id, data.first().time,
+            data.first().symptomCough, data.first().symptomHeartBurn, data.first().symptomAcidReflux, data.first().symptomChestHurt,
+            data.first().symptomAcidMouth, data.first().symptomHoarse, data.first().symptomLoseAppetite, data.first().symptomStomachGas,
+            data.first().symptomCoughNight, data.first().symptomAcidRefluxNight))
+//        if (data != null) {
+//            addBarEntry(0, data.symptomCough)
+//            addBarEntry(1, data.symptomHeartBurn)
+//            addBarEntry(2, data.symptomAcidReflux)
+//            addBarEntry(3, data.symptomHeartBurn)
+//            addBarEntry(4, data.symptomHeartBurn)
+//            addBarEntry(5, data.symptomHeartBurn)
+//            addBarEntry(6, data.symptomHeartBurn)
+//            addBarEntry(7, data.symptomHeartBurn)
+//            addBarEntry(8, data.symptomHeartBurn)
+//            addBarEntry(9, data.symptomHeartBurn)
+//        } else {
+//            for (i in 0 until symptomsNum) addBarEntry(i, 5)
+//        }
+//        return entries
 
         //        resultViewModel.getResultById(id).observe(this.viewLifecycleOwner) {
 //            addBarEntry(entries, 0, it.symptomCough)
@@ -297,5 +328,6 @@ class MainFragment : Fragment() {
 //            addBarEntry(entries, 8, it.symptomHeartBurn)
 //            addBarEntry(entries, 9, it.symptomHeartBurn)
 //        }
+        return currentResult
     }
 }
