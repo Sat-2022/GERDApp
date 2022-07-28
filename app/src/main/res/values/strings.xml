@@ -22,6 +22,7 @@
     <!-- strings for main menu cards -->
     <string name="questionnaire">問卷</string>
     <string name="symptoms">症狀</string>
+    <string name="medicine">吃藥</string>
     <string name="sleep">平躺睡眠</string>
     <string name="food">飲食</string>
     <string name="others">其他活動</string>
@@ -70,6 +71,8 @@
     <string name="hoarseness">聲音沙啞</string>
     <string name="appetite_loss">吞嚥困難</string>
     <string name="stomach_gas">嘔氣</string>
+    <string name="cough_night">咳嗽(晚上)</string>
+    <string name="acid_reflux_night">胃酸逆流(晚上)</string>
 
     <string name="note">備註</string>
     <string name="add_note">新增備註</string>

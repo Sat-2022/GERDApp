@@ -8,4 +8,5 @@ class BasicApplication: Application() {
     val foodDatabase: FoodDatabase by lazy { FoodDatabase.getDatabase(this) }
     val sleepDatabase: SleepDatabase by lazy { SleepDatabase.getDatabase(this) }
     val othersDatabase: OthersDatabase by lazy { OthersDatabase.getDatabase(this) }
+    val resultDatabase: ResultDatabase by lazy { ResultDatabase.getDatabase(this) }
 }

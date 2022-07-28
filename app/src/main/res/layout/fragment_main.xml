@@ -7,14 +7,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#D8D8D8"
+    android:padding="8dp"
     tools:context=".ui.main.MainFragment">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/main_recycler_view"
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:clipToPadding="false"
-        app:layoutManager="LinearLayoutManager"/>
+        android:layout_height="wrap_content">
+
+        <include
+            android:id="@+id/chart_card"
+            layout="@layout/chart_card" />
+
+    </FrameLayout>
+
+    <include layout="@layout/card_divider"/>
+
+<!--    <include-->
+<!--        android:id="@+id/symptoms_card_main"-->
+<!--        layout="@layout/list_item_card"/>-->
+
+<!--    <include-->
+<!--        android:id="@+id/medicine_card_main"-->
+<!--        layout="@layout/list_item_card"/>-->
+
+<!--    <include-->
+<!--        android:id="@+id/sleep_card_main"-->
+<!--        layout="@layout/list_item_card"/>-->
+
+<!--    <include-->
+<!--        android:id="@+id/food_card_main"-->
+<!--        layout="@layout/list_item_card"/>-->
+
+<!--    <include-->
+<!--        android:id="@+id/others_card_main"-->
+<!--        layout="@layout/list_item_card"/>-->
+
     <!--
     <TextView
         android:id="@+id/message"
@@ -26,6 +55,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
         -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        app:layoutManager="LinearLayoutManager" />
+
+    <Button
+        android:id="@+id/test_button"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:text="test"/>
+
 
 
 </LinearLayout>

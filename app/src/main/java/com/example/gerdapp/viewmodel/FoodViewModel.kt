@@ -1,10 +1,9 @@
 package com.example.gerdapp.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.gerdapp.data.Food
 import com.example.gerdapp.data.FoodDao
+import com.example.gerdapp.data.Sleep
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
@@ -25,6 +24,8 @@ class FoodViewModel(private val foodDao: FoodDao): ViewModel() {
         if(startTime.isBlank() || endTime.isBlank() || food.isBlank()) return false
         return true
     }
+
+    fun getRecentRecord(): LiveData<Food> = foodDao.getRecent().asLiveData()
 }
 
 class FoodViewModelFactory(private val foodDao: FoodDao): ViewModelProvider.Factory {

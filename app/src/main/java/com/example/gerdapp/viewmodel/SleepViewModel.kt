@@ -1,10 +1,9 @@
 package com.example.gerdapp.viewmodel
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.data.SleepDao
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 
@@ -25,6 +24,8 @@ class SleepViewModel(private val sleepDao: SleepDao): ViewModel() {
         if(startTime.isBlank() || endTime.isBlank()) return false
         return true
     }
+
+    fun getRecentRecord(): LiveData<Sleep> = sleepDao.getRecent().asLiveData()
 }
 
 class SleepViewModelFactory(private val sleepDao: SleepDao): ViewModelProvider.Factory {
