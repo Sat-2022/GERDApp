@@ -1,6 +1,5 @@
 package com.example.gerdapp
 
-import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +10,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.gerdapp.databinding.ActivityMainBinding
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    lateinit var user: User
+    lateinit var users: List<User>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,12 +88,13 @@ class MainActivity : AppCompatActivity() {
             if(connection.responseCode == 200) {
                 val inputSystem = connection.inputStream
                 val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                user = Gson().fromJson(inputStreamReader, User::class.java)
+                val type: java.lang.reflect.Type? = object : TypeToken<List<User>>() {}.getType()
+                users = Gson().fromJson(inputStreamReader, type)
                 inputStreamReader.close()
                 inputSystem.close()
+                Log.e("API Connection", "$users")
             } else
                 Log.e("API Connection", "failed")
         }
     }
-
 }
