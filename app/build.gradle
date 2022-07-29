@@ -4,7 +4,6 @@ plugins {
     id 'kotlin-android'
     id 'kotlin-kapt'
     id 'androidx.navigation.safeargs.kotlin'
-//    id("com.apollographql.apollo3").version("3.4.0")
 }
 
 android {
@@ -69,20 +68,10 @@ dependencies {
     // MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
-    // OkHttp
-    implementation('com.squareup.okhttp3:okhttp:4.10.0')
-
     // GSon
     implementation 'com.google.code.gson:gson:2.8.9'
-
-    // Apollo setup
-//    implementation("com.apollographql.apollo3:apollo-runtime:3.4.0")
 }
 
 repositories {
     maven { url 'https://jitpack.io' }
 }
-
-//apollo {
-//    packageName.set("com.example.gerdapp")
-//}
