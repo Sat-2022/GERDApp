@@ -37,6 +37,7 @@ class SymptomsRecordFragment: Fragment() {
         var hoarsenessScore: Int = 0
         var appetiteLossScore: Int = 0
         var stomachGasScore: Int = 0
+        var othersSymptoms: String? = null
     }
 
     private val viewModel: RecordViewModel by activityViewModels {
@@ -48,25 +49,30 @@ class SymptomsRecordFragment: Fragment() {
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString()
+        ) && symptomsScoreNotEmpty()
+    }
+
+    private fun symptomsScoreNotEmpty(): Boolean {
+        return SymptomsScore.coughScore!=0 && SymptomsScore.heartBurnScore!=0 && SymptomsScore.acidRefluxScore!=0 && SymptomsScore.chestPainScore!=0
+                && SymptomsScore.sourMouthScore!=0 && SymptomsScore.hoarsenessScore!=0 && SymptomsScore.appetiteLossScore!=0 && SymptomsScore.stomachGasScore!=0
+                && SymptomsScore.othersSymptoms.isNullOrBlank()
+    }
+
+    private fun addNewItem() = if(isEntryValid()) {
+        SymptomsScore.othersSymptoms = binding.symptomsCard.addOtherSymptoms.othersInputText.text.toString()
+        viewModel.addSymptomRecord(
+            binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
+            SymptomsScore.coughScore, SymptomsScore.heartBurnScore, SymptomsScore.acidRefluxScore, SymptomsScore.chestPainScore,
+            SymptomsScore.sourMouthScore, SymptomsScore.hoarsenessScore, SymptomsScore.appetiteLossScore, SymptomsScore.stomachGasScore,
+            SymptomsScore.othersSymptoms
         )
+        Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
+    } else {
+        Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
     }
-
-    private fun addNewItem(){
-        if(isEntryValid()) {
-            viewModel.addSymptomRecord(
-                binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
-                SymptomsScore.coughScore, SymptomsScore.heartBurnScore, SymptomsScore.acidRefluxScore, SymptomsScore.chestPainScore,
-                SymptomsScore.sourMouthScore, SymptomsScore.hoarsenessScore, SymptomsScore.appetiteLossScore, SymptomsScore.stomachGasScore
-            )
-            Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
-        }
-    }
-
 
     private fun setBottomNavigationVisibility() {
-        var mainActivity = activity as MainActivity
+        val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
     }
     
@@ -91,6 +97,9 @@ class SymptomsRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+            noteCard.addNote.othersInputText.hint = getString(R.string.add_note)
+            symptomsCard.addOtherSymptoms.othersInputText.hint = getString(R.string.symptoms_record_add_other_symptom)
+
             completeButton.setOnClickListener {
                 addNewItem()
                 findNavController().navigate(R.id.action_symptomsFragment_to_mainFragment)
@@ -101,7 +110,7 @@ class SymptomsRecordFragment: Fragment() {
         setSymptomsCard()
     }
 
-    fun dateTimePicker() {
+    private fun dateTimePicker() {
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone

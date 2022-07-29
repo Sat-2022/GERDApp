@@ -27,7 +27,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_baseline_add_24" />
+                        android:src="@drawable/ic_baseline_accessibility_new_24" />
                 </FrameLayout>
 
                 <FrameLayout
@@ -38,28 +38,32 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="@string/note"
+                        android:text="@string/event_record_others_headline"
                         android:textStyle="bold" />
                 </FrameLayout>
             </LinearLayout>
 
             <include layout="@layout/divider" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+<!--            <androidx.recyclerview.widget.RecyclerView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content" />-->
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp">
+            <include
+                android:id="@+id/add_others"
+                layout="@layout/card_user_input_area" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="@string/add_note"
-                    android:textColor="#09ADEA" />
-            </FrameLayout>
+<!--            <FrameLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="48dp">-->
+
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:text="@string/event_record_add_others"-->
+<!--                    android:textColor="#09ADEA" />-->
+<!--            </FrameLayout>-->
 
         </LinearLayout>
 

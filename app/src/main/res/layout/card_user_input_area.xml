@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/white"
+        android:textColorHint="#09ADEA">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/others_input_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:inputType="text|textNoSuggestions"
+            android:hint=""
+            android:gravity="center_horizontal"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--                <TextView-->
+    <!--                    android:layout_width="wrap_content"-->
+    <!--                    android:layout_height="wrap_content"-->
+    <!--                    android:layout_gravity="center"-->
+    <!--                    android:text="@string/symptoms_record_add_other_symptom"-->
+    <!--                    android:textColor="#09ADEA" />-->
+</FrameLayout>

@@ -17,13 +17,13 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp">
 
             <include
                 android:id="@+id/symptoms_card"
-                layout="@layout/symptoms_card" />
+                layout="@layout/card_symptoms" />
 
             <include layout="@layout/card_divider" />
 
@@ -37,13 +37,13 @@
 
             <include
                 android:id="@+id/time_card"
-                layout="@layout/time_card" />
+                layout="@layout/card_time" />
 
             <include layout="@layout/card_divider" />
 
             <include
                 android:id="@+id/note_card"
-                layout="@layout/note_card" />
+                layout="@layout/card_note" />
 
             <View
                 android:layout_width="match_parent"

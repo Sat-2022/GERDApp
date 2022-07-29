@@ -60,8 +60,10 @@ class ProfileFragment: Fragment() {
     }
 
     private fun UpdateUI() {
-        binding.apply {
-            testApi.text = users.toString()
+        activity?.runOnUiThread {
+            binding.apply {
+                testApi.text = users.toString()
+            }
         }
     }
 }

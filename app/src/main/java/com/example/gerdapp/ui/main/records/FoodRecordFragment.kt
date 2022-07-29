@@ -53,7 +53,7 @@ class FoodRecordFragment: Fragment() {
     }
 
     private fun setBottomNavigationVisibility() {
-        var mainActivity = activity as MainActivity
+        val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
     }
     
@@ -73,9 +73,12 @@ class FoodRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+            noteCard.addNote.othersInputText.hint = getString(R.string.add_note)
+            foodCard.addFood.othersInputText.hint = getString(R.string.food_record_add_food)
+
             completeButton.setOnClickListener {
                 addNewItem()
-                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+                findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
         }
 

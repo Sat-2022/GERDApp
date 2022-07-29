@@ -3,14 +3,12 @@ package com.example.gerdapp.ui.main
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.*
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,7 +17,6 @@ import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.CardItemAdapter
 import com.example.gerdapp.data.Result
-import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentMainBinding
 import com.example.gerdapp.viewmodel.*
 import com.github.mikephil.charting.charts.BarChart
@@ -71,7 +68,7 @@ class MainFragment : Fragment() {
 //    }
 
     private fun setBottomNavigationVisibility() {
-        var mainActivity = activity as MainActivity
+        val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
     }
 
@@ -150,11 +147,12 @@ class MainFragment : Fragment() {
                 R.string.symptoms -> ""
 //                R.string.food -> foodRecentData
                 R.string.sleep -> {
-                    try {
-                        sleepViewModel.getRecentRecord().value?.startTime
-                    } catch (e: NullPointerException) {
-                        "No Current Data"
-                    }
+//                    try {
+//                        sleepViewModel.getRecentRecord().value?.startTime
+//                    } catch (e: NullPointerException) {
+//                        "No Current Data"
+//                    }
+                    ""
                 }
 //                R.string.others -> othersRecentData
                 else -> ""
@@ -183,7 +181,7 @@ class MainFragment : Fragment() {
 
     private fun initBarChart() {
         // set data
-        //initBarChartData()
+        // initBarChartData()
 
         barChart.setBackgroundColor(Color.WHITE)
         barChart.description.isEnabled = false

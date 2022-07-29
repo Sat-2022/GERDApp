@@ -54,7 +54,7 @@ class SleepRecordFragment: Fragment() {
     }
 
     private fun setBottomNavigationVisibility() {
-        var mainActivity = activity as MainActivity
+        val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
     }
 
@@ -76,6 +76,8 @@ class SleepRecordFragment: Fragment() {
         dateTimePicker()
 
         binding.apply {
+            noteCard.addNote.othersInputText.hint = getString(R.string.add_note)
+
             completeButton.setOnClickListener {
                 addNewItem()
                 findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
@@ -83,7 +85,7 @@ class SleepRecordFragment: Fragment() {
         }
     }
 
-    fun dateTimePicker() {
+    private fun dateTimePicker() {
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone

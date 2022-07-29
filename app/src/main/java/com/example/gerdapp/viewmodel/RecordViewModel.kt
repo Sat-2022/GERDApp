@@ -17,11 +17,14 @@ class RecordViewModel(private val recordDao: RecordDao): ViewModel() {
     }
 
     fun addSymptomRecord(time: String, symptomCough: Int?, symptomHeartBurn: Int?, symptomAcidReflux: Int?,
-        symptomChestHurt: Int?, symptomAcidMouth: Int?, symptomHoarse: Int?, symptomLoseAppetite: Int?, symptomStomachGas: Int?
+        symptomChestHurt: Int?, symptomAcidMouth: Int?, symptomHoarse: Int?, symptomLoseAppetite: Int?, symptomStomachGas: Int?,
+                         otherSymptoms: String?
     ){
         val newRecord = Record(time = time,symptomCough = symptomCough, symptomHeartBurn = symptomHeartBurn,
             symptomAcidReflux = symptomAcidReflux, symptomChestHurt = symptomChestHurt, symptomAcidMouth = symptomAcidMouth,
-            symptomHoarse = symptomHoarse, symptomLoseAppetite = symptomLoseAppetite, symptomStomachGas = symptomStomachGas)
+            symptomHoarse = symptomHoarse, symptomLoseAppetite = symptomLoseAppetite, symptomStomachGas = symptomStomachGas,
+            othersSymptoms = otherSymptoms
+        )
         insertRecord(newRecord)
     }
 

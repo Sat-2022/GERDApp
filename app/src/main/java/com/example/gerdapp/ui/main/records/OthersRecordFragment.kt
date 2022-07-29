@@ -56,7 +56,7 @@ class OthersRecordFragment: Fragment() {
     }
 
     private fun setBottomNavigationVisibility() {
-        var mainActivity = activity as MainActivity
+        val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
     }
 
@@ -76,6 +76,9 @@ class OthersRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+            noteCard.addNote.othersInputText.hint = getString(R.string.add_note)
+            othersCard.addOthers.othersInputText.hint = getString(R.string.event_record_add_others)
+
             completeButton.setOnClickListener {
                 addNewItem()
                 findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
@@ -86,7 +89,7 @@ class OthersRecordFragment: Fragment() {
 
     }
 
-    fun dateTimePicker() {
+    private fun dateTimePicker() {
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time // TODO: Check if the time match the device time zone

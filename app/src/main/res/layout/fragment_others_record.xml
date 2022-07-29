@@ -16,19 +16,25 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp">
 
             <include
+                android:id="@+id/others_card"
+                layout="@layout/card_others"/>
+
+            <include layout="@layout/card_divider" />
+
+            <include
                 android:id="@+id/time_card"
-                layout="@layout/time_card" />
+                layout="@layout/card_time" />
 
             <include layout="@layout/card_divider" />
 
             <include
                 android:id="@+id/note_card"
-                layout="@layout/note_card" />
+                layout="@layout/card_note" />
 
             <View
                 android:layout_width="match_parent"
