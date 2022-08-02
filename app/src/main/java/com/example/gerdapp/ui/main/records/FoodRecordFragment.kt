@@ -13,6 +13,9 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
 import com.example.gerdapp.data.Food
 import com.example.gerdapp.databinding.FragmentFoodRecordBinding
+import com.example.gerdapp.ui.Time
+import com.example.gerdapp.ui.initTime
+import com.example.gerdapp.ui.resetTime
 import com.example.gerdapp.viewmodel.FoodViewModel
 import com.example.gerdapp.viewmodel.FoodViewModelFactory
 import java.text.SimpleDateFormat
@@ -63,6 +66,11 @@ class FoodRecordFragment: Fragment() {
         setBottomNavigationVisibility()
     }
 
+    override fun onResume() {
+        super.onResume()
+        setBottomNavigationVisibility()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentFoodRecordBinding.inflate(inflater, container, false)
@@ -78,83 +86,85 @@ class FoodRecordFragment: Fragment() {
 
             completeButton.setOnClickListener {
                 addNewItem()
+                resetTime()
                 findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
         }
 
-        dateTimePicker()
-
+        initDateTimeText()
+        setDateTimePicker()
     }
 
-    fun dateTimePicker() {
+    private fun setDateTimePicker() {
         binding.apply {
-            val calendar = Calendar.getInstance()
-            val current = calendar.time // TODO: Check if the time match the device time zone
-
-            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
-            val currentDate = formatDate.format(current)
-            timeCard.startDate.text = currentDate.toString()
-            timeCard.endDate.text = currentDate.toString()
-
-            val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
-            val currentTime = formatTime.format(current)
-            timeCard.startTime.text = currentTime.toString()
-            timeCard.endTime.text = currentTime.toString()
-
             timeCard.startDate.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val day = calendar[Calendar.DAY_OF_MONTH]
-                val month = calendar[Calendar.MONTH]
-                val year = calendar[Calendar.YEAR]
-
-                DatePickerDialog(requireContext(), { _, year, month, day ->
+                DatePickerDialog(requireContext(), { _, year, month, date ->
                     run {
-                        val format = getString(R.string.date_format, year, month+1, day)
+                        val format = getString(R.string.date_format, year, month+1, date)
                         timeCard.startDate.text = format
+                        Time.year = year
+                        Time.month = month
+                        Time.date = date
                     }
-                }, year, month, day).show()
+                }, Time.year, Time.month, Time.date).show()
             }
 
             timeCard.endDate.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val day = calendar[Calendar.DAY_OF_MONTH]
-                val month = calendar[Calendar.MONTH]
-                val year = calendar[Calendar.YEAR]
-
-                DatePickerDialog(requireContext(), { _, year, month, day ->
+                DatePickerDialog(requireContext(), { _, year, month, date ->
                     run {
-                        val format = getString(R.string.date_format, year, month+1, day)
+                        val format = getString(R.string.date_format, year, month+1, date)
                         timeCard.endDate.text = format
+                        Time.year = year
+                        Time.month = month
+                        Time.date = date
                     }
-                }, year, month, day).show()
+                }, Time.year, Time.month, Time.date).show()
             }
 
             timeCard.startTime.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val hour = calendar[Calendar.HOUR_OF_DAY]
-                val min = calendar[Calendar.MINUTE]
-
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
                         timeCard.startTime.text = format
+                        Time.hour = hour
+                        Time.min = min
+                        Time.sec = 0
                     }
-                }, hour, min, true).show()
+                }, Time.hour, Time.min, true).show()
             }
 
             timeCard.endTime.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val hour = calendar[Calendar.HOUR_OF_DAY]
-                val min = calendar[Calendar.MINUTE]
-
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
                         timeCard.endTime.text = format
+                        Time.hour = hour
+                        Time.min = min
+                        Time.sec = 0
                     }
-                }, hour, min, true).show()
+                }, Time.hour, Time.min, true).show()
             }
-
         }
+    }
+
+    private fun initDateTimeText() {
+        val calendar = Calendar.getInstance()
+        val current = calendar.time // TODO: Check if the time match the device time zone
+
+        val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
+        val currentDate = formatDate.format(current)
+        binding.apply {
+            timeCard.startDate.text = currentDate.toString()
+            timeCard.endDate.text = currentDate.toString()
+        }
+
+        val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
+        val currentTime = formatTime.format(current)
+        binding.apply {
+            timeCard.startTime.text = currentTime.toString()
+            timeCard.endTime.text = currentTime.toString()
+        }
+
+        initTime(calendar)
     }
 }
