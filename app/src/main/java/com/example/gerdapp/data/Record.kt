@@ -14,8 +14,8 @@ data class Record(
     val symptomHeartBurn: Int?,
     val symptomAcidReflux: Int?,
     val symptomChestHurt: Int?,
-    val symptomAcidMouth: Int?,
-    val symptomHoarse: Int?,
+    val symptomSourMouth: Int?,
+    val symptomHoarseness: Int?,
     val symptomLoseAppetite: Int?,
     val symptomStomachGas: Int?,
     val othersSymptoms: String?

@@ -22,7 +22,7 @@
     <!-- strings for main menu cards -->
     <string name="questionnaire">問卷</string>
     <string name="symptoms">症狀</string>
-    <string name="medicine">吃藥</string>
+    <string name="medicine">用藥</string>
     <string name="sleep">平躺睡眠</string>
     <string name="food">飲食</string>
     <string name="others">其他活動</string>

@@ -15,10 +15,17 @@ import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSymptomsRecordBinding
+import com.example.gerdapp.ui.Time
+import com.example.gerdapp.ui.Time.date
+import com.example.gerdapp.ui.Time.hour
+import com.example.gerdapp.ui.Time.min
+import com.example.gerdapp.ui.Time.month
+import com.example.gerdapp.ui.Time.sec
+import com.example.gerdapp.ui.Time.year
+import com.example.gerdapp.ui.initTime
+import com.example.gerdapp.ui.resetTime
 import com.example.gerdapp.viewmodel.RecordViewModel
 import com.example.gerdapp.viewmodel.RecordViewModelFactory
-import com.example.gerdapp.viewmodel.SleepViewModel
-import com.example.gerdapp.viewmodel.SleepViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -27,6 +34,8 @@ class SymptomsRecordFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
+
+    private var symptomsSelectedColor = Color.LTGRAY // Color.parseColor("#FF0000")
 
     object SymptomsScore {
         var coughScore: Int = 0
@@ -49,12 +58,12 @@ class SymptomsRecordFragment: Fragment() {
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString()
-        ) && symptomsScoreNotEmpty()
+        ) && !symptomsScoreIsEmpty()
     }
 
-    private fun symptomsScoreNotEmpty(): Boolean {
-        return SymptomsScore.coughScore!=0 && SymptomsScore.heartBurnScore!=0 && SymptomsScore.acidRefluxScore!=0 && SymptomsScore.chestPainScore!=0
-                && SymptomsScore.sourMouthScore!=0 && SymptomsScore.hoarsenessScore!=0 && SymptomsScore.appetiteLossScore!=0 && SymptomsScore.stomachGasScore!=0
+    private fun symptomsScoreIsEmpty(): Boolean {
+        return SymptomsScore.coughScore==0 && SymptomsScore.heartBurnScore==0 && SymptomsScore.acidRefluxScore==0 && SymptomsScore.chestPainScore==0
+                && SymptomsScore.sourMouthScore==0 && SymptomsScore.hoarsenessScore==0 && SymptomsScore.appetiteLossScore==0 && SymptomsScore.stomachGasScore==0
                 && SymptomsScore.othersSymptoms.isNullOrBlank()
     }
 
@@ -66,7 +75,7 @@ class SymptomsRecordFragment: Fragment() {
             SymptomsScore.sourMouthScore, SymptomsScore.hoarsenessScore, SymptomsScore.appetiteLossScore, SymptomsScore.stomachGasScore,
             SymptomsScore.othersSymptoms
         )
-        Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "record added", Toast.LENGTH_SHORT).show()
     } else {
         Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
     }
@@ -102,91 +111,94 @@ class SymptomsRecordFragment: Fragment() {
 
             completeButton.setOnClickListener {
                 addNewItem()
+                resetTime()
                 findNavController().navigate(R.id.action_symptomsFragment_to_mainFragment)
             }
         }
 
-        dateTimePicker()
+        initDateTimeText()
+        setDateTimePicker()
         setSymptomsCard()
     }
 
-    private fun dateTimePicker() {
+    private fun setDateTimePicker() {
         binding.apply {
-            val calendar = Calendar.getInstance()
-            val current = calendar.time // TODO: Check if the time match the device time zone
-
-            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
-            val currentDate = formatDate.format(current)
-            timeCard.startDate.text = currentDate.toString()
-            timeCard.endDate.text = currentDate.toString()
-
-            val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
-            val currentTime = formatTime.format(current)
-            timeCard.startTime.text = currentTime.toString()
-            timeCard.endTime.text = currentTime.toString()
-
             timeCard.startDate.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val day = calendar[Calendar.DAY_OF_MONTH]
-                val month = calendar[Calendar.MONTH]
-                val year = calendar[Calendar.YEAR]
-
-                DatePickerDialog(requireContext(), { _, year, month, day ->
+                DatePickerDialog(requireContext(), { _, year, month, date ->
                     run {
-                        val format = getString(R.string.date_format, year, month+1, day)
+                        val format = getString(R.string.date_format, year, month+1, date)
                         timeCard.startDate.text = format
+                        Time.year = year
+                        Time.month = month
+                        Time.date = date
                     }
-                }, year, month, day).show()
+                }, year, month, date).show()
             }
 
             timeCard.endDate.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val day = calendar[Calendar.DAY_OF_MONTH]
-                val month = calendar[Calendar.MONTH]
-                val year = calendar[Calendar.YEAR]
-
-                DatePickerDialog(requireContext(), { _, year, month, day ->
+                DatePickerDialog(requireContext(), { _, year, month, date ->
                     run {
-                        val format = getString(R.string.date_format, year, month+1, day)
+                        val format = getString(R.string.date_format, year, month+1, date)
                         timeCard.endDate.text = format
+                        Time.year = year
+                        Time.month = month
+                        Time.date = date
                     }
-                }, year, month, day).show()
+                }, year, month, date).show()
             }
 
             timeCard.startTime.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val hour = calendar[Calendar.HOUR_OF_DAY]
-                val min = calendar[Calendar.MINUTE]
-
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
                         timeCard.startTime.text = format
+                        Time.hour = hour
+                        Time.min = min
+                        sec = 0
                     }
                 }, hour, min, true).show()
             }
 
             timeCard.endTime.setOnClickListener {
-                val calendar = Calendar.getInstance()
-                val hour = calendar[Calendar.HOUR_OF_DAY]
-                val min = calendar[Calendar.MINUTE]
-
                 TimePickerDialog(requireContext(), { _, hour, min ->
                     run {
                         val format = getString(R.string.time_format, hour, min)
                         timeCard.endTime.text = format
+                        Time.hour = hour
+                        Time.min = min
+                        sec = 0
                     }
                 }, hour, min, true).show()
             }
-
         }
     }
 
-    fun setSymptomsCard() {
+    private fun initDateTimeText() {
+        val calendar = Calendar.getInstance()
+        val current = calendar.time // TODO: Check if the time match the device time zone
+
+        val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
+        val currentDate = formatDate.format(current)
+        binding.apply {
+            timeCard.startDate.text = currentDate.toString()
+            timeCard.endDate.text = currentDate.toString()
+        }
+
+        val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
+        val currentTime = formatTime.format(current)
+        binding.apply {
+            timeCard.startTime.text = currentTime.toString()
+            timeCard.endTime.text = currentTime.toString()
+        }
+
+        initTime(calendar)
+    }
+
+    private fun setSymptomsCard() {
         binding.apply {
             symptomsCard.symptomsCough.setOnClickListener {
                 if(SymptomsScore.coughScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.coughScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -195,7 +207,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsHeartBurn.setOnClickListener{
                 if(SymptomsScore.heartBurnScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.heartBurnScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -204,7 +216,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsAcidReflux.setOnClickListener {
                 if(SymptomsScore.acidRefluxScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.acidRefluxScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -213,7 +225,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsChestPain.setOnClickListener{
                 if(SymptomsScore.chestPainScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.chestPainScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -222,7 +234,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsSourMouth.setOnClickListener {
                 if(SymptomsScore.sourMouthScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.sourMouthScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -231,7 +243,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsHoarseness.setOnClickListener{
                 if(SymptomsScore.hoarsenessScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.hoarsenessScore = 1
                 } else {
                 it.setBackgroundColor(Color.TRANSPARENT)
@@ -240,7 +252,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsAppetiteLoss.setOnClickListener {
                 if(SymptomsScore.appetiteLossScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.appetiteLossScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -249,7 +261,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsStomachGas.setOnClickListener{
                 if(SymptomsScore.stomachGasScore==0){
-                    it.setBackgroundColor(Color.RED)
+                    it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.stomachGasScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -258,5 +270,4 @@ class SymptomsRecordFragment: Fragment() {
             }
         }
     }
-
 }
