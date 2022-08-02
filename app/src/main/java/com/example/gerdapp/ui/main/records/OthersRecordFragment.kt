@@ -22,7 +22,6 @@ import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
-
 class OthersRecordFragment: Fragment() {
     private var _binding: FragmentOthersRecordBinding? = null
     private val binding get() = _binding!!
