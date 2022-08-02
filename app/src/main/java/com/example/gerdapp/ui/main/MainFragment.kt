@@ -37,6 +37,8 @@ class MainFragment : Fragment() {
 
     private var symptomsNum = 10
 
+    private val testBarChart = true
+
     private var bottomNavigationViewVisibility = View.VISIBLE
 
     private lateinit var recyclerView: RecyclerView
@@ -163,8 +165,6 @@ class MainFragment : Fragment() {
 
         recyclerView.adapter = adapter
 
-
-
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time
@@ -182,6 +182,8 @@ class MainFragment : Fragment() {
     private fun initBarChart() {
         // set data
         // initBarChartData()
+
+        if(testBarChart) setRandomResult()
 
         barChart.setBackgroundColor(Color.WHITE)
         barChart.description.isEnabled = false
@@ -289,6 +291,27 @@ class MainFragment : Fragment() {
     private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
         if (data == null) entries.add(BarEntry(index.toFloat(), 0f))
         else entries.add(BarEntry(index.toFloat(), data.toFloat()))
+    }
+
+    private fun setRandomResult() {
+        val entries: ArrayList<BarEntry> = ArrayList()
+        for(i in 0 until symptomsNum) {
+            addBarEntry(entries, i, (0..5).random())
+        }
+
+        val barDataSet = BarDataSet(entries, "")
+        barDataSet.color = Color.BLUE
+
+        val barData = BarData(barDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        barData.setDrawValues(true)
+
+        barChart.data = barData
+        barChart.invalidate()
     }
 
     private fun setResultData(id: Int): ArrayList<Result> {
