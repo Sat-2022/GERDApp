@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -39,7 +40,7 @@ class FoodRecordFragment: Fragment() {
         return viewModel.isEntryValid(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
             binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-            ""//binding.foodRecordInput.text.toString()
+            binding.foodCard.addFood.userInputText.text.toString()
         )
     }
 
@@ -48,7 +49,7 @@ class FoodRecordFragment: Fragment() {
             viewModel.addFoodRecord(
                 binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
                 binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-                ""//binding.foodRecordInput.text.toString()
+                binding.foodCard.addFood.userInputText.text.toString()
             )
         } else {
             Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
@@ -81,8 +82,28 @@ class FoodRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            noteCard.addNote.othersInputText.hint = getString(R.string.add_note)
-            foodCard.addFood.othersInputText.hint = getString(R.string.food_record_add_food)
+            noteCard.addNote.userInputText.hint = getString(R.string.add_note)
+            foodCard.addFood.userInputText.hint = getString(R.string.food_record_add_food)
+
+//            foodCard.addFood.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+//                return@setOnEditorActionListener when(actionId) {
+//                    EditorInfo.IME_ACTION_DONE -> {
+//                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+//                        false
+//                    }
+//                    else -> false
+//                }
+//            }
+//
+//            noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+//                return@setOnEditorActionListener when(actionId) {
+//                    EditorInfo.IME_ACTION_DONE -> {
+//                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+//                        false
+//                    }
+//                    else -> false
+//                }
+//            }
 
             completeButton.setOnClickListener {
                 addNewItem()

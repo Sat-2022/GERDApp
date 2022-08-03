@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -82,7 +83,17 @@ class SleepRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            noteCard.addNote.othersInputText.hint = getString(R.string.add_note)
+            noteCard.addNote.userInputText.hint = getString(R.string.add_note)
+
+            noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                return@setOnEditorActionListener when(actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+                        false
+                    }
+                    else -> false
+                }
+            }
 
             completeButton.setOnClickListener {
                 addNewItem()

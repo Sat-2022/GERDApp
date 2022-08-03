@@ -3,11 +3,15 @@ package com.example.gerdapp.ui.main.records
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.Color
+import android.opengl.Visibility
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -68,7 +72,7 @@ class SymptomsRecordFragment: Fragment() {
     }
 
     private fun addNewItem() = if(isEntryValid()) {
-        SymptomsScore.othersSymptoms = binding.symptomsCard.addOtherSymptoms.othersInputText.text.toString()
+        SymptomsScore.othersSymptoms = binding.symptomsCard.addOtherSymptoms.userInputText.text.toString()
         viewModel.addSymptomRecord(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
             SymptomsScore.coughScore, SymptomsScore.heartBurnScore, SymptomsScore.acidRefluxScore, SymptomsScore.chestPainScore,
@@ -106,8 +110,28 @@ class SymptomsRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            noteCard.addNote.othersInputText.hint = getString(R.string.add_note)
-            symptomsCard.addOtherSymptoms.othersInputText.hint = getString(R.string.symptoms_record_add_other_symptom)
+            noteCard.addNote.userInputText.hint = getString(R.string.add_note)
+            symptomsCard.addOtherSymptoms.userInputText.hint = getString(R.string.symptoms_record_add_other_symptom)
+
+            symptomsCard.addOtherSymptoms.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                return@setOnEditorActionListener when(actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+                        false
+                    }
+                    else -> false
+                }
+            }
+
+            noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                return@setOnEditorActionListener when(actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+                        false
+                    }
+                    else -> false
+                }
+            }
 
             completeButton.setOnClickListener {
                 addNewItem()

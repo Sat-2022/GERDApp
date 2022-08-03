@@ -243,35 +243,6 @@
                 android:id="@+id/add_other_symptoms"
                 layout="@layout/card_user_input_area" />
 
-<!--            <FrameLayout-->
-<!--                android:id="@+id/add_other_symptoms"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="48dp">-->
-
-<!--                <com.google.android.material.textfield.TextInputLayout-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:backgroundTint="@color/white"-->
-<!--                    android:textColorHint="#09ADEA">-->
-
-<!--                    <com.google.android.material.textfield.TextInputEditText-->
-<!--                        android:id="@+id/others_input_text"-->
-<!--                        android:layout_width="match_parent"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:background="@color/white"-->
-<!--                        android:inputType="text|textNoSuggestions"-->
-<!--                        android:hint="@string/symptoms_record_add_other_symptom"-->
-<!--                        android:gravity="center_horizontal"/>-->
-<!--                </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--&lt;!&ndash;                <TextView&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_width="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_height="wrap_content"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:layout_gravity="center"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:text="@string/symptoms_record_add_other_symptom"&ndash;&gt;-->
-<!--&lt;!&ndash;                    android:textColor="#09ADEA" />&ndash;&gt;-->
-<!--            </FrameLayout>-->
-
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
