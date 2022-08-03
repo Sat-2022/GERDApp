@@ -30,7 +30,7 @@
     <fragment
         android:id="@+id/navigation_food"
         android:name="com.example.gerdapp.ui.main.records.FoodRecordFragment"
-        android:label="fragment_food"
+        android:label="@string/food"
         tools:layout="@layout/fragment_food_record" >
         <action
             android:id="@+id/action_foodFragment_to_mainFragment"
@@ -39,7 +39,7 @@
     <fragment
         android:id="@+id/navigation_sleep"
         android:name="com.example.gerdapp.ui.main.records.SleepRecordFragment"
-        android:label="fragment_sleep"
+        android:label="@string/sleep"
         tools:layout="@layout/fragment_sleep_record" >
         <action
             android:id="@+id/action_sleepFragment_to_mainFragment"
@@ -48,7 +48,7 @@
     <fragment
         android:id="@+id/navigation_symptoms"
         android:name="com.example.gerdapp.ui.main.records.SymptomsRecordFragment"
-        android:label="fragment_symptoms"
+        android:label="@string/symptoms"
         tools:layout="@layout/fragment_symptoms_record" >
         <action
             android:id="@+id/action_symptomsFragment_to_mainFragment"
@@ -71,7 +71,7 @@
     <fragment
         android:id="@+id/navigation_others"
         android:name="com.example.gerdapp.ui.main.records.OthersRecordFragment"
-        android:label="fragment_others"
+        android:label="@string/others"
         tools:layout="@layout/fragment_others_record" >
         <action
             android:id="@+id/action_othersFragment_to_mainFragment"
