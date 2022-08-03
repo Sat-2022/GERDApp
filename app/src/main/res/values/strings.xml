@@ -58,6 +58,9 @@
     <string name="food_record_food_headline">進食項目</string>
     <string name="food_record_add_food">新增進食項目</string>
 
+    <!-- string for drug fragment -->
+    <string name="drug_record_drug_headline">用藥內容</string>
+    <string name="drug_record_add_drug">新增用藥內容</string>
 
     <!-- string for symptoms -->
     <string name="cough">咳嗽</string>

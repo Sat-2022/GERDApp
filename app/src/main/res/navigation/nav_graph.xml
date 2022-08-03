@@ -26,6 +26,9 @@
         <action
             android:id="@+id/action_mainFragment_to_othersFragment"
             app:destination="@id/navigation_others" />
+        <action
+            android:id="@+id/action_mainFragment_to_drugRecordFragment"
+            app:destination="@id/navigation_drug" />
     </fragment>
     <fragment
         android:id="@+id/navigation_food"
@@ -87,4 +90,13 @@
         android:name="com.example.gerdapp.ui.profile.ProfileFragment"
         android:label="fragment_profile"
         tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/navigation_drug"
+        android:name="com.example.gerdapp.ui.main.records.DrugRecordFragment"
+        android:label="fragment_drug"
+        tools:layout="@layout/fragment_drug_record" >
+        <action
+            android:id="@+id/action_drugFragment_to_mainFragment"
+            app:destination="@id/navigation_main" />
+    </fragment>
 </navigation>
