@@ -37,6 +37,8 @@
     <string name="second">秒</string>
     <string name="am">上午</string>
     <string name="pm">下午</string>
+    <string name="start">開始</string>
+    <string name="end">結束</string>
 
     <!-- string for symptoms fragment -->
     <string name="symptoms_record_main_symptom_headline">症狀</string>
