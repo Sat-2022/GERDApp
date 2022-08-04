@@ -11,19 +11,6 @@
     android:padding="8dp"
     tools:context=".ui.main.MainFragment">
 
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <include
-            android:id="@+id/chart_card"
-            layout="@layout/card_chart" />
-
-    </FrameLayout>
-
-    <include layout="@layout/card_divider"/>
-
 <!--    <include-->
 <!--        android:id="@+id/symptoms_card_main"-->
 <!--        layout="@layout/list_item_card"/>-->

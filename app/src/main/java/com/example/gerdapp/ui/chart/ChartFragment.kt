@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
+import com.example.gerdapp.R
+import com.example.gerdapp.data.Result
 import com.example.gerdapp.databinding.FragmentChartBinding
+import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.Entry
-import com.github.mikephil.charting.data.LineData
-import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
@@ -21,6 +23,7 @@ class ChartFragment: Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var lineChart: LineChart
+    private lateinit var timeRangeChart: BarChart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,9 +33,10 @@ class ChartFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentChartBinding.inflate(inflater, container, false)
-
         lineChart = binding.lineChart
+        timeRangeChart = binding.timeRangeChart
         initLineChart()
+        initBarChart()
 
         return binding.root
     }
@@ -132,5 +136,96 @@ class ChartFragment: Fragment() {
 
         lineChart.data = data
         lineChart.invalidate()
+    }
+
+    private fun initBarChart() {
+        // set data
+        // initBarChartData()
+
+        setRandomResult()
+
+        timeRangeChart.setBackgroundColor(Color.WHITE)
+        timeRangeChart.description.isEnabled = false
+//        chart.setTouchEnabled(false)
+//        chart.isDragEnabled = false
+
+
+        // add animation
+        timeRangeChart.animateY(1400)
+
+//        val l: Legend = chart.legend
+//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
+//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
+//        l.orientation = Legend.LegendOrientation.HORIZONTAL
+//        l.setDrawInside(false)
+//        l.typeface = Typeface.DEFAULT //
+//        l.xEntrySpace = 7f
+//        l.yEntrySpace = 5f
+//        //l.form = Legend.LegendForm.LINE
+//        l.textColor = Color.BLACK
+        // remove legend
+        timeRangeChart.legend.isEnabled = false
+
+        val xAxis: XAxis = timeRangeChart.xAxis
+        xAxis.typeface = Typeface.DEFAULT
+        xAxis.textSize = 12f
+        xAxis.yOffset = 0f
+        xAxis.xOffset = 0f
+        xAxis.setDrawGridLines(false)
+//        xAxis.textColor = Color.BLACK
+//        xAxis.setDrawGridLines(true)
+//        xAxis.position = XAxis.XAxisPosition.BOTTOM
+//        xAxis.setLabelCount(5, true)
+
+        val mActivities = arrayOf(
+            getString(R.string.cough),
+            getString(R.string.heart_burn),
+            getString(R.string.acid_reflux),
+            getString(R.string.chest_pain),
+            getString(R.string.sour_mouth),
+            getString(R.string.hoarseness),
+            getString(R.string.appetite_loss),
+            getString(R.string.stomach_gas),
+            getString(R.string.cough_night),
+            getString(R.string.acid_reflux_night)
+        )
+        val formatter = IAxisValueFormatter { value, axis ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = formatter
+
+        val yAxis = timeRangeChart.axisLeft
+        yAxis.axisMaximum = 5f
+        yAxis.axisMinimum = 0f
+        yAxis.setLabelCount(4, false)
+        yAxis.setDrawAxisLine(false)
+        //yAxis.setDrawLabels(false)
+        timeRangeChart.axisRight.isEnabled = false
+    }
+
+    private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
+        if (data == null) entries.add(BarEntry(index.toFloat(), 0f))
+        else entries.add(BarEntry(index.toFloat(), data.toFloat()))
+    }
+
+    private fun setRandomResult() {
+        val entries: ArrayList<BarEntry> = ArrayList()
+        for(i in 0 until 10) {
+            addBarEntry(entries, i, (0..5).random())
+        }
+
+        val barDataSet = BarDataSet(entries, "")
+        barDataSet.color = Color.BLUE
+
+        val barData = BarData(barDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        barData.setDrawValues(true)
+
+        timeRangeChart.data = barData
+        timeRangeChart.invalidate()
     }
 }
