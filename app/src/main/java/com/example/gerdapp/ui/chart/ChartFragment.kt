@@ -1,29 +1,31 @@
 package com.example.gerdapp.ui.chart
 
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Result
 import com.example.gerdapp.databinding.FragmentChartBinding
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 
+
 class ChartFragment: Fragment() {
     private var _binding: FragmentChartBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var lineChart: LineChart
-    private lateinit var timeRangeChart: BarChart
+    private lateinit var barChart: BarChart
+    private lateinit var candleStickChart: CandleStickChart
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,9 +36,11 @@ class ChartFragment: Fragment() {
                               savedInstanceState: Bundle?): View {
         _binding = FragmentChartBinding.inflate(inflater, container, false)
         lineChart = binding.lineChart
-        timeRangeChart = binding.timeRangeChart
+        barChart = binding.barChart
+        candleStickChart = binding.timeRangeChart
         initLineChart()
         initBarChart()
+        initCandleStickChart()
 
         return binding.root
     }
@@ -144,14 +148,14 @@ class ChartFragment: Fragment() {
 
         setRandomResult()
 
-        timeRangeChart.setBackgroundColor(Color.WHITE)
-        timeRangeChart.description.isEnabled = false
+        barChart.setBackgroundColor(Color.WHITE)
+        barChart.description.isEnabled = false
 //        chart.setTouchEnabled(false)
 //        chart.isDragEnabled = false
 
 
         // add animation
-        timeRangeChart.animateY(1400)
+        barChart.animateY(1400)
 
 //        val l: Legend = chart.legend
 //        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
@@ -164,9 +168,9 @@ class ChartFragment: Fragment() {
 //        //l.form = Legend.LegendForm.LINE
 //        l.textColor = Color.BLACK
         // remove legend
-        timeRangeChart.legend.isEnabled = false
+        barChart.legend.isEnabled = false
 
-        val xAxis: XAxis = timeRangeChart.xAxis
+        val xAxis: XAxis = barChart.xAxis
         xAxis.typeface = Typeface.DEFAULT
         xAxis.textSize = 12f
         xAxis.yOffset = 0f
@@ -194,13 +198,44 @@ class ChartFragment: Fragment() {
         }
         xAxis.valueFormatter = formatter
 
-        val yAxis = timeRangeChart.axisLeft
+        val yAxis = barChart.axisLeft
         yAxis.axisMaximum = 5f
         yAxis.axisMinimum = 0f
         yAxis.setLabelCount(4, false)
         yAxis.setDrawAxisLine(false)
         //yAxis.setDrawLabels(false)
-        timeRangeChart.axisRight.isEnabled = false
+        barChart.axisRight.isEnabled = false
+    }
+
+    private fun initCandleStickChart() {
+        // set data
+        // initBarChartData()
+
+        randomResult()
+
+        candleStickChart.isHighlightPerDragEnabled = true
+
+        val yAxis = candleStickChart.axisLeft
+        val rightAxis = candleStickChart.axisRight
+        yAxis.setDrawGridLines(false)
+        rightAxis.setDrawGridLines(false)
+        candleStickChart.requestDisallowInterceptTouchEvent(true)
+
+//        candleStickChart.animateY(1400)
+
+        val xAxis = candleStickChart.xAxis
+
+        xAxis.setDrawGridLines(false) // disable x axis grid lines
+
+        xAxis.setDrawLabels(false)
+        rightAxis.textColor = Color.WHITE
+        yAxis.setDrawLabels(false)
+        xAxis.granularity = 1f
+        xAxis.isGranularityEnabled = true
+        xAxis.setAvoidFirstLastClipping(true)
+
+        val l = candleStickChart.legend
+        l.isEnabled = false
     }
 
     private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
@@ -223,9 +258,37 @@ class ChartFragment: Fragment() {
         mv.chartView = lineChart
         lineChart.marker = mv*/
 
-        barData.setDrawValues(true)
+        barDataSet.setDrawValues(false)
 
-        timeRangeChart.data = barData
-        timeRangeChart.invalidate()
+        barChart.data = barData
+        barChart.invalidate()
+    }
+
+    private fun randomResult(){
+        val entries: ArrayList<CandleEntry> = ArrayList()
+        entries.add(CandleEntry(0f, 225.0f, 219.84f, 225.0f, 219.84f))
+        entries.add(CandleEntry(1f, 228.35f, 222.57f, 228.35f, 222.57f))
+        entries.add(CandleEntry(2f, 226.84f,  222.52f, 226.84f,  222.52f))
+        entries.add(CandleEntry(3f, 222.95f, 217.27f, 222.95f, 217.27f))
+        val candleDataSet = CandleDataSet(entries, "")
+        candleDataSet.color = Color.BLUE
+        candleDataSet.shadowColor = Color.LTGRAY
+        candleDataSet.shadowWidth = 0.8f
+        candleDataSet.decreasingColor = Color.RED
+        candleDataSet.decreasingPaintStyle = Paint.Style.FILL
+        candleDataSet.increasingColor = Color.CYAN
+        candleDataSet.increasingPaintStyle = Paint.Style.FILL
+        candleDataSet.neutralColor = Color.DKGRAY
+
+        val candleData = CandleData(candleDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        candleData.setDrawValues(true)
+
+        candleStickChart.data = candleData
+        candleStickChart.invalidate()
     }
 }
