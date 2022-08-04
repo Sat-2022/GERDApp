@@ -41,7 +41,7 @@ class SymptomsRecordFragment: Fragment() {
 
     private var symptomsSelectedColor = Color.LTGRAY // Color.parseColor("#FF0000")
 
-    object SymptomsScore {
+    private object SymptomsScore {
         var coughScore: Int = 0
         var heartBurnScore: Int = 0
         var acidRefluxScore: Int = 0
@@ -220,7 +220,7 @@ class SymptomsRecordFragment: Fragment() {
 
     private fun setSymptomsCard() {
         binding.apply {
-            symptomsCard.symptomsCough.setOnClickListener {
+            symptomsCard.symptomsButtons.symptomsCough.setOnClickListener {
                 if(SymptomsScore.coughScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.coughScore = 1
@@ -229,7 +229,7 @@ class SymptomsRecordFragment: Fragment() {
                     SymptomsScore.coughScore = 0
                 }
             }
-            symptomsCard.symptomsHeartBurn.setOnClickListener{
+            symptomsCard.symptomsButtons.symptomsHeartBurn.setOnClickListener{
                 if(SymptomsScore.heartBurnScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.heartBurnScore = 1
@@ -238,7 +238,7 @@ class SymptomsRecordFragment: Fragment() {
                     SymptomsScore.heartBurnScore = 0
                 }
             }
-            symptomsCard.symptomsAcidReflux.setOnClickListener {
+            symptomsCard.symptomsButtons.symptomsAcidReflux.setOnClickListener {
                 if(SymptomsScore.acidRefluxScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.acidRefluxScore = 1
@@ -247,7 +247,7 @@ class SymptomsRecordFragment: Fragment() {
                     SymptomsScore.acidRefluxScore = 0
                 }
             }
-            symptomsCard.symptomsChestPain.setOnClickListener{
+            symptomsCard.symptomsButtons.symptomsChestPain.setOnClickListener{
                 if(SymptomsScore.chestPainScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.chestPainScore = 1
@@ -256,7 +256,7 @@ class SymptomsRecordFragment: Fragment() {
                     SymptomsScore.chestPainScore = 0
                 }
             }
-            symptomsCard.symptomsSourMouth.setOnClickListener {
+            symptomsCard.symptomsButtons.symptomsSourMouth.setOnClickListener {
                 if(SymptomsScore.sourMouthScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.sourMouthScore = 1
@@ -265,7 +265,7 @@ class SymptomsRecordFragment: Fragment() {
                     SymptomsScore.sourMouthScore = 0
                 }
             }
-            symptomsCard.symptomsHoarseness.setOnClickListener{
+            symptomsCard.symptomsButtons.symptomsHoarseness.setOnClickListener{
                 if(SymptomsScore.hoarsenessScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.hoarsenessScore = 1
@@ -274,7 +274,7 @@ class SymptomsRecordFragment: Fragment() {
                 SymptomsScore.hoarsenessScore = 0
             }
             }
-            symptomsCard.symptomsAppetiteLoss.setOnClickListener {
+            symptomsCard.symptomsButtons.symptomsAppetiteLoss.setOnClickListener {
                 if(SymptomsScore.appetiteLossScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.appetiteLossScore = 1
@@ -283,7 +283,7 @@ class SymptomsRecordFragment: Fragment() {
                     SymptomsScore.appetiteLossScore = 0
                 }
             }
-            symptomsCard.symptomsStomachGas.setOnClickListener{
+            symptomsCard.symptomsButtons.symptomsStomachGas.setOnClickListener{
                 if(SymptomsScore.stomachGasScore==0){
                     it.setBackgroundColor(symptomsSelectedColor)
                     SymptomsScore.stomachGasScore = 1

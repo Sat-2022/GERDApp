@@ -16,8 +16,10 @@
     <!-- date / time format -->
     <string name="simple_date_format">yyyy/MM/dd</string>
     <string name="simple_time_format">hh:mm</string>
+    <string name="simple_date_time_format">yyyy/MM/dd hh:mm</string>
     <string name="date_format">%04d/%02d/%02d</string>
     <string name="time_format">%02d:%02d</string>
+    <string name="date_time_format">%04d/%02d/%02d %02d:%02d</string>
 
     <!-- strings for main menu cards -->
     <string name="questionnaire">問卷</string>
