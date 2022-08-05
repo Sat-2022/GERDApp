@@ -39,8 +39,6 @@ class SymptomsRecordFragment: Fragment() {
 
     private var bottomNavigationViewVisibility = View.GONE
 
-    private var symptomsSelectedColor = Color.LTGRAY // Color.parseColor("#FF0000")
-
     private object SymptomsScore {
         var coughScore: Int = 0
         var heartBurnScore: Int = 0
@@ -222,7 +220,7 @@ class SymptomsRecordFragment: Fragment() {
         binding.apply {
             symptomsCard.symptomsButtons.symptomsCough.setOnClickListener {
                 if(SymptomsScore.coughScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.coughScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -231,7 +229,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsButtons.symptomsHeartBurn.setOnClickListener{
                 if(SymptomsScore.heartBurnScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.heartBurnScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -240,7 +238,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsButtons.symptomsAcidReflux.setOnClickListener {
                 if(SymptomsScore.acidRefluxScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.acidRefluxScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -249,7 +247,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsButtons.symptomsChestPain.setOnClickListener{
                 if(SymptomsScore.chestPainScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.chestPainScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -258,7 +256,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsButtons.symptomsSourMouth.setOnClickListener {
                 if(SymptomsScore.sourMouthScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.sourMouthScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -267,7 +265,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsButtons.symptomsHoarseness.setOnClickListener{
                 if(SymptomsScore.hoarsenessScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.hoarsenessScore = 1
                 } else {
                 it.setBackgroundColor(Color.TRANSPARENT)
@@ -276,7 +274,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsButtons.symptomsAppetiteLoss.setOnClickListener {
                 if(SymptomsScore.appetiteLossScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.appetiteLossScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
@@ -285,7 +283,7 @@ class SymptomsRecordFragment: Fragment() {
             }
             symptomsCard.symptomsButtons.symptomsStomachGas.setOnClickListener{
                 if(SymptomsScore.stomachGasScore==0){
-                    it.setBackgroundColor(symptomsSelectedColor)
+                    it.setBackgroundResource(R.drawable.circular)
                     SymptomsScore.stomachGasScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
