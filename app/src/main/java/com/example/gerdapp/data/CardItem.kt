@@ -6,4 +6,5 @@ import androidx.annotation.StringRes
 data class CardItem(
     @StringRes val stringResourceId: Int,
     @DrawableRes val imageResourceId: Int,
+    val imageColor: Int
 )

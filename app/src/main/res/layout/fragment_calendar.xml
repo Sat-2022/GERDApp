@@ -40,6 +40,20 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+            <include layout="@layout/card_divider"/>
+
+            <include
+                android:id="@+id/notification"
+                layout="@layout/list_item_card"/>
+
+            <include
+                android:id="@+id/weekly_questionnaire"
+                layout="@layout/list_item_card"/>
+
+            <include
+                android:id="@+id/daily_questionnaire"
+                layout="@layout/list_item_card"/>
+
             <Button
                 android:id="@+id/questionnaire_nav_test"
                 android:layout_width="wrap_content"

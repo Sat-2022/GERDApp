@@ -60,6 +60,21 @@ class CalendarFragment: Fragment() {
             questionnaireNavTest.setOnClickListener {
                 findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
             }
+
+            notification.cardItemTitle.text = "繳回機器通知"
+            notification.cardItemRecentTime.text = "8 月 15 日"
+            notification.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_info_24))
+            notification.cardItemIcon.setColorFilter(Color.parseColor("#F12B2B"))
+
+            weeklyQuestionnaire.cardItemTitle.text = getString(R.string.weekly_questionnaire)
+            weeklyQuestionnaire.cardItemRecentTime.text = "8 月 6 日"
+            weeklyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
+            weeklyQuestionnaire.cardItemIcon.setColorFilter(Color.parseColor("#09ADEA"))
+
+            dailyQuestionnaire.cardItemTitle.text = getString(R.string.daily_questionnaire)
+            dailyQuestionnaire.cardItemRecentTime.text = "8 月 5 日"
+            dailyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
+            dailyQuestionnaire.cardItemIcon.setColorFilter(Color.parseColor("#09ADEA"))
         }
     }
 

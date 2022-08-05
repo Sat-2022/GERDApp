@@ -38,6 +38,7 @@ class CardItemAdapter(
 
         holder.textView.text = holder.textView.context.getString(item.stringResourceId)
         holder.imageView.setImageDrawable(holder.imageView.context.getDrawable(item.imageResourceId))
+        holder.imageView.setColorFilter(item.imageColor)
 
         val recentRecord = subtitle(item)
 

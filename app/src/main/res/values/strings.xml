@@ -81,4 +81,8 @@
     <string name="note">備註</string>
     <string name="add_note">新增備註</string>
 
+    <!-- string for questionnaire -->
+    <string name="weekly_questionnaire">每週問卷</string>
+    <string name="daily_questionnaire">每日問卷</string>
+
 </resources>
