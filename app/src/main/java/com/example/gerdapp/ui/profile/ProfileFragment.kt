@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.gerdapp.TestUser
 import com.example.gerdapp.User
 import com.example.gerdapp.databinding.FragmentProfileBinding
 import com.google.gson.Gson
@@ -18,7 +19,7 @@ class ProfileFragment: Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    var users: List<User>? = null
+    var testUsers: List<TestUser>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,27 +43,27 @@ class ProfileFragment: Fragment() {
 
     private fun testApi(): Thread {
         return Thread {
-            val url = URL("http://120.126.40.203/EDMTAPI/weatherforecast")
+            val url = URL("http://120.126.40.203/GERD_API/api/test/R092&20220801")
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
                 val inputSystem = connection.inputStream
                 val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<User>>() {}.getType()
-                users = Gson().fromJson(inputStreamReader, type)
+                val type: java.lang.reflect.Type? = object : TypeToken<List<TestUser>>() {}.type
+                testUsers = Gson().fromJson(inputStreamReader, type)
                 UpdateUI()
                 inputStreamReader.close()
                 inputSystem.close()
-                Log.e("API Connection", "$users")
+                Log.e("API Connection", "$testUsers")
             } else
-                Log.e("API Connection", "failed")
+                Log.e("API Connection", "failed ${connection.responseMessage}")
         }
     }
 
     private fun UpdateUI() {
         activity?.runOnUiThread {
             binding.apply {
-                testApi.text = users.toString()
+                testApi.text = testUsers.toString()
             }
         }
     }
