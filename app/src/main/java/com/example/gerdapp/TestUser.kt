@@ -1,16 +1,16 @@
 package com.example.gerdapp
 
 data class TestUser (
-    val caseNo: String,
-    val questionDate: String,
-    val q1: String,
-    val q2: String,
-    val q3: String,
-    val q4: String,
-    val q5: String,
-    val q6: String,
-    val q7: String,
-    val q8: String,
-    val q9: String,
-    val q10: String
+    val CaseNumber: String,
+    val QuestionDate: String,
+    val Question01: String,
+    val Question02: String,
+    val Question03: String,
+    val Question04: String,
+    val Question05: String,
+    val Question06: String,
+    val Question07: String,
+    val Question08: String,
+    val Question09: String,
+    val Question10: String
 )
