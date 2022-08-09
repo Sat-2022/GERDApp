@@ -1,70 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="12dp">
+    android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <FrameLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_baseline_eco_24" />
+        </FrameLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/symptoms_record_main_symptom_headline"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"/>
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <include layout="@layout/divider"/>
+
+    <include layout="@layout/card_divider"/>
+
+    <com.google.android.material.card.MaterialCardView
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="12dp">
 
-        <LinearLayout
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
+            app:cardCornerRadius="12dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-                <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp">
+                <include
+                    android:id="@+id/symptoms_buttons"
+                    layout="@layout/card_symptoms_buttons"/>
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_baseline_eco_24" />
-                </FrameLayout>
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/symptoms_record_main_symptom_headline"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="bold"/>
-                </FrameLayout>
+                <include layout="@layout/divider"/>
+
+                <!--            <androidx.recyclerview.widget.RecyclerView-->
+                <!--                android:id="@+id/other_symptoms_recycler_view"-->
+                <!--                android:layout_width="match_parent"-->
+                <!--                android:layout_height="wrap_content" />-->
+
+                <include
+                    android:id="@+id/add_other_symptoms"
+                    layout="@layout/card_user_input_area" />
 
             </LinearLayout>
 
-            <include layout="@layout/divider"/>
+        </androidx.cardview.widget.CardView>
 
-            <include
-                android:id="@+id/symptoms_buttons"
-                layout="@layout/card_symptoms_buttons"/>
+    </com.google.android.material.card.MaterialCardView>
 
-            <include layout="@layout/divider"/>
-
-<!--            <androidx.recyclerview.widget.RecyclerView-->
-<!--                android:id="@+id/other_symptoms_recycler_view"-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content" />-->
-
-            <include
-                android:id="@+id/add_other_symptoms"
-                layout="@layout/card_user_input_area" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-</com.google.android.material.card.MaterialCardView>
-
+</LinearLayout>

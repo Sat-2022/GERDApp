@@ -14,13 +14,14 @@ import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.math.exp
 
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
-//    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var binding: ActivityMainBinding
 
@@ -35,15 +36,15 @@ class MainActivity : AppCompatActivity() {
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
-//        appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.navigation_main,
-//                R.id.navigation_calendar,
-//                R.id.navigation_chart,
-//                R.id.navigation_profile
-//            )
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+        appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_main,
+                R.id.navigation_calendar,
+                R.id.navigation_chart,
+                R.id.navigation_profile
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.apply {
             navView.setOnItemSelectedListener { item ->
@@ -67,14 +68,19 @@ class MainActivity : AppCompatActivity() {
                     else -> true
                 }
             }
+            toolbar.title = "8 月 8 日，星期一"
         }
     }
 
-//    override fun onSupportNavigateUp(): Boolean {
-//        return super.onSupportNavigateUp() || navController.navigateUp(appBarConfiguration)
-//    }
+    override fun onSupportNavigateUp(): Boolean {
+        return super.onSupportNavigateUp() || navController.navigateUp(appBarConfiguration)
+    }
 
     fun setBottomNavigationVisibility(visibility: Int) {
         binding.navView.visibility = visibility
+    }
+
+    fun setActionBarExpanded(expanded: Boolean) {
+        binding.appBar.setExpanded(expanded)
     }
 }

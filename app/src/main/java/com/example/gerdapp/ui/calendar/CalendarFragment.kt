@@ -61,10 +61,10 @@ class CalendarFragment: Fragment() {
                 findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
             }
 
-            notification.cardItemTitle.text = "繳回機器通知"
-            notification.cardItemRecentTime.text = "8 月 15 日"
-            notification.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_info_24))
-            notification.cardItemIcon.setColorFilter(Color.parseColor("#F12B2B"))
+//            notification.cardItemTitle.text = "繳回機器通知"
+//            notification.cardItemRecentTime.text = "8 月 15 日"
+//            notification.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_info_24))
+//            notification.cardItemIcon.setColorFilter(Color.parseColor("#F12B2B"))
 
             weeklyQuestionnaire.cardItemTitle.text = getString(R.string.weekly_questionnaire)
             weeklyQuestionnaire.cardItemRecentTime.text = "8 月 6 日"

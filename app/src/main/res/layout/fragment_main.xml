@@ -11,8 +11,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="8dp">
+        android:orientation="vertical">
 
     <!--    <include-->
     <!--        android:id="@+id/symptoms_card_main"-->
@@ -46,37 +45,28 @@
             app:layout_constraintTop_toTopOf="parent" />
             -->
 
-        <com.google.android.material.card.MaterialCardView
+        <include
+            android:id="@+id/notification"
+            layout="@layout/card_notification"/>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp">
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:padding="8dp">
 
-            <androidx.cardview.widget.CardView
+            <include
+                android:id="@+id/symptoms_buttons"
+                layout="@layout/card_symptoms_buttons" />
+
+            <Button
+                android:id="@+id/add_symptoms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:cardCornerRadius="12dp">
+                android:text="complete"/>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="8dp">
-
-                    <include
-                        android:id="@+id/symptoms_buttons"
-                        layout="@layout/card_symptoms_buttons"/>
-
-                    <Button
-                        android:id="@+id/add_symptoms"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="complete"/>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-        </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
 
         <include layout="@layout/card_divider"/>
 
@@ -85,6 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
+            android:layout_marginHorizontal="8dp"
             app:layoutManager="LinearLayoutManager"
             android:nestedScrollingEnabled="false"/>
 
@@ -97,7 +88,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="48dp"/>
+            android:layout_height="56dp"/>
 
 
 

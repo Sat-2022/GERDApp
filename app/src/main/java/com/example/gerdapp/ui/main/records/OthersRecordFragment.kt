@@ -60,6 +60,7 @@ class OthersRecordFragment: Fragment() {
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+        mainActivity.setActionBarExpanded(false)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
