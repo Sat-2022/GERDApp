@@ -54,9 +54,6 @@ class ProfileFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            testApi.setOnClickListener {
-                testChart.visibility = View.VISIBLE
-            }
         }
     }
 
