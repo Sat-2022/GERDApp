@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D8D8D8"
+    android:background="@color/grey"
     tools:context=".ui.profile.ProfileFragment">
 
     <LinearLayout
