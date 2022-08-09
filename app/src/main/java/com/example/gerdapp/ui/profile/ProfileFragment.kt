@@ -2,18 +2,14 @@ package com.example.gerdapp.ui.profile
 
 import android.graphics.Color
 import android.graphics.Typeface
-import android.opengl.Visibility
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import com.example.gerdapp.R
 import com.example.gerdapp.TestUser
-import com.example.gerdapp.User
-import com.example.gerdapp.data.Result
 import com.example.gerdapp.databinding.FragmentProfileBinding
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis

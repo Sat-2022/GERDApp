@@ -3,6 +3,7 @@ package com.example.gerdapp.ui.calendar
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.R
+import com.example.gerdapp.TestUser
 import com.example.gerdapp.data.Result
 import com.example.gerdapp.databinding.FragmentCalendarBinding
 import com.example.gerdapp.viewmodel.ResultViewModel
@@ -21,6 +23,11 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class CalendarFragment: Fragment() {
     private var _binding: FragmentCalendarBinding? = null
@@ -28,29 +35,22 @@ class CalendarFragment: Fragment() {
 
     private lateinit var barChart: BarChart
 
-    private var symptomsNum = 10
+    var testUsers: List<TestUser>? = null
 
-    private var currentResult = ArrayList<Result>()
-
-    private val resultViewModel: ResultViewModel by activityViewModels {
-        ResultViewModelFactory(
-            (activity?.application as BasicApplication).resultDatabase.resultDao()
-        )
-    }
+    private var currentResult: TestUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        // Connect to Api
+        testApi().start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
         barChart = binding.barChart
-        initBarChart()
-//        currentResult = setResultData(1)
-//        initBarChartData()
-//        initResultData()
         return binding.root
     }
 
@@ -78,11 +78,38 @@ class CalendarFragment: Fragment() {
         }
     }
 
+
+    private fun testApi(): Thread {
+        return Thread {
+            val url = URL("http://120.126.40.203/GERD_API/api/test/R092&20220801")
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<TestUser>>() {}.type
+                testUsers = Gson().fromJson(inputStreamReader, type)
+                currentResult = testUsers?.first()
+                UpdateUI()
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$testUsers")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun UpdateUI() {
+        activity?.runOnUiThread {
+            binding.apply {
+                initBarChart()
+            }
+        }
+    }
+
     private fun initBarChart() {
         // set data
-        // initBarChartData()
-
-        setRandomResult()
+        initBarChartData()
 
         barChart.setBackgroundColor(Color.WHITE)
         barChart.description.isEnabled = false
@@ -148,39 +175,18 @@ class CalendarFragment: Fragment() {
         else entries.add(BarEntry(index.toFloat(), data.toFloat()))
     }
 
-    private fun setRandomResult() {
-        val entries: ArrayList<BarEntry> = ArrayList()
-        for(i in 0 until 10) {
-            addBarEntry(entries, i, (0..5).random())
-        }
-
-        val barDataSet = BarDataSet(entries, "")
-        barDataSet.color = Color.BLUE
-
-        val barData = BarData(barDataSet)
-
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
-
-        barData.setDrawValues(true)
-
-        barChart.data = barData
-        barChart.invalidate()
-    }
-
     private fun initBarChartData() {
         val entries: ArrayList<BarEntry> = ArrayList()
-        addBarEntry(entries, 0, currentResult.first().symptomCough)
-        addBarEntry(entries, 1, currentResult.first().symptomHeartBurn)
-        addBarEntry(entries, 2, currentResult.first().symptomAcidReflux)
-        addBarEntry(entries, 3, currentResult.first().symptomHeartBurn)
-        addBarEntry(entries, 4, currentResult.first().symptomHeartBurn)
-        addBarEntry(entries, 5, currentResult.first().symptomHeartBurn)
-        addBarEntry(entries, 6, currentResult.first().symptomHeartBurn)
-        addBarEntry(entries, 7, currentResult.first().symptomHeartBurn)
-        addBarEntry(entries, 8, currentResult.first().symptomHeartBurn)
-        addBarEntry(entries, 9, currentResult.first().symptomHeartBurn)
+        addBarEntry(entries, 0, currentResult?.Question01?.toInt())
+        addBarEntry(entries, 1, currentResult?.Question02?.toInt())
+        addBarEntry(entries, 2, currentResult?.Question03?.toInt())
+        addBarEntry(entries, 3, currentResult?.Question04?.toInt())
+        addBarEntry(entries, 4, currentResult?.Question05?.toInt())
+        addBarEntry(entries, 5, currentResult?.Question06?.toInt())
+        addBarEntry(entries, 6, currentResult?.Question07?.toInt())
+        addBarEntry(entries, 7, currentResult?.Question08?.toInt())
+        addBarEntry(entries, 8, currentResult?.Question09?.toInt())
+        addBarEntry(entries, 9, currentResult?.Question10?.toInt())
 
         val barDataSet = BarDataSet(entries, "")
         barDataSet.color = Color.BLUE
@@ -195,59 +201,5 @@ class CalendarFragment: Fragment() {
 
         barChart.data = barData
         barChart.invalidate()
-    }
-
-    private fun initResultData() {
-        resultViewModel.addResultRecord(
-            "2022/07/20 03:01",
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-            (Math.random() * 5f).toInt(),
-        )
-    }
-
-    private fun setResultData(id: Int): ArrayList<Result> {
-        val recentResults: LiveData<List<Result>> = resultViewModel.getRecentResult()
-        val data: List<Result> = recentResults.value!!
-        currentResult.add(Result(data.first().id, data.first().time,
-            data.first().symptomCough, data.first().symptomHeartBurn, data.first().symptomAcidReflux, data.first().symptomChestHurt,
-            data.first().symptomAcidMouth, data.first().symptomHoarse, data.first().symptomLoseAppetite, data.first().symptomStomachGas,
-            data.first().symptomCoughNight, data.first().symptomAcidRefluxNight))
-//        if (data != null) {
-//            addBarEntry(0, data.symptomCough)
-//            addBarEntry(1, data.symptomHeartBurn)
-//            addBarEntry(2, data.symptomAcidReflux)
-//            addBarEntry(3, data.symptomHeartBurn)
-//            addBarEntry(4, data.symptomHeartBurn)
-//            addBarEntry(5, data.symptomHeartBurn)
-//            addBarEntry(6, data.symptomHeartBurn)
-//            addBarEntry(7, data.symptomHeartBurn)
-//            addBarEntry(8, data.symptomHeartBurn)
-//            addBarEntry(9, data.symptomHeartBurn)
-//        } else {
-//            for (i in 0 until symptomsNum) addBarEntry(i, 5)
-//        }
-//        return entries
-
-        //        resultViewModel.getResultById(id).observe(this.viewLifecycleOwner) {
-//            addBarEntry(entries, 0, it.symptomCough)
-//            addBarEntry(entries, 1, it.symptomHeartBurn)
-//            addBarEntry(entries, 2, it.symptomAcidReflux)
-//            addBarEntry(entries, 3, it.symptomHeartBurn)
-//            addBarEntry(entries, 4, it.symptomHeartBurn)
-//            addBarEntry(entries, 5, it.symptomHeartBurn)
-//            addBarEntry(entries, 6, it.symptomHeartBurn)
-//            addBarEntry(entries, 7, it.symptomHeartBurn)
-//            addBarEntry(entries, 8, it.symptomHeartBurn)
-//            addBarEntry(entries, 9, it.symptomHeartBurn)
-//        }
-        return currentResult
     }
 }

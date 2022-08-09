@@ -24,12 +24,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    lateinit var users: List<User>
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        testApi().start()
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -78,23 +74,5 @@ class MainActivity : AppCompatActivity() {
 
     fun setBottomNavigationVisibility(visibility: Int) {
         binding.navView.visibility = visibility
-    }
-
-    private fun testApi(): Thread {
-        return Thread {
-            val url = URL("http://120.126.40.203/EDMTAPI/weatherforecast")
-            val connection = url.openConnection() as HttpURLConnection
-
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<User>>() {}.getType()
-                users = Gson().fromJson(inputStreamReader, type)
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$users")
-            } else
-                Log.e("API Connection", "failed")
-        }
     }
 }
