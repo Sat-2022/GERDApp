@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="grey"
+    android:background="@color/light_grey"
     tools:context=".ui.main.MainFragment">
 
     <LinearLayout
@@ -64,20 +64,35 @@
                 android:id="@+id/add_symptoms"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="complete"/>
+                android:text="@string/complete"
+                android:textAppearance="@style/ButtonText"/>
 
         </LinearLayout>
 
         <include layout="@layout/card_divider"/>
 
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="紀錄"
+                android:textStyle="bold"
+                android:textAppearance="@style/TitleText"/>
+        </FrameLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/main_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clipToPadding="false"
             android:layout_marginHorizontal="8dp"
-            app:layoutManager="LinearLayoutManager"
-            android:nestedScrollingEnabled="false"/>
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="LinearLayoutManager" />
 
         <Button
             android:id="@+id/test_button"

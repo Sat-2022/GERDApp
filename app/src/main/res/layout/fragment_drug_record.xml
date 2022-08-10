@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/light_grey"
     tools:context=".ui.main.records.DrugRecordFragment">
 
     <ScrollView
@@ -19,38 +19,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="8dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp">
-
-                <FrameLayout
-                    android:layout_width="48dp"
-                    android:layout_height="48dp">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:src="@drawable/ic_baseline_healing_24" />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/drug_record_drug_headline"
-                        android:textStyle="bold" />
-                </FrameLayout>
-            </LinearLayout>
-
-            <include layout="@layout/divider" />
-
-            <include layout="@layout/card_divider"/>
 
             <include
                 android:id="@+id/drug_card"
@@ -89,7 +57,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/complete"
-            android:layout_gravity="center"/>
+            android:layout_gravity="center"
+            android:textAppearance="@style/ButtonText"/>
 
     </FrameLayout>
 

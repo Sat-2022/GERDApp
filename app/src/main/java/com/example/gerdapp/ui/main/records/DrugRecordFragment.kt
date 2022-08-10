@@ -88,7 +88,7 @@ class DrugRecordFragment: Fragment() {
 
         binding.apply {
             noteCard.addNote.userInputText.hint = getString(R.string.add_note)
-            drugCard.addDrug.userInputText.hint = getString(R.string.event_record_add_others)
+            drugCard.addDrug.userInputText.hint = getString(R.string.drug_record_add_drug)
 
 //            othersCard.addOthers.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
 //                return@setOnEditorActionListener when(actionId) {
@@ -113,6 +113,28 @@ class DrugRecordFragment: Fragment() {
             completeButton.setOnClickListener {
                 addNewItem()
                 findNavController().navigate(R.id.action_drugFragment_to_mainFragment)
+            }
+
+            drugCard.addDrugButton.setOnClickListener {
+                drugCard.addDrug.layout.visibility = View.VISIBLE
+                drugCard.addDrugButton.visibility = View.GONE
+            }
+
+            noteCard.addNoteButton.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.VISIBLE
+                noteCard.addNoteButton.visibility = View.GONE
+            }
+
+            drugCard.addDrug.cancel.setOnClickListener {
+                drugCard.addDrug.layout.visibility = View.GONE
+                drugCard.addDrugButton.visibility = View.VISIBLE
+                drugCard.addDrug.userInputText.text = null
+            }
+
+            noteCard.addNote.cancel.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.GONE
+                noteCard.addNoteButton.visibility = View.VISIBLE
+                noteCard.addNote.userInputText.text = null
             }
         }
 

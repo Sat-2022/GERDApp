@@ -30,7 +30,8 @@
                 android:layout_height="wrap_content"
                 android:text="@string/symptoms_record_main_symptom_headline"
                 android:layout_gravity="center_vertical"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:textAppearance="@style/TitleText"/>
         </FrameLayout>
 
     </LinearLayout>
@@ -60,21 +61,33 @@
                     android:id="@+id/symptoms_buttons"
                     layout="@layout/card_symptoms_buttons"/>
 
-                <include layout="@layout/divider"/>
-
-                <!--            <androidx.recyclerview.widget.RecyclerView-->
-                <!--                android:id="@+id/other_symptoms_recycler_view"-->
-                <!--                android:layout_width="match_parent"-->
-                <!--                android:layout_height="wrap_content" />-->
-
-                <include
-                    android:id="@+id/add_other_symptoms"
-                    layout="@layout/card_user_input_area" />
-
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <include layout="@layout/card_divider"/>
+
+    <include
+        android:id="@+id/add_other_symptoms"
+        layout="@layout/card_user_input_area"
+        android:visibility="gone"/>
+
+    <FrameLayout
+        android:id="@+id/add_symptoms_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/symptoms_record_add_other_symptom"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="@color/light_blue"
+            android:textAppearance="@style/ButtonText"/>
+
+    </FrameLayout>
 
 </LinearLayout>

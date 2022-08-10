@@ -10,6 +10,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.gerdapp.MainActivity
 import com.example.gerdapp.databinding.FragmentQuestionnaireBinding
 
 class QuestionnaireFragment: Fragment() {
@@ -17,12 +18,21 @@ class QuestionnaireFragment: Fragment() {
     private var _binding: FragmentQuestionnaireBinding? = null
     private val binding get() = _binding!!
 
+    private var bottomNavigationViewVisibility = View.GONE
+
     private lateinit var webView: WebView
     private lateinit var webViewClient: WebViewClient
+
+    private fun setBottomNavigationVisibility() {
+        val mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+        mainActivity.setActionBarExpanded(false)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+        setBottomNavigationVisibility()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

@@ -1,45 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:cardCornerRadius="12dp">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="48dp">
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp">
+    <FrameLayout
+        android:layout_width="48dp"
+        android:layout_height="48dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_gravity="center"
+            android:src="@drawable/ic_baseline_healing_24" />
+    </FrameLayout>
 
-            <!--            <androidx.recyclerview.widget.RecyclerView-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content" />-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-            <include
-                android:id="@+id/add_drug"
-                layout="@layout/card_user_input_area" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="@string/drug_record_drug_headline"
+            android:textStyle="bold"
+            android:textAppearance="@style/TitleText"/>
+    </FrameLayout>
+    </LinearLayout>
 
-            <!--            <FrameLayout-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="48dp">-->
+    <include layout="@layout/divider" />
 
-            <!--                <TextView-->
-            <!--                    android:layout_width="wrap_content"-->
-            <!--                    android:layout_height="wrap_content"-->
-            <!--                    android:layout_gravity="center"-->
-            <!--                    android:text="@string/event_record_add_others"-->
-            <!--                    android:textColor="#09ADEA" />-->
-            <!--            </FrameLayout>-->
+    <include layout="@layout/card_divider"/>
 
-        </LinearLayout>
+    <include
+        android:id="@+id/add_drug"
+        layout="@layout/card_user_input_area"
+        android:visibility="gone" />
 
-    </androidx.cardview.widget.CardView>
+    <FrameLayout
+        android:id="@+id/add_drug_button"
+        android:layout_width="match_parent"
+        android:layout_height="48dp">
 
-</com.google.android.material.card.MaterialCardView>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/drug_record_add_drug"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:textColor="@color/light_blue"
+            android:textAppearance="@style/ButtonText"/>
+
+    </FrameLayout>
+
+</LinearLayout>

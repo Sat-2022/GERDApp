@@ -1,6 +1,6 @@
 package com.example.gerdapp
 
-data class TestUser (
+data class Questions (
     val CaseNumber: String,
     val QuestionDate: String,
     val Question01: String,

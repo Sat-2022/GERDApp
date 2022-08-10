@@ -1,5 +1,6 @@
 package com.example.gerdapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +15,8 @@ import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.math.exp
 
 
@@ -25,6 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,6 +49,8 @@ class MainActivity : AppCompatActivity() {
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+        setUserData("1", "R092", "王小明", "男")
 
         binding.apply {
             navView.setOnItemSelectedListener { item ->
@@ -68,8 +74,34 @@ class MainActivity : AppCompatActivity() {
                     else -> true
                 }
             }
-            toolbar.title = "8 月 8 日，星期一"
+
+            val calendar = Calendar.getInstance()
+            var greets: String? = null
+
+            greets = if(calendar[Calendar.HOUR_OF_DAY] in 5..10) "早安"
+                        else if(calendar[Calendar.HOUR_OF_DAY] in 11..17) "午安"
+                        else if(calendar[Calendar.HOUR_OF_DAY] in 18..24 && calendar[Calendar.HOUR_OF_DAY] in 0..4) "晚安"
+                        else "您好"
+
+            toolbar.title = "${calendar[Calendar.MONTH]+1} 月 ${calendar[Calendar.DAY_OF_MONTH]} 日，星期" +
+                    when(calendar[Calendar.DAY_OF_WEEK]) {
+                        Calendar.MONDAY -> "一"
+                        Calendar.TUESDAY -> "二"
+                        Calendar.WEDNESDAY -> "三"
+                        Calendar.THURSDAY -> "四"
+                        Calendar.FRIDAY -> "五"
+                        Calendar.SATURDAY -> "六"
+                        else -> "日"
+                    }
+
+            when(UserData.gender) {
+                "男" -> appBarTitle.text = "${UserData.userName}先生，${greets}！"
+                "女" -> appBarTitle.text = "${UserData.userName}女士，${greets}！"
+                else -> appBarTitle.text = "${UserData.userName}，${greets}！"
+            }
         }
+
+
     }
 
     override fun onSupportNavigateUp(): Boolean {

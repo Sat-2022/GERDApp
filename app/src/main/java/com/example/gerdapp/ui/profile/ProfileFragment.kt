@@ -9,7 +9,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
-import com.example.gerdapp.TestUser
+import com.example.gerdapp.Questions
+import com.example.gerdapp.UserData
 import com.example.gerdapp.databinding.FragmentProfileBinding
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -29,9 +30,9 @@ class ProfileFragment: Fragment() {
 
     private lateinit var barChart: BarChart
 
-    var testUsers: List<TestUser>? = null
+    var questions: List<Questions>? = null
 
-    private var currentResult: TestUser? = null
+    private var currentResult: Questions? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,19 +60,19 @@ class ProfileFragment: Fragment() {
 
     private fun testApi(): Thread {
         return Thread {
-            val url = URL("http://120.126.40.203/GERD_API/api/test/R092&20220801")
+            val url = URL("http://120.126.40.203/GERD_API/api/test/${UserData.userNo}&20220801")
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
                 val inputSystem = connection.inputStream
                 val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<TestUser>>() {}.type
-                testUsers = Gson().fromJson(inputStreamReader, type)
-                currentResult = testUsers?.first()
+                val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
+                questions = Gson().fromJson(inputStreamReader, type)
+                currentResult = questions?.first()
                 UpdateUI()
                 inputStreamReader.close()
                 inputSystem.close()
-                Log.e("API Connection", "$testUsers")
+                Log.e("API Connection", "$questions")
             } else
                 Log.e("API Connection", "failed")
         }
@@ -80,7 +81,7 @@ class ProfileFragment: Fragment() {
     private fun UpdateUI() {
         activity?.runOnUiThread {
             binding.apply {
-                testApi.text = testUsers.toString()
+                testApi.text = questions.toString()
                 initBarChart()
             }
         }

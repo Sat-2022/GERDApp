@@ -137,6 +137,27 @@ class SymptomsRecordFragment: Fragment() {
                 resetTime()
                 findNavController().navigate(R.id.action_symptomsFragment_to_mainFragment)
             }
+
+            symptomsCard.addSymptomsButton.setOnClickListener {
+                symptomsCard.addOtherSymptoms.layout.visibility = View.VISIBLE
+                symptomsCard.addSymptomsButton.visibility = View.GONE
+            }
+            noteCard.addNoteButton.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.VISIBLE
+                noteCard.addNoteButton.visibility = View.GONE
+            }
+
+            symptomsCard.addOtherSymptoms.cancel.setOnClickListener {
+                symptomsCard.addOtherSymptoms.layout.visibility = View.GONE
+                symptomsCard.addSymptomsButton.visibility = View.VISIBLE
+                symptomsCard.addOtherSymptoms.userInputText.text = null
+            }
+
+            noteCard.addNote.cancel.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.GONE
+                noteCard.addNoteButton.visibility = View.VISIBLE
+                noteCard.addNote.userInputText.text = null
+            }
         }
 
         initDateTimeText()

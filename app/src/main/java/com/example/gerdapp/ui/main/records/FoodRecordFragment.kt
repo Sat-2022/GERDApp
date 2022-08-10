@@ -111,6 +111,28 @@ class FoodRecordFragment: Fragment() {
                 resetTime()
                 findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
             }
+
+            foodCard.addFoodButton.setOnClickListener {
+                foodCard.addFood.layout.visibility = View.VISIBLE
+                foodCard.addFoodButton.visibility = View.GONE
+            }
+
+            noteCard.addNoteButton.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.VISIBLE
+                noteCard.addNoteButton.visibility = View.GONE
+            }
+
+            foodCard.addFood.cancel.setOnClickListener {
+                foodCard.addFood.layout.visibility = View.GONE
+                foodCard.addFoodButton.visibility = View.VISIBLE
+                foodCard.addFood.userInputText.text = null
+            }
+
+            noteCard.addNote.cancel.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.GONE
+                noteCard.addNoteButton.visibility = View.VISIBLE
+                noteCard.addNote.userInputText.text = null
+            }
         }
 
         initDateTimeText()

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/grey"
+    android:background="@color/light_grey"
     tools:context=".ui.calendar.CalendarFragment">
 
     <LinearLayout
@@ -17,10 +17,24 @@
             android:id="@+id/notification"
             layout="@layout/card_notification"/>
 
-        <FrameLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:background="@color/white">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/date_of_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"/>
+
+            </FrameLayout>
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/bar_chart"
@@ -32,7 +46,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:layout_gravity="center_horizontal"/>
 
-        </FrameLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -44,6 +58,18 @@
 <!--                android:id="@+id/notification"-->
 <!--                layout="@layout/list_item_card"/>-->
 
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="問卷"
+                    android:textStyle="bold" />
+            </FrameLayout>
+
             <include
                 android:id="@+id/weekly_questionnaire"
                 layout="@layout/list_item_card"/>
@@ -51,16 +77,6 @@
             <include
                 android:id="@+id/daily_questionnaire"
                 layout="@layout/list_item_card"/>
-
-            <Button
-                android:id="@+id/questionnaire_nav_test"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="問卷"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
 
         </LinearLayout>
     </LinearLayout>

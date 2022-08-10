@@ -111,6 +111,28 @@ class OthersRecordFragment: Fragment() {
                 addNewItem()
                 findNavController().navigate(R.id.action_othersFragment_to_mainFragment)
             }
+
+            othersCard.addOthersButton.setOnClickListener {
+                othersCard.addOthers.layout.visibility = View.VISIBLE
+                othersCard.addOthersButton.visibility = View.GONE
+            }
+
+            noteCard.addNoteButton.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.VISIBLE
+                noteCard.addNoteButton.visibility = View.GONE
+            }
+
+            othersCard.addOthers.cancel.setOnClickListener {
+                othersCard.addOthers.layout.visibility = View.GONE
+                othersCard.addOthersButton.visibility = View.VISIBLE
+                othersCard.addOthers.userInputText.text = null
+            }
+
+            noteCard.addNote.cancel.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.GONE
+                noteCard.addNoteButton.visibility = View.VISIBLE
+                noteCard.addNote.userInputText.text = null
+            }
         }
 
         initDateTimeText()

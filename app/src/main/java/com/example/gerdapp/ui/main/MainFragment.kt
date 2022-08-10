@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
+import com.example.gerdapp.Notification
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.CardItemAdapter
 import com.example.gerdapp.data.Result
@@ -190,6 +191,17 @@ class MainFragment : Fragment() {
             }
 
             setSymptomsCard()
+
+            if(!Notification.notificationOn) {
+                notification.layout.visibility = View.GONE
+            } else {
+                notification.layout.visibility = View.VISIBLE
+            }
+
+            notification.cancelButton.setOnClickListener {
+                notification.layout.visibility = View.GONE
+                Notification.notificationOn = false
+            }
         }
     }
 

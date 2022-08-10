@@ -101,6 +101,17 @@ class SleepRecordFragment: Fragment() {
                 resetTime()
                 findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
+
+            noteCard.addNoteButton.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.VISIBLE
+                noteCard.addNoteButton.visibility = View.GONE
+            }
+
+            noteCard.addNote.cancel.setOnClickListener {
+                noteCard.addNote.layout.visibility = View.GONE
+                noteCard.addNoteButton.visibility = View.VISIBLE
+                noteCard.addNote.userInputText.text = null
+            }
         }
 
         initDateTimeText()

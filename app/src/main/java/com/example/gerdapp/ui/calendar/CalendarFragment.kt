@@ -8,21 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.LiveData
 import androidx.navigation.fragment.findNavController
-import com.example.gerdapp.BasicApplication
-import com.example.gerdapp.R
-import com.example.gerdapp.TestUser
-import com.example.gerdapp.data.Result
+import com.example.gerdapp.*
 import com.example.gerdapp.databinding.FragmentCalendarBinding
-import com.example.gerdapp.viewmodel.ResultViewModel
-import com.example.gerdapp.viewmodel.ResultViewModelFactory
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
@@ -33,11 +25,18 @@ class CalendarFragment: Fragment() {
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
 
+    private var bottomNavigationViewVisibility = View.VISIBLE
+
     private lateinit var barChart: BarChart
 
-    var testUsers: List<TestUser>? = null
+    var questions: List<Questions>? = null
 
-    private var currentResult: TestUser? = null
+    private var currentResult: Questions? = null
+
+    private fun setBottomNavigationVisibility() {
+        val mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +44,13 @@ class CalendarFragment: Fragment() {
 
         // Connect to Api
         testApi().start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBottomNavigationVisibility()
+//        testApi().start()
+        UpdateUI()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -57,8 +63,23 @@ class CalendarFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-            questionnaireNavTest.setOnClickListener {
+
+            weeklyQuestionnaire.layout.setOnClickListener{
                 findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
+            }
+            dailyQuestionnaire.layout.setOnClickListener {
+                findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
+            }
+
+            if(!Notification.notificationOn) {
+                notification.layout.visibility = View.GONE
+            } else {
+                notification.layout.visibility = View.VISIBLE
+            }
+
+            notification.cancelButton.setOnClickListener {
+                notification.layout.visibility = View.GONE
+                Notification.notificationOn = false
             }
 
 //            notification.cardItemTitle.text = "繳回機器通知"
@@ -81,19 +102,19 @@ class CalendarFragment: Fragment() {
 
     private fun testApi(): Thread {
         return Thread {
-            val url = URL("http://120.126.40.203/GERD_API/api/test/R092&20220801")
+            val url = URL("http://120.126.40.203/GERD_API/api/test/${UserData.userNo}&20220801")
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
                 val inputSystem = connection.inputStream
                 val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<TestUser>>() {}.type
-                testUsers = Gson().fromJson(inputStreamReader, type)
-                currentResult = testUsers?.first()
+                val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
+                questions = Gson().fromJson(inputStreamReader, type)
+                currentResult = questions?.first()
                 UpdateUI()
                 inputStreamReader.close()
                 inputSystem.close()
-                Log.e("API Connection", "$testUsers")
+                Log.e("API Connection", "$questions")
             } else
                 Log.e("API Connection", "failed")
         }
@@ -103,8 +124,32 @@ class CalendarFragment: Fragment() {
         activity?.runOnUiThread {
             binding.apply {
                 initBarChart()
+                dateOfData.text = formatDate(currentResult?.QuestionDate)
             }
         }
+    }
+
+    fun formatDate(date: String?): String {
+        var formatted = ""
+
+        if (date != null) {
+            for (i in 0..7) {
+                if (i in 0..2) formatted += date[i]
+                else if (i == 3) formatted += date[i] + " 年 "
+                else if (i == 4) {
+                    if (date[i] == '0') formatted = formatted
+                    else formatted += date[i]
+                }
+                else if (i == 5) formatted += date[i] + " 月 "
+                else if (i == 6) {
+                    if (date[i] == '0') formatted = formatted
+                    else formatted += date[i]
+                }
+                else if (i == 7) formatted += date[i] + " 日 "
+            }
+            return formatted
+        }
+        else return "Unavailable"
     }
 
     private fun initBarChart() {

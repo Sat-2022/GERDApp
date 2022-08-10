@@ -27,7 +27,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/time_headline"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                android:textAppearance="@style/TitleText"
+                android:textStyle="bold"/>
         </FrameLayout>
     </LinearLayout>
     <include layout="@layout/divider"/>
@@ -62,7 +64,8 @@
                         android:layout_height="match_parent"
                         android:text="@string/start"
                         android:gravity="center"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textAppearance="@style/HintText"/>
 
                     <TextView
                         android:id="@+id/start_date"
@@ -71,15 +74,17 @@
                         android:text="@string/date_format"
                         android:gravity="center_vertical"
                         android:layout_marginStart="48dp"
-                        android:layout_marginEnd="100dp" />
+                        android:layout_marginEnd="130dp"
+                        android:textAppearance="@style/TitleText"/>
 
                     <TextView
                         android:id="@+id/start_time"
-                        android:layout_width="100dp"
+                        android:layout_width="130dp"
                         android:layout_height="match_parent"
                         android:text="@string/time_format"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textAppearance="@style/TitleText"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -92,7 +97,8 @@
                         android:layout_height="match_parent"
                         android:text="@string/end"
                         android:gravity="center"
-                        app:layout_constraintStart_toStartOf="parent"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:textAppearance="@style/HintText"/>
 
                     <TextView
                         android:id="@+id/end_date"
@@ -101,15 +107,17 @@
                         android:text="@string/date_format"
                         android:gravity="center_vertical"
                         android:layout_marginStart="48dp"
-                        android:layout_marginEnd="100dp" />
+                        android:layout_marginEnd="130dp"
+                        android:textAppearance="@style/TitleText"/>
 
                     <TextView
                         android:id="@+id/end_time"
-                        android:layout_width="100dp"
+                        android:layout_width="130dp"
                         android:layout_height="match_parent"
                         android:text="@string/time_format"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:gravity="center"/>
+                        android:gravity="center"
+                        android:textAppearance="@style/TitleText"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </LinearLayout>

@@ -29,11 +29,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/cough" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/cough" />
+                    android:text="@string/cough"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
 
@@ -49,11 +56,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/heart_burn" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/heart_burn" />
+                    android:text="@string/heart_burn"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
 
@@ -69,11 +83,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/acid_reflux" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/acid_reflux" />
+                    android:text="@string/acid_reflux"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
 
@@ -89,11 +110,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/chest_pain" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/chest_pain" />
+                    android:text="@string/chest_pain"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
 
@@ -115,11 +143,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/sour_mouth" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/sour_mouth" />
+                    android:text="@string/sour_mouth"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
 
@@ -135,11 +170,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/hoarseness" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/hoarseness" />
+                    android:text="@string/hoarseness"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
 
@@ -155,11 +197,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/appetite_lose" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/appetite_loss" />
+                    android:text="@string/appetite_loss"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
 
@@ -175,11 +224,18 @@
                     android:layout_height="72dp"
                     app:srcCompat="@drawable/stomach_gas" />
 
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="8dp"
+                    android:layout_gravity="center"/>
+
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
+                    android:gravity="center"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/stomach_gas" />
+                    android:text="@string/stomach_gas"
+                    android:textAppearance="@style/HintText"/>
 
             </LinearLayout>
         </TableRow>
