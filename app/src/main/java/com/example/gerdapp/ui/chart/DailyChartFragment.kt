@@ -34,12 +34,12 @@ class DailyChartFragment: Fragment() {
                               savedInstanceState: Bundle?): View {
         _binding = FragmentDailyChartBinding.inflate(inflater, container, false)
 
-        lineChart = binding.lineChart
-        barChart = binding.barChart
-        candleStickChart = binding.timeRangeChart
-        initLineChart()
-        initBarChart()
-        initCandleStickChart()
+//        lineChart = binding.lineChart
+//        barChart = binding.barChart
+//        candleStickChart = binding.timeRangeChart
+//        initLineChart()
+//        initBarChart()
+//        initCandleStickChart()
 
         return binding.root
     }
