@@ -45,9 +45,9 @@
             app:layout_constraintTop_toTopOf="parent" />
             -->
 
-        <include
-            android:id="@+id/notification"
-            layout="@layout/card_notification"/>
+<!--        <include-->
+<!--            android:id="@+id/notification"-->
+<!--            layout="@layout/card_notification"/>-->
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -80,9 +80,97 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
+                android:text="通知"
+                android:textStyle="bold"
+                android:textAppearance="@style/TitleText"
+                android:textColor="@color/grey" />
+        </FrameLayout>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="8dp"
+            app:cardCornerRadius="12dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="80dp"
+                app:cardCornerRadius="12dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_margin="8dp"
+                    android:layout_gravity="center_vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:gravity="center">
+
+                            <ImageView
+                                android:id="@+id/card_item_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/ic_baseline_priority_high_24"
+                                app:tint="#FF0000" />
+
+                        </LinearLayout>
+
+
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/card_item_title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="繳回機器通知"
+                                android:textAppearance="@style/TitleText"/>
+
+                            <TextView
+                                android:id="@+id/card_item_recent_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="8 月 16 日"
+                                android:textAppearance="@style/HintText"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <include layout="@layout/card_divider"/>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginHorizontal="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="紀錄"
                 android:textStyle="bold"
-                android:textAppearance="@style/TitleText"/>
+                android:textAppearance="@style/TitleText"
+                android:textColor="@color/grey"/>
         </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView

@@ -71,16 +71,16 @@ class CalendarFragment: Fragment() {
                 findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
             }
 
-            if(!Notification.notificationOn) {
-                notification.layout.visibility = View.GONE
-            } else {
-                notification.layout.visibility = View.VISIBLE
-            }
-
-            notification.cancelButton.setOnClickListener {
-                notification.layout.visibility = View.GONE
-                Notification.notificationOn = false
-            }
+//            if(!Notification.notificationOn) {
+//                notification.layout.visibility = View.GONE
+//            } else {
+//                notification.layout.visibility = View.VISIBLE
+//            }
+//
+//            notification.cancelButton.setOnClickListener {
+//                notification.layout.visibility = View.GONE
+//                Notification.notificationOn = false
+//            }
 
 //            notification.cardItemTitle.text = "繳回機器通知"
 //            notification.cardItemRecentTime.text = "8 月 15 日"

@@ -41,8 +41,6 @@
 
     <include layout="@layout/card_divider" />
 
-    <include layout="@layout/card_divider" />
-
     <include
         android:id="@+id/add_others"
         layout="@layout/card_user_input_area"

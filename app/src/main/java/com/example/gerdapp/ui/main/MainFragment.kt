@@ -192,16 +192,16 @@ class MainFragment : Fragment() {
 
             setSymptomsCard()
 
-            if(!Notification.notificationOn) {
-                notification.layout.visibility = View.GONE
-            } else {
-                notification.layout.visibility = View.VISIBLE
-            }
-
-            notification.cancelButton.setOnClickListener {
-                notification.layout.visibility = View.GONE
-                Notification.notificationOn = false
-            }
+//            if(!Notification.notificationOn) {
+//                notification.layout.visibility = View.GONE
+//            } else {
+//                notification.layout.visibility = View.VISIBLE
+//            }
+//
+//            notification.cancelButton.setOnClickListener {
+//                notification.layout.visibility = View.GONE
+//                Notification.notificationOn = false
+//            }
         }
     }
 
