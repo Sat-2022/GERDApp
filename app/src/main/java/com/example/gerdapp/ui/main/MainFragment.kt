@@ -1,5 +1,6 @@
 package com.example.gerdapp.ui.main
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Typeface
@@ -202,6 +203,18 @@ class MainFragment : Fragment() {
 //                notification.layout.visibility = View.GONE
 //                Notification.notificationOn = false
 //            }
+
+            notificationCard.setOnClickListener {
+                // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+                val dialogBuilder = AlertDialog.Builder(context)
+                dialogBuilder.setTitle("繳回機器通知")
+                    .setMessage("提醒您，預計於 8 月 8 日須繳回機器\n（中正樓十三樓內視鏡診斷與治療中心）")
+                    .setNeutralButton("我知道了") { dialogBuilder, _ ->
+                        dialogBuilder.dismiss()
+                    }
+                dialogBuilder.create()
+                dialogBuilder.show()
+            }
         }
     }
 

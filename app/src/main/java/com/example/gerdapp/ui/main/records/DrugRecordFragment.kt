@@ -139,6 +139,10 @@ class DrugRecordFragment: Fragment() {
                 noteCard.addNoteButton.visibility = View.VISIBLE
                 noteCard.addNote.userInputText.text = null
             }
+
+
+            timeCard.cardTitle.text = "服用時間"
+            timeCard.startTimeTag.text = "時間"
         }
 
         initDateTimeText()
