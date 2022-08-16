@@ -91,6 +91,7 @@ class CalendarFragment: Fragment() {
             weeklyQuestionnaire.cardItemRecentTime.text = "8 月 6 日"
             weeklyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
             weeklyQuestionnaire.cardItemIcon.setColorFilter(Color.parseColor("#09ADEA"))
+            weeklyQuestionnaire.layout.visibility = View.GONE
 
             dailyQuestionnaire.cardItemTitle.text = getString(R.string.daily_questionnaire)
             dailyQuestionnaire.cardItemRecentTime.text = "8 月 5 日"

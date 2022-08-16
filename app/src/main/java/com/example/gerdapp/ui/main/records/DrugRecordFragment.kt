@@ -87,6 +87,9 @@ class DrugRecordFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+            timeCard.endLayout.visibility = View.GONE
+
+
             noteCard.addNote.userInputText.hint = getString(R.string.add_note)
             drugCard.addDrug.userInputText.hint = getString(R.string.drug_record_add_drug)
 

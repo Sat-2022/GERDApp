@@ -8,8 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.gerdapp.R
 import com.example.gerdapp.Questions
+import com.example.gerdapp.R
 import com.example.gerdapp.UserData
 import com.example.gerdapp.databinding.FragmentProfileBinding
 import com.github.mikephil.charting.charts.BarChart
@@ -20,6 +20,8 @@ import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.BufferedReader
+import java.io.DataOutputStream
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -29,6 +31,8 @@ class ProfileFragment: Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var barChart: BarChart
+
+    private var postResult = ""
 
     var questions: List<Questions>? = null
 
@@ -55,6 +59,9 @@ class ProfileFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
+            startTestPost.setOnClickListener {
+                postApi().start()
+            }
         }
     }
 
@@ -75,6 +82,48 @@ class ProfileFragment: Fragment() {
                 Log.e("API Connection", "$questions")
             } else
                 Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun postApi(): Thread {
+        return Thread {
+            val url = URL("http://120.126.40.203/GERD_API/api/Test/")
+            val connection = url.openConnection() as HttpURLConnection
+
+            connection.requestMethod = "POST"
+            connection.setRequestProperty("Content-Type", "application/json")
+            connection.setRequestProperty("Accept", "application/json")
+            connection.doOutput = true
+
+            val outputSystem = connection.outputStream
+            val outputStream = DataOutputStream(outputSystem)
+            val jsonString = "{\n" +
+                    "    \"CaseNumber\": \"\"\n" +
+                    "}"
+
+            outputStream.writeBytes(jsonString)
+            outputStream.flush()
+            outputStream.close()
+            outputSystem.close()
+
+
+            val inputSystem = connection.inputStream
+            val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+            val reader = BufferedReader(InputStreamReader(inputSystem))
+
+            val line: String = reader.readLine()
+            postResult = line
+            postUpdateUI()
+            inputStreamReader.close()
+            inputSystem.close()
+        }
+    }
+
+    private fun postUpdateUI() {
+        activity?.runOnUiThread {
+            binding.apply {
+                testApi.text = postResult
+            }
         }
     }
 
