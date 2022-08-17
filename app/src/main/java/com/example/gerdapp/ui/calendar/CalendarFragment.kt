@@ -70,10 +70,10 @@ class CalendarFragment: Fragment() {
             notificationCard.setOnClickListener {
                 // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
                 val dialogBuilder = AlertDialog.Builder(context)
-                dialogBuilder.setTitle("繳回機器通知")
-                    .setMessage("提醒您，預計於 8 月 8 日須繳回機器\n（中正樓十三樓內視鏡診斷與治療中心）")
-                    .setNeutralButton("我知道了") { dialogBuilder, id ->
-                        dialogBuilder.dismiss()
+                dialogBuilder.setTitle(R.string.notification_title)
+                    .setMessage(R.string.notification_message)
+                    .setNeutralButton(R.string.notification_neutral_button) { dialog, _ ->
+                        dialog.dismiss()
                     }
                 dialogBuilder.create()
                 dialogBuilder.show()

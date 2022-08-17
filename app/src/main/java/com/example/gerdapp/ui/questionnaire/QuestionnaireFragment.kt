@@ -11,6 +11,7 @@ import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.MainActivity
+import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentQuestionnaireBinding
 
 class QuestionnaireFragment: Fragment() {
@@ -50,7 +51,7 @@ class QuestionnaireFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         webView= binding.webview
-        webView.loadUrl("https://egerd.bml.lab.nycu.edu.tw/GERD/Login.aspx")
+        webView.loadUrl(getString(R.string.questionnaire_url))
         // bind to the JavaScript that runs the webView
         webView.addJavascriptInterface(WebInterface(context), "android")
 

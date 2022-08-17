@@ -1,6 +1,16 @@
 <resources>
     <string name="app_name">GERDApp</string>
 
+    <!-- urls -->
+    <string name="questionnaire_url">https://egerd.bml.lab.nycu.edu.tw/GERD/Login.aspx</string>
+
+
+    <!-- strings for dialog -->
+    <string name="notification_title">繳回機器通知</string>
+    <string name="notification_message">提醒您，預計於 8 月 8 日須繳回機器\n（中正樓十三樓內視鏡診斷與治療中心）</string>
+    <string name="notification_neutral_button">我知道了</string>
+
+
     <!-- strings for button -->
     <string name="complete">完成</string>
 
@@ -46,25 +56,35 @@
     <string name="symptoms_record_main_symptom_headline">症狀</string>
     <string name="symptoms_record_other_symptom_headline">其他症狀</string>
     <string name="symptoms_record_add_other_symptom">新增其他症狀</string>
+    <string name="symptoms_added_successfully">新增症狀成功</string>
+    <string name="symptoms_added_failed">新增症狀失敗</string>
 
     <!-- strings for sleep fragment -->
     <string name="sleep_record_title">睡眠平躺</string>
     <string name="sleep_record_start_headline">開始就寢時間</string>
     <string name="sleep_record_end_headline">結束就寢時間</string>
+    <string name="sleep_record_added_successfully">新增睡眠成功</string>
+    <string name="sleep_record_added_failed">新增睡眠失敗</string>
 
     <!-- string for other fragment -->
     <string name="event_record_title">其他活動或事件</string>
     <string name="event_record_others_headline">活動項目</string>
     <string name="event_record_add_others">新增活動項目</string>
+    <string name="event_record_added_successfully">新增活動成功</string>
+    <string name="event_record_added_failed">新增活動失敗</string>
 
     <!-- string for food fragment -->
     <string name="food_record_title">進食</string>
     <string name="food_record_food_headline">進食項目</string>
     <string name="food_record_add_food">新增進食項目</string>
+    <string name="food_record_added_successfully">新增飲食成功</string>
+    <string name="food_record_added_failed">新增飲食失敗</string>
 
     <!-- string for drug fragment -->
     <string name="drug_record_drug_headline">用藥內容</string>
     <string name="drug_record_add_drug">新增用藥內容</string>
+    <string name="drug_record_added_successfully">新增用藥成功</string>
+    <string name="drug_record_added_failed">新增用藥失敗</string>
 
     <!-- string for symptoms -->
     <string name="cough">咳嗽</string>

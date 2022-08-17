@@ -51,8 +51,9 @@ class FoodRecordFragment: Fragment() {
                 binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
                 binding.foodCard.addFood.userInputText.text.toString()
             )
+            Toast.makeText(context, R.string.food_record_added_successfully, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.food_record_added_failed, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -51,9 +51,9 @@ class SleepRecordFragment: Fragment() {
                 binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
                 binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString()
             )
-            Toast.makeText(context, "sleep record added", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
         } else {
-            Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
         }
     }
 
