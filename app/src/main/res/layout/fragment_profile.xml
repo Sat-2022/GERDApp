@@ -76,6 +76,13 @@
             android:text="start"/>
 
 
+        <Button
+            android:id="@+id/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="login"
+            android:layout_marginHorizontal="8dp"/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

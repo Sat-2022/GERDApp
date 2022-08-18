@@ -1,6 +1,7 @@
 package com.example.gerdapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -50,8 +51,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        setUserData("1", "R092", "王小明", "男")
-
         binding.apply {
             navView.setOnItemSelectedListener { item ->
                 when (item.itemId) {
@@ -74,6 +73,9 @@ class MainActivity : AppCompatActivity() {
                     else -> true
                 }
             }
+
+
+            setUserData("1", "R092", "王小明", "男")
 
             val calendar = Calendar.getInstance()
             var greets: String? = null
@@ -101,6 +103,9 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+//        val intent = Intent(this, LoginActivity::class.java)
+//        startActivity(intent)
 
     }
 

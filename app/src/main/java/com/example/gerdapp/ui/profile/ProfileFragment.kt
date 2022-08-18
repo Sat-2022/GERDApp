@@ -1,5 +1,6 @@
 package com.example.gerdapp.ui.profile
 
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.gerdapp.LoginActivity
 import com.example.gerdapp.Questions
 import com.example.gerdapp.R
 import com.example.gerdapp.UserData
@@ -61,6 +63,10 @@ class ProfileFragment: Fragment() {
         binding.apply {
             startTestPost.setOnClickListener {
                 postApi().start()
+            }
+            login.setOnClickListener {
+                val intent = Intent(context, LoginActivity::class.java)
+                startActivity(intent)
             }
         }
     }

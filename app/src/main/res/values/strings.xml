@@ -4,12 +4,18 @@
     <!-- urls -->
     <string name="questionnaire_url">https://egerd.bml.lab.nycu.edu.tw/GERD/Login.aspx</string>
 
+    <!-- strings for login -->
+    <string name="login">登入</string>
+    <string name="account">帳號/案號</string>
+    <string name="password">密碼</string>
+    <string name="forgot_password">忘記密碼</string>
+    <string name="sign_up">註冊帳號</string>
+    <string name="sign_up_title">註冊</string>
 
     <!-- strings for dialog -->
     <string name="notification_title">繳回機器通知</string>
     <string name="notification_message">提醒您，預計於 8 月 8 日須繳回機器\n（中正樓十三樓內視鏡診斷與治療中心）</string>
     <string name="notification_neutral_button">我知道了</string>
-
 
     <!-- strings for button -->
     <string name="complete">完成</string>
@@ -104,5 +110,14 @@
     <!-- string for questionnaire -->
     <string name="weekly_questionnaire">每週問卷</string>
     <string name="daily_questionnaire">每日問卷</string>
+    <string name="title_activity_login2">LoginActivity2</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="welcome">"Welcome !"</string>
+    <string name="invalid_username">Not a valid username</string>
+    <string name="invalid_password">Password must be >5 characters</string>
+    <string name="login_failed">"Login failed"</string>
 
 </resources>

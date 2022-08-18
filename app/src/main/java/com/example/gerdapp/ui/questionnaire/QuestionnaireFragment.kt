@@ -50,7 +50,7 @@ class QuestionnaireFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        webView= binding.webview
+        webView = binding.webview
         webView.loadUrl(getString(R.string.questionnaire_url))
         // bind to the JavaScript that runs the webView
         webView.addJavascriptInterface(WebInterface(context), "android")
