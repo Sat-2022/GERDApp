@@ -65,10 +65,10 @@ class QuestionnaireFragment: Fragment() {
 
         webView.webChromeClient = WebChromeClient()
 
-        cookieManager = CookieManager.getInstance()
-        cookieManager.getCookie(getString(R.string.questionnaire_url))
-        cookieManager.removeAllCookies(null)
-        cookieManager.flush()
+//        cookieManager = CookieManager.getInstance()
+//        cookieManager.getCookie(getString(R.string.questionnaire_url))
+//        cookieManager.removeAllCookies(null)
+//        cookieManager.flush()
     }
 
     class WebInterface(private val context: Context?) {

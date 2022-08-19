@@ -2,7 +2,11 @@
     <string name="app_name">GERDApp</string>
 
     <!-- urls -->
+    <string name="server_url">120.126.40.203</string>
     <string name="questionnaire_url">https://egerd.bml.lab.nycu.edu.tw/GERD/Login.aspx</string>
+    <string name="get_record_url">http://%s/GERD_API/api/test/%s&amp;%s</string>
+    <string name="get_user_url">http://%s/GERD_API/api/Test/</string>
+    <string name="get_return_machine_url">http://%s/GERD_API/api/ReturnMachine/%s</string>
 
     <!-- strings for login -->
     <string name="login">登入</string>

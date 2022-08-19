@@ -118,7 +118,7 @@ class CalendarFragment: Fragment() {
 
     private fun testApi(): Thread {
         return Thread {
-            val url = URL("http://120.126.40.203/GERD_API/api/test/${UserData.userNo}&20220801")
+            val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), UserData.userNo, "20220801"))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
@@ -127,10 +127,10 @@ class CalendarFragment: Fragment() {
                 val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
                 questions = Gson().fromJson(inputStreamReader, type)
                 try{
-                    currentResult = questions?.first() // TODO: Handle empty list exception
+                    currentResult = questions?.first()
                     UpdateUI()
                 } catch (e: Exception) {
-
+                    // TODO: Handle empty list exception
                 }
 
                 inputStreamReader.close()
