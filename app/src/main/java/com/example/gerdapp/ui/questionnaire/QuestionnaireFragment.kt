@@ -5,9 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
-import android.webkit.WebView
-import android.webkit.WebViewClient
+import android.webkit.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.MainActivity
@@ -23,6 +21,8 @@ class QuestionnaireFragment: Fragment() {
 
     private lateinit var webView: WebView
     private lateinit var webViewClient: WebViewClient
+    private lateinit var webSettings: WebSettings
+    private lateinit var cookieManager: CookieManager
 
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
@@ -58,6 +58,17 @@ class QuestionnaireFragment: Fragment() {
         // Show website within the app
         webViewClient = WebViewClient()
         webView.webViewClient = webViewClient
+
+        webSettings = webView.settings
+        webSettings.setSupportZoom(true) // allow zoom in / out
+        webSettings.javaScriptEnabled = true // enable JavaScript
+
+        webView.webChromeClient = WebChromeClient()
+
+        cookieManager = CookieManager.getInstance()
+        cookieManager.getCookie(getString(R.string.questionnaire_url))
+        cookieManager.removeAllCookies(null)
+        cookieManager.flush()
     }
 
     class WebInterface(private val context: Context?) {

@@ -126,8 +126,13 @@ class CalendarFragment: Fragment() {
                 val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
                 val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
                 questions = Gson().fromJson(inputStreamReader, type)
-                currentResult = questions?.first()
-                UpdateUI()
+                try{
+                    currentResult = questions?.first() // TODO: Handle empty list exception
+                    UpdateUI()
+                } catch (e: Exception) {
+
+                }
+
                 inputStreamReader.close()
                 inputSystem.close()
                 Log.e("API Connection", "$questions")
