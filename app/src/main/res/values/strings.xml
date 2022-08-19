@@ -18,7 +18,7 @@
 
     <!-- strings for dialog -->
     <string name="notification_title">繳回機器通知</string>
-    <string name="notification_message">提醒您，預計於 8 月 8 日須繳回機器\n（中正樓十三樓內視鏡診斷與治療中心）</string>
+    <string name="notification_message">提醒您，預計於 %s 須繳回機器\n（中正樓十三樓內視鏡診斷與治療中心）</string>
     <string name="notification_neutral_button">我知道了</string>
 
     <!-- strings for button -->

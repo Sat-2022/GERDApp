@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.graphics.ColorMatrixColorFilter
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +16,7 @@ import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.gerdapp.BasicApplication
-import com.example.gerdapp.MainActivity
-import com.example.gerdapp.Notification
-import com.example.gerdapp.R
+import com.example.gerdapp.*
 import com.example.gerdapp.adapter.CardItemAdapter
 import com.example.gerdapp.data.Result
 import com.example.gerdapp.databinding.FragmentMainBinding
@@ -29,6 +27,11 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -41,6 +44,8 @@ class MainFragment : Fragment() {
     private var bottomNavigationViewVisibility = View.VISIBLE
 
     private lateinit var recyclerView: RecyclerView
+
+    private var returnMachine: ReturnMachine? = null
 
     private object SymptomsScore {
         var time: String ?= null
@@ -109,11 +114,14 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        getMachineReturnApi().start()
     }
 
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
+//        getMachineReturnApi().start()
     }
 
     override fun onCreateView(
@@ -203,19 +211,71 @@ class MainFragment : Fragment() {
 //                notification.layout.visibility = View.GONE
 //                Notification.notificationOn = false
 //            }
+        }
+    }
 
-            notificationCard.setOnClickListener {
-                // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
-                val dialogBuilder = AlertDialog.Builder(context)
-                dialogBuilder.setTitle("繳回機器通知")
-                    .setMessage("提醒您，預計於 8 月 8 日須繳回機器\n（中正樓十三樓內視鏡診斷與治療中心）")
-                    .setNeutralButton("我知道了") { dialogBuilder, _ ->
-                        dialogBuilder.dismiss()
-                    }
-                dialogBuilder.create()
-                dialogBuilder.show()
+    private fun updateMachineReturnTime() {
+        activity?.runOnUiThread {
+            binding.apply {
+                val returnTime = dateTimeString(returnMachine?.ReturnDate)
+
+                cardItemRecentTime.text = returnTime
+
+                notificationCard.setOnClickListener {
+                    // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+                    val dialogBuilder = AlertDialog.Builder(context)
+                    dialogBuilder.setTitle(R.string.notification_title)
+                        .setMessage(getString(R.string.notification_message, returnTime))
+                        .setNeutralButton(R.string.notification_neutral_button) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                    dialogBuilder.create()
+                    dialogBuilder.show()
+                }
             }
         }
+    }
+
+    private fun getMachineReturnApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_return_machine_url, getString(R.string.server_url), "R099"))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<ReturnMachine>>() {}.type
+                val list: List<ReturnMachine> = Gson().fromJson(inputStreamReader, type)
+                try{
+                    returnMachine = list.first()
+                    updateMachineReturnTime()
+                } catch (e: Exception) {
+                    // TODO: Handle exception
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$returnMachine")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun dateTimeString(dateTime: String?): String{
+        var formatted = ""
+
+        // 0123456789012345678901
+        // yyyy-mm-ddTHH:mm:ss.ss
+        if(dateTime != null){
+            for (i in 0..21) {
+                if (i == 5 && dateTime[i] != '0') formatted += dateTime[i]
+                else if (i == 6) formatted += dateTime[i] + " " + getString(R.string.month) + " "
+                else if (i == 8 && dateTime[i] != '0') formatted += dateTime[i]
+                else if (i == 9) formatted += dateTime[i] + " " + getString(R.string.date)
+            }
+        }
+
+        return formatted
     }
 
     private fun setSymptomsCard() {

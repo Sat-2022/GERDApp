@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
 import com.example.gerdapp.databinding.FragmentCalendarBinding
+import com.example.gerdapp.ui.Time.date
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
@@ -36,6 +37,8 @@ class CalendarFragment: Fragment() {
 
     private var currentResult: Questions? = null
 
+    private var returnMachine: ReturnMachine? = null
+
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
@@ -47,12 +50,14 @@ class CalendarFragment: Fragment() {
 
         // Connect to Api
         testApi().start()
+        getMachineReturnApi().start()
     }
 
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
 //        testApi().start()
+//        getMachineReturnApi().start()
         UpdateUI()
     }
 
@@ -66,18 +71,6 @@ class CalendarFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
-
-            notificationCard.setOnClickListener {
-                // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
-                val dialogBuilder = AlertDialog.Builder(context)
-                dialogBuilder.setTitle(R.string.notification_title)
-                    .setMessage(R.string.notification_message)
-                    .setNeutralButton(R.string.notification_neutral_button) { dialog, _ ->
-                        dialog.dismiss()
-                    }
-                dialogBuilder.create()
-                dialogBuilder.show()
-            }
 
             weeklyQuestionnaire.layout.setOnClickListener{
                 findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
@@ -113,6 +106,70 @@ class CalendarFragment: Fragment() {
             dailyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
             dailyQuestionnaire.cardItemIcon.setColorFilter(Color.parseColor("#09ADEA"))
         }
+    }
+
+    private fun updateMachineReturnTime() {
+        activity?.runOnUiThread {
+            binding.apply {
+                val returnTime = dateTimeString(returnMachine?.ReturnDate)
+
+                cardItemRecentTime.text = returnTime
+
+                notificationCard.setOnClickListener {
+                    // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+                    val dialogBuilder = AlertDialog.Builder(context)
+                    dialogBuilder.setTitle(R.string.notification_title)
+                        .setMessage(getString(R.string.notification_message, returnTime))
+                        .setNeutralButton(R.string.notification_neutral_button) { dialog, _ ->
+                            dialog.dismiss()
+                        }
+                    dialogBuilder.create()
+                    dialogBuilder.show()
+                }
+            }
+        }
+    }
+
+    private fun getMachineReturnApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_return_machine_url, getString(R.string.server_url), "R099"))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<ReturnMachine>>() {}.type
+                val list: List<ReturnMachine> = Gson().fromJson(inputStreamReader, type)
+                try{
+                    returnMachine = list.first()
+                    updateMachineReturnTime()
+                } catch (e: Exception) {
+                    // TODO: Handle exception
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$returnMachine")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun dateTimeString(dateTime: String?): String{
+        var formatted = ""
+
+        // 0123456789012345678901
+        // yyyy-mm-ddTHH:mm:ss.ss
+        if(dateTime != null){
+            for (i in 0..21) {
+                if (i == 5 && dateTime[i] != '0') formatted += dateTime[i]
+                else if (i == 6) formatted += dateTime[i] + " " + getString(R.string.month) + " "
+                else if (i == 8 && dateTime[i] != '0') formatted += dateTime[i]
+                else if (i == 9) formatted += dateTime[i] + " " + getString(R.string.date)
+            }
+        }
+
+        return formatted
     }
 
 
