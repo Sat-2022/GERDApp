@@ -20,18 +20,27 @@ class SignUpActivity : AppCompatActivity() {
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        binding.apply {
+            btSignup.setOnClickListener {
+                goToLogin()
+            }
+            btRegister.setOnClickListener {
+                performSignUp()
+            }
+        }
     }
 
 
     // Checking if the input in form is valid
     fun validateInput(): Boolean {
         binding.apply {
-            if (etFirstName.text.toString().equals("")) {
-                etFirstName.setError("Please Enter First Name")
+            if (etNickname.text.toString().equals("")) {
+                etNickname.setError("Please Enter First Name")
                 return false
             }
-            if (etLastName.text.toString().equals("")) {
-                etLastName.setError("Please Enter Last Name")
+            if (etNickname.text.toString().equals("")) {
+                etNickname.setError("Please Enter Last Name")
                 return false
             }
             if (etEmail.text.toString().equals("")) {
@@ -42,8 +51,8 @@ class SignUpActivity : AppCompatActivity() {
                 etPassword.setError("Please Enter Password")
                 return false
             }
-            if (etRepeatPassword.text.toString().equals("")) {
-                etRepeatPassword.setError("Please Enter Repeat Password")
+            if (etCheckPassword.text.toString().equals("")) {
+                etCheckPassword.setError("Please Enter Repeat Password")
                 return false
             }
 
@@ -60,8 +69,8 @@ class SignUpActivity : AppCompatActivity() {
             }
 
             // Checking if repeat password is same
-            if (!etPassword.text.toString().equals(etRepeatPassword.text.toString())) {
-                etRepeatPassword.setError("Password does not match")
+            if (!etPassword.text.toString().equals(etCheckPassword.text.toString())) {
+                etCheckPassword.setError("Password does not match")
                 return false
             }
             return true
@@ -74,15 +83,15 @@ class SignUpActivity : AppCompatActivity() {
 
     // Hook Click Event
 
-    fun performSignUp (view: View) {
+    fun performSignUp() {
         if (validateInput()) {
             // Input is valid, here send data to your server
             binding.apply {
-                val firstName = etFirstName.text.toString()
-                val lastName = etLastName.text.toString()
+                val firstName = etNickname.text.toString()
+                val lastName = etNickname.text.toString()
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
-                val repeatPassword = etRepeatPassword.text.toString()
+                val repeatPassword = etCheckPassword.text.toString()
             }
 
             Toast.makeText(this,"Login Success",Toast.LENGTH_SHORT).show()
@@ -92,7 +101,7 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
-    fun goToLogin(view: View) {
+    fun goToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
     }

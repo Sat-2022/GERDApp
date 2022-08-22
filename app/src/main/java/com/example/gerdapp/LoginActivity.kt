@@ -21,14 +21,26 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        binding.apply {
+            btLogin.setOnClickListener {
+                performSignUp()
+            }
+            btSignup.setOnClickListener {
+                goToSignup()
+            }
+            btForgotPassword.setOnClickListener {
+
+            }
+        }
     }
 
 
     // Checking if the input in form is valid
     fun validateInput(): Boolean {
         binding.apply {
-            if (etEmail.text.toString() == "") {
-                etEmail.error = "Please Enter Email"
+            if (etAccount.text.toString() == "") {
+                etAccount.error = "Please Enter Email"
                 return false
             }
             if (etPassword.text.toString() == "") {
@@ -37,8 +49,8 @@ class LoginActivity : AppCompatActivity() {
             }
 
             // checking the proper email format
-            if (!isEmailValid(etEmail.text.toString())) {
-                etEmail.error = "Please Enter Valid Email"
+            if (!isEmailValid(etAccount.text.toString())) {
+                etAccount.error = "Please Enter Valid Email"
                 return false
             }
 
@@ -56,14 +68,14 @@ class LoginActivity : AppCompatActivity() {
     }
 
     // Hook Click Event
-    fun performSignUp(v: View) {
+    fun performSignUp() {
         if (validateInput()) {
             // input is valid, here send data to your server
             val email: String?
             val password: String?
 
             binding.apply {
-                email = etEmail!!.text.toString()
+                email = etAccount!!.text.toString()
                 password = etPassword!!.text.toString()
             }
 
@@ -80,7 +92,7 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    fun goToSignup(v: View) {
+    fun goToSignup() {
         // Open your SignUp Activity if the user wants to signup
         // Visit this article to get SignupActivity code https://handyopinion.com/signup-activity-in-android-studio-kotlin-java/
         val intent = Intent(this, SignUpActivity::class.java)

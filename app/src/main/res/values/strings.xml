@@ -9,12 +9,17 @@
     <string name="get_return_machine_url">http://%s/GERD_API/api/ReturnMachine/%s</string>
 
     <!-- strings for login -->
+    <string name="login_headline">已經有帳號嗎？</string>
     <string name="login">登入</string>
-    <string name="account">帳號/案號</string>
+    <string name="account">帳號、案號</string>
     <string name="password">密碼</string>
-    <string name="forgot_password">忘記密碼</string>
-    <string name="sign_up">註冊帳號</string>
-    <string name="sign_up_title">註冊</string>
+    <string name="check_password">確認密碼</string>
+    <string name="forgot_password">忘記密碼？</string>
+    <string name="sign_up_headline">還沒有帳號嗎？</string>
+    <string name="sign_up">註冊</string>
+    <string name="user_name">暱稱</string>
+    <string name="user_gender">性別</string>
+    <string name="user_account">帳號</string>
 
     <!-- strings for dialog -->
     <string name="notification_title">繳回機器通知</string>
