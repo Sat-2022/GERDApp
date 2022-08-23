@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -35,14 +36,21 @@ class OthersRecordFragment: Fragment() {
         )
     }
 
-    lateinit var others: Others
+    private object OthersRecord {
+        var others: String? = null
+        var note: String? = null
+    }
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
             binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-            binding.othersCard.addOthers.userInputText.text.toString()
-        )
+            OthersRecord.others.toString()
+        ) && !isRecordEmpty()
+    }
+
+    private fun isRecordEmpty(): Boolean {
+        return OthersRecord.others.isNullOrBlank()
     }
 
     private fun addNewItem(){
@@ -50,7 +58,7 @@ class OthersRecordFragment: Fragment() {
             viewModel.addOthersRecord(
                 binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
                 binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-                binding.othersCard.addOthers.userInputText.text.toString()
+                OthersRecord.others.toString()
             )
             Toast.makeText(context, R.string.event_record_added_successfully, Toast.LENGTH_SHORT).show()
         } else {
@@ -88,25 +96,29 @@ class OthersRecordFragment: Fragment() {
             noteCard.addNote.userInputText.hint = getString(R.string.add_note)
             othersCard.addOthers.userInputText.hint = getString(R.string.event_record_add_others)
 
-//            othersCard.addOthers.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
-//                return@setOnEditorActionListener when(actionId) {
-//                    EditorInfo.IME_ACTION_DONE -> {
-//                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
-//                        false
-//                    }
-//                    else -> false
-//                }
-//            }
+            othersCard.addOthers.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                return@setOnEditorActionListener when(actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        if(validateInputText(textView)) {
+                            OthersRecord.others = textView.text.toString()
+                        }
+                        false
+                    }
+                    else -> false
+                }
+            }
 
-//            noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
-//                return@setOnEditorActionListener when(actionId) {
-//                    EditorInfo.IME_ACTION_DONE -> {
-//                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
-//                        false
-//                    }
-//                    else -> false
-//                }
-//            }
+            noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                return@setOnEditorActionListener when(actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        if(validateInputText(textView)) {
+                            OthersRecord.note = textView.text.toString()
+                        }
+                        false
+                    }
+                    else -> false
+                }
+            }
 
             completeButton.setOnClickListener {
                 addNewItem()
@@ -127,17 +139,29 @@ class OthersRecordFragment: Fragment() {
                 othersCard.addOthers.layout.visibility = View.GONE
                 othersCard.addOthersButton.visibility = View.VISIBLE
                 othersCard.addOthers.userInputText.text = null
+                othersCard.addOthers.userInputText.error = null
+                OthersRecord.others = null
             }
 
             noteCard.addNote.cancel.setOnClickListener {
                 noteCard.addNote.layout.visibility = View.GONE
                 noteCard.addNoteButton.visibility = View.VISIBLE
                 noteCard.addNote.userInputText.text = null
+                noteCard.addNote.userInputText.error = null
+                OthersRecord.note = null
             }
         }
 
         initDateTimeText()
         setDateTimePicker()
+    }
+
+    private fun validateInputText(textView: TextView): Boolean {
+        if(textView.text.length > 20) {
+            textView.error = "超過字數限制"
+            return false
+        }
+        return true
     }
 
     private fun setDateTimePicker() {

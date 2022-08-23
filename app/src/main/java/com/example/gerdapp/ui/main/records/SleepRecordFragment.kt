@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentSleepRecordBinding
 import com.example.gerdapp.ui.Time
 import com.example.gerdapp.ui.initTime
@@ -36,7 +36,9 @@ class SleepRecordFragment: Fragment() {
         )
     }
 
-    lateinit var others: Sleep
+    private object SleepRecord {
+        var note: String? = null
+    }
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
@@ -89,7 +91,9 @@ class SleepRecordFragment: Fragment() {
             noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
                 return@setOnEditorActionListener when(actionId) {
                     EditorInfo.IME_ACTION_DONE -> {
-                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+                        if(validateInputText(textView)) {
+                            SleepRecord.note = textView.text.toString()
+                        }
                         false
                     }
                     else -> false
@@ -111,11 +115,21 @@ class SleepRecordFragment: Fragment() {
                 noteCard.addNote.layout.visibility = View.GONE
                 noteCard.addNoteButton.visibility = View.VISIBLE
                 noteCard.addNote.userInputText.text = null
+                noteCard.addNote.userInputText.error = null
+                SleepRecord.note = null
             }
         }
 
         initDateTimeText()
         setDateTimePicker()
+    }
+
+    private fun validateInputText(textView: TextView): Boolean {
+        if(textView.text.length > 20) {
+            textView.error = "超過字數限制"
+            return false
+        }
+        return true
     }
 
     private fun setDateTimePicker() {

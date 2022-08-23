@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -34,14 +35,21 @@ class FoodRecordFragment: Fragment() {
         )
     }
 
-    lateinit var food: Food
+    private object FoodRecord {
+        var food: String? = null
+        var note: String? = null
+    }
 
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
             binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-            binding.foodCard.addFood.userInputText.text.toString()
-        )
+            FoodRecord.food.toString()
+        ) && !isRecordEmpty()
+    }
+
+    private fun isRecordEmpty(): Boolean {
+        return FoodRecord.food.isNullOrBlank()
     }
 
     private fun addNewItem(){
@@ -49,7 +57,7 @@ class FoodRecordFragment: Fragment() {
             viewModel.addFoodRecord(
                 binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
                 binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-                binding.foodCard.addFood.userInputText.text.toString()
+                FoodRecord.food.toString()
             )
             Toast.makeText(context, R.string.food_record_added_successfully, Toast.LENGTH_SHORT).show()
         } else {
@@ -87,25 +95,29 @@ class FoodRecordFragment: Fragment() {
             noteCard.addNote.userInputText.hint = getString(R.string.add_note)
             foodCard.addFood.userInputText.hint = getString(R.string.food_record_add_food)
 
-//            foodCard.addFood.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
-//                return@setOnEditorActionListener when(actionId) {
-//                    EditorInfo.IME_ACTION_DONE -> {
-//                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
-//                        false
-//                    }
-//                    else -> false
-//                }
-//            }
-//
-//            noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
-//                return@setOnEditorActionListener when(actionId) {
-//                    EditorInfo.IME_ACTION_DONE -> {
-//                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
-//                        false
-//                    }
-//                    else -> false
-//                }
-//            }
+            foodCard.addFood.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                return@setOnEditorActionListener when(actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        if(validateInputText(textView)) {
+                            FoodRecord.food = textView.text.toString()
+                        }
+                        false
+                    }
+                    else -> false
+                }
+            }
+
+            noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+                return@setOnEditorActionListener when(actionId) {
+                    EditorInfo.IME_ACTION_DONE -> {
+                        if(validateInputText(textView)) {
+                            FoodRecord.note = textView.text.toString()
+                        }
+                        false
+                    }
+                    else -> false
+                }
+            }
 
             completeButton.setOnClickListener {
                 addNewItem()
@@ -127,17 +139,29 @@ class FoodRecordFragment: Fragment() {
                 foodCard.addFood.layout.visibility = View.GONE
                 foodCard.addFoodButton.visibility = View.VISIBLE
                 foodCard.addFood.userInputText.text = null
+                foodCard.addFood.userInputText.error = null
+                FoodRecord.food = null
             }
 
             noteCard.addNote.cancel.setOnClickListener {
                 noteCard.addNote.layout.visibility = View.GONE
                 noteCard.addNoteButton.visibility = View.VISIBLE
                 noteCard.addNote.userInputText.text = null
+                noteCard.addNote.userInputText.error = null
+                FoodRecord.note = null
             }
         }
 
         initDateTimeText()
         setDateTimePicker()
+    }
+
+    private fun validateInputText(textView: TextView): Boolean {
+        if(textView.text.length > 20) {
+            textView.error = "超過字數限制"
+            return false
+        }
+        return true
     }
 
     private fun setDateTimePicker() {

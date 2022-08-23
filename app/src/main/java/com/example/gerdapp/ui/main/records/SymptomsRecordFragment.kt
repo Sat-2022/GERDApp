@@ -3,15 +3,13 @@ package com.example.gerdapp.ui.main.records
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.graphics.Color
-import android.opengl.Visibility
 import android.os.Bundle
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -39,7 +37,7 @@ class SymptomsRecordFragment: Fragment() {
 
     private var bottomNavigationViewVisibility = View.GONE
 
-    private object SymptomsScore {
+    private object SymptomsRecord {
         var coughScore: Int = 0
         var heartBurnScore: Int = 0
         var acidRefluxScore: Int = 0
@@ -49,6 +47,7 @@ class SymptomsRecordFragment: Fragment() {
         var appetiteLossScore: Int = 0
         var stomachGasScore: Int = 0
         var othersSymptoms: String? = null
+        var note: String? = null
     }
 
     private val viewModel: RecordViewModel by activityViewModels {
@@ -60,22 +59,22 @@ class SymptomsRecordFragment: Fragment() {
     private fun isEntryValid(): Boolean {
         return viewModel.isEntryValid(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString()
-        ) && !symptomsScoreIsEmpty()
+        ) && !isRecordEmpty()
     }
 
-    private fun symptomsScoreIsEmpty(): Boolean {
-        return SymptomsScore.coughScore==0 && SymptomsScore.heartBurnScore==0 && SymptomsScore.acidRefluxScore==0 && SymptomsScore.chestPainScore==0
-                && SymptomsScore.sourMouthScore==0 && SymptomsScore.hoarsenessScore==0 && SymptomsScore.appetiteLossScore==0 && SymptomsScore.stomachGasScore==0
-                && SymptomsScore.othersSymptoms.isNullOrBlank()
+    private fun isRecordEmpty(): Boolean {
+        return SymptomsRecord.coughScore==0 && SymptomsRecord.heartBurnScore==0 && SymptomsRecord.acidRefluxScore==0 && SymptomsRecord.chestPainScore==0
+                && SymptomsRecord.sourMouthScore==0 && SymptomsRecord.hoarsenessScore==0 && SymptomsRecord.appetiteLossScore==0 && SymptomsRecord.stomachGasScore==0
+                && SymptomsRecord.othersSymptoms.isNullOrBlank()
     }
 
     private fun addNewItem() = if(isEntryValid()) {
-        SymptomsScore.othersSymptoms = binding.symptomsCard.addOtherSymptoms.userInputText.text.toString()
+        SymptomsRecord.othersSymptoms = binding.symptomsCard.addOtherSymptoms.userInputText.text.toString()
         viewModel.addSymptomRecord(
             binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
-            SymptomsScore.coughScore, SymptomsScore.heartBurnScore, SymptomsScore.acidRefluxScore, SymptomsScore.chestPainScore,
-            SymptomsScore.sourMouthScore, SymptomsScore.hoarsenessScore, SymptomsScore.appetiteLossScore, SymptomsScore.stomachGasScore,
-            SymptomsScore.othersSymptoms
+            SymptomsRecord.coughScore, SymptomsRecord.heartBurnScore, SymptomsRecord.acidRefluxScore, SymptomsRecord.chestPainScore,
+            SymptomsRecord.sourMouthScore, SymptomsRecord.hoarsenessScore, SymptomsRecord.appetiteLossScore, SymptomsRecord.stomachGasScore,
+            SymptomsRecord.othersSymptoms
         )
         Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
     } else {
@@ -105,6 +104,14 @@ class SymptomsRecordFragment: Fragment() {
         return binding.root
     }
 
+    private fun validateInputText(textView: TextView): Boolean {
+        if(textView.text.length > 20) {
+            textView.error = "超過字數限制"
+            return false
+        }
+        return true
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -115,7 +122,9 @@ class SymptomsRecordFragment: Fragment() {
             symptomsCard.addOtherSymptoms.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
                 return@setOnEditorActionListener when(actionId) {
                     EditorInfo.IME_ACTION_DONE -> {
-                        SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+                        if(validateInputText(textView)) {
+                            SymptomsRecord.othersSymptoms = textView.text.toString()
+                        }
                         false
                     }
                     else -> false
@@ -125,7 +134,9 @@ class SymptomsRecordFragment: Fragment() {
             noteCard.addNote.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
                 return@setOnEditorActionListener when(actionId) {
                     EditorInfo.IME_ACTION_DONE -> {
-                        // SymptomsScore.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+                        if(validateInputText(textView)) {
+                             SymptomsRecord.note = textView.text.toString()
+                        }
                         false
                     }
                     else -> false
@@ -151,12 +162,16 @@ class SymptomsRecordFragment: Fragment() {
                 symptomsCard.addOtherSymptoms.layout.visibility = View.GONE
                 symptomsCard.addSymptomsButton.visibility = View.VISIBLE
                 symptomsCard.addOtherSymptoms.userInputText.text = null
+                symptomsCard.addOtherSymptoms.userInputText.error = null
+                SymptomsRecord.othersSymptoms = null
             }
 
             noteCard.addNote.cancel.setOnClickListener {
                 noteCard.addNote.layout.visibility = View.GONE
                 noteCard.addNoteButton.visibility = View.VISIBLE
                 noteCard.addNote.userInputText.text = null
+                noteCard.addNote.userInputText.error = null
+                SymptomsRecord.note = null
             }
         }
 
@@ -241,75 +256,75 @@ class SymptomsRecordFragment: Fragment() {
     private fun setSymptomsCard() {
         binding.apply {
             symptomsCard.symptomsButtons.symptomsCough.setOnClickListener {
-                if(SymptomsScore.coughScore==0){
+                if(SymptomsRecord.coughScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.coughScore = 1
+                    SymptomsRecord.coughScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.coughScore = 0
+                    SymptomsRecord.coughScore = 0
                 }
             }
             symptomsCard.symptomsButtons.symptomsHeartBurn.setOnClickListener{
-                if(SymptomsScore.heartBurnScore==0){
+                if(SymptomsRecord.heartBurnScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.heartBurnScore = 1
+                    SymptomsRecord.heartBurnScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.heartBurnScore = 0
+                    SymptomsRecord.heartBurnScore = 0
                 }
             }
             symptomsCard.symptomsButtons.symptomsAcidReflux.setOnClickListener {
-                if(SymptomsScore.acidRefluxScore==0){
+                if(SymptomsRecord.acidRefluxScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.acidRefluxScore = 1
+                    SymptomsRecord.acidRefluxScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.acidRefluxScore = 0
+                    SymptomsRecord.acidRefluxScore = 0
                 }
             }
             symptomsCard.symptomsButtons.symptomsChestPain.setOnClickListener{
-                if(SymptomsScore.chestPainScore==0){
+                if(SymptomsRecord.chestPainScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.chestPainScore = 1
+                    SymptomsRecord.chestPainScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.chestPainScore = 0
+                    SymptomsRecord.chestPainScore = 0
                 }
             }
             symptomsCard.symptomsButtons.symptomsSourMouth.setOnClickListener {
-                if(SymptomsScore.sourMouthScore==0){
+                if(SymptomsRecord.sourMouthScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.sourMouthScore = 1
+                    SymptomsRecord.sourMouthScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.sourMouthScore = 0
+                    SymptomsRecord.sourMouthScore = 0
                 }
             }
             symptomsCard.symptomsButtons.symptomsHoarseness.setOnClickListener{
-                if(SymptomsScore.hoarsenessScore==0){
+                if(SymptomsRecord.hoarsenessScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.hoarsenessScore = 1
+                    SymptomsRecord.hoarsenessScore = 1
                 } else {
                 it.setBackgroundColor(Color.TRANSPARENT)
-                SymptomsScore.hoarsenessScore = 0
+                SymptomsRecord.hoarsenessScore = 0
             }
             }
             symptomsCard.symptomsButtons.symptomsAppetiteLoss.setOnClickListener {
-                if(SymptomsScore.appetiteLossScore==0){
+                if(SymptomsRecord.appetiteLossScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.appetiteLossScore = 1
+                    SymptomsRecord.appetiteLossScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.appetiteLossScore = 0
+                    SymptomsRecord.appetiteLossScore = 0
                 }
             }
             symptomsCard.symptomsButtons.symptomsStomachGas.setOnClickListener{
-                if(SymptomsScore.stomachGasScore==0){
+                if(SymptomsRecord.stomachGasScore==0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.stomachGasScore = 1
+                    SymptomsRecord.stomachGasScore = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.stomachGasScore = 0
+                    SymptomsRecord.stomachGasScore = 0
                 }
             }
         }
