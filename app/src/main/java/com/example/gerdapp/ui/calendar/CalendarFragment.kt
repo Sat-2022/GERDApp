@@ -173,7 +173,7 @@ class CalendarFragment: Fragment() {
 
     private fun testApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), UserData.userNo, "20220801"))
+            val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), "T010", "20220801"))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {

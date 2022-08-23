@@ -3,6 +3,7 @@ package com.example.gerdapp
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
@@ -10,6 +11,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.gerdapp.databinding.ActivityLoginBinding
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 
 class LoginActivity : AppCompatActivity() {
 
@@ -92,11 +98,10 @@ class LoginActivity : AppCompatActivity() {
                 editor.putString("password", password)
 
                 // TODO: Get user information from API
+                getUserApi(account).start()
                 editor.putString("nickname", "王小明")
-                editor.putString("gender", "男")
+//                editor.putString("gender", "男")
                 editor.putBoolean("loggedIn", true)
-
-                setUserData("0", account, "王先生", "")
 
                 editor.commit()
             }
@@ -116,5 +121,32 @@ class LoginActivity : AppCompatActivity() {
         // Visit this article to get SignupActivity code https://handyopinion.com/signup-activity-in-android-studio-kotlin-java/
         val intent = Intent(this, SignUpActivity::class.java)
         startActivity(intent)
+    }
+
+    private fun getUserApi(account: String): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_user_data_url, getString(R.string.server_url), account))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<UserData>>() {}.type
+                val userData: List<UserData> = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    val user: UserData = userData.first()
+                    editor.putString("gender", user.Gender)
+                    editor.commit()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "user data: $userData")
+            } else
+                Log.e("API Connection", "failed")
+        }
     }
 }
