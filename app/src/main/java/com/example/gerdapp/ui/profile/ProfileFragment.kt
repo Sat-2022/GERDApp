@@ -64,10 +64,6 @@ class ProfileFragment: Fragment() {
             startTestPost.setOnClickListener {
                 postApi().start()
             }
-            login.setOnClickListener {
-                val intent = Intent(context, LoginActivity::class.java)
-                startActivity(intent)
-            }
         }
     }
 

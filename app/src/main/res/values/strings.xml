@@ -20,6 +20,10 @@
     <string name="user_name">暱稱</string>
     <string name="user_gender">性別</string>
     <string name="user_account">帳號</string>
+    <string name="sign_up_success">註冊成功</string>
+    <string name="sign_up_failed">註冊失敗</string>
+    <string name="login_success">登入成功</string>
+    <string name="login_failed">登入失敗</string>
 
     <!-- strings for dialog -->
     <string name="notification_title">繳回機器通知</string>
@@ -119,14 +123,5 @@
     <!-- string for questionnaire -->
     <string name="weekly_questionnaire">每週問卷</string>
     <string name="daily_questionnaire">每日問卷</string>
-    <string name="title_activity_login2">LoginActivity2</string>
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_in_short">Sign in</string>
-    <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
 
 </resources>
