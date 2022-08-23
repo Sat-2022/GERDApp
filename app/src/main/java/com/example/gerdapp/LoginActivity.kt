@@ -1,17 +1,22 @@
 package com.example.gerdapp
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Patterns
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.gerdapp.databinding.ActivityLoginBinding
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
+
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     val MIN_PASSWORD_LENGTH = 6
 
@@ -21,6 +26,10 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Set preferences
+        preferences = getSharedPreferences("config", MODE_PRIVATE)
+        editor = preferences.edit()
 
         binding.apply {
             btLogin.setOnClickListener {
@@ -72,13 +81,24 @@ class LoginActivity : AppCompatActivity() {
     // Hook Click Event
     private fun performLogin() {
         if (validateInput()) {
-            val email: String?
+            val account: String?
             val password: String?
 
             binding.apply {
-                email = etAccount!!.text.toString()
-                password = etPassword!!.text.toString()
-                setUserData("2", "T010", "王先生", "男")
+                account = "T010" // etAccount!!.text.toString()
+                password = "1234" // etPassword!!.text.toString()
+
+                editor.putString("account", account)
+                editor.putString("password", password)
+
+                // TODO: Get user information from API
+                editor.putString("nickname", "王小明")
+                editor.putString("gender", "男")
+                editor.putBoolean("loggedIn", true)
+
+                setUserData("0", account, "王先生", "")
+
+                editor.commit()
             }
 
             Toast.makeText(this, R.string.login_success, Toast.LENGTH_SHORT).show()

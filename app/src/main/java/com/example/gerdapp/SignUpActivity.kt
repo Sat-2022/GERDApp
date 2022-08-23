@@ -1,6 +1,7 @@
 package com.example.gerdapp
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Patterns
@@ -14,12 +15,19 @@ class SignUpActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySignUpBinding
 
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        // Set preferences
+        preferences = getSharedPreferences("config", MODE_PRIVATE)
+        editor = preferences.edit()
 
         binding.apply {
             btSignup.setOnClickListener {
@@ -86,13 +94,27 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun performSignUp() {
         if (validateInput()) {
+            val nickname: String?
+            val gender: String?
+            val email: String?
+            val password: String?
+            val checkPassword: String?
+
             binding.apply {
-                val firstName = etNickname.text.toString()
-                val lastName = etNickname.text.toString()
-                val email = etEmail.text.toString()
-                val password = etPassword.text.toString()
-                val repeatPassword = etCheckPassword.text.toString()
+                nickname = "陳小花" // etNickname.text.toString()
+                gender = "女" // etGender.text.toString()
+                email = "T010" // etEmail.text.toString()
+                password = "1234" // etPassword.text.toString()
+                checkPassword = "1234" // etCheckPassword.text.toString()
             }
+
+            editor.putString("account", email)
+            editor.putString("password", password)
+            editor.putString("nickname", nickname)
+            editor.putString("gender", gender)
+            editor.putBoolean("loggedIn", true)
+
+            editor.commit()
 
             Toast.makeText(this,R.string.sign_up_success,Toast.LENGTH_SHORT).show()
 

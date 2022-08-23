@@ -1,6 +1,7 @@
 package com.example.gerdapp.ui.profile
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -9,10 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.gerdapp.LoginActivity
-import com.example.gerdapp.Questions
-import com.example.gerdapp.R
-import com.example.gerdapp.UserData
+import com.example.gerdapp.*
 import com.example.gerdapp.databinding.FragmentProfileBinding
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -61,8 +59,17 @@ class ProfileFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            startTestPost.setOnClickListener {
-                postApi().start()
+            testButton.setOnClickListener {
+                val preferences: SharedPreferences = context?.getSharedPreferences("config", 0)!!
+                val editor: SharedPreferences.Editor = preferences.edit()
+                editor.putBoolean("loggedIn", false)
+
+                editor.commit()
+
+                val intent = Intent(requireContext(), SplashActivity::class.java)
+                startActivity(intent)
+
+//                postApi().start()
             }
         }
     }

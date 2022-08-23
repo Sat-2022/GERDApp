@@ -2,6 +2,7 @@ package com.example.gerdapp
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -29,7 +30,6 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -74,9 +74,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-
-            setUserData("1", "R092", "王小明", "男")
-
             val calendar = Calendar.getInstance()
             var greets: String? = null
 
@@ -96,10 +93,13 @@ class MainActivity : AppCompatActivity() {
                         else -> "日"
                     }
 
-            when(UserData.gender) {
-                "男" -> appBarTitle.text = "${UserData.userName}先生，${greets}！"
-                "女" -> appBarTitle.text = "${UserData.userName}女士，${greets}！"
-                else -> appBarTitle.text = "${UserData.userName}，${greets}！"
+            val preferences: SharedPreferences = getSharedPreferences("config", 0)
+            val userName = preferences.getString("nickname", "")
+
+            when(preferences.getString("gender", "")) {
+                "男" -> appBarTitle.text = "${userName}先生，${greets}！"
+                "女" -> appBarTitle.text = "${userName}女士，${greets}！"
+                else -> appBarTitle.text = "${userName}，${greets}！"
             }
         }
 

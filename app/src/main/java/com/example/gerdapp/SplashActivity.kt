@@ -23,14 +23,15 @@ class SplashActivity: AppCompatActivity() {
 //        val preferences: SharedPreferences = getSharedPreferences("", MODE_PRIVATE)
 //        preferences.getString("")
 
-
         var startActivity: Intent
 
+        val preferences: SharedPreferences = getSharedPreferences("config", 0)
+
         Handler().postDelayed({
-            if(false) {
-                startActivity = Intent(this, MainActivity::class.java)
+            startActivity = if(preferences.getBoolean("loggedIn", false)) {
+                Intent(this, MainActivity::class.java)
             } else {
-                startActivity = Intent(this, LoginActivity::class.java)
+                Intent(this, LoginActivity::class.java)
             }
 
             startActivity(startActivity)

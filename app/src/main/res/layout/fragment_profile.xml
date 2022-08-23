@@ -69,11 +69,11 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/start_test_post"
+            android:id="@+id/test_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            android:text="start"/>
+            android:text="log out"/>
 
     </LinearLayout>
 
