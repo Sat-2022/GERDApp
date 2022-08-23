@@ -1,7 +1,6 @@
 package com.example.gerdapp.ui.calendar
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -9,12 +8,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.PopupWindow
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
 import com.example.gerdapp.databinding.FragmentCalendarBinding
-import com.example.gerdapp.ui.Time.date
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
@@ -58,7 +55,8 @@ class CalendarFragment: Fragment() {
         setBottomNavigationVisibility()
 //        testApi().start()
 //        getMachineReturnApi().start()
-        UpdateUI()
+        updateUi()
+        updateMachineReturnTime()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -185,7 +183,7 @@ class CalendarFragment: Fragment() {
                 questions = Gson().fromJson(inputStreamReader, type)
                 try{
                     currentResult = questions?.first()
-                    UpdateUI()
+                    updateUi()
                 } catch (e: Exception) {
                     // TODO: Handle empty list exception
                 }
@@ -198,7 +196,7 @@ class CalendarFragment: Fragment() {
         }
     }
 
-    private fun UpdateUI() {
+    private fun updateUi() {
         activity?.runOnUiThread {
             binding.apply {
                 initBarChart()
