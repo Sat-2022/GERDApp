@@ -9,6 +9,12 @@
     <string name="get_return_machine_url">http://%s/GERD_API/api/ReturnMachine/%s</string>
     <string name="get_user_data_url">http://%s/GERD_API/api/Personal/%s</string>
 
+    <!-- get record urls -->
+    <string name="get_sleep_record_url">http://%s/GERD_API/api/SleepRecord/%s</string>
+
+    <!-- post record urls -->
+    <string name="post_sleep_record_url">http://%s/GERD_API/api/SleepRecord/</string>
+
     <!-- strings for login -->
     <string name="login_headline">已經有帳號嗎？</string>
     <string name="login">登入</string>
@@ -44,12 +50,12 @@
     <string name="time_headline">時間</string>
 
     <!-- date / time format -->
-    <string name="simple_date_format">yyyy/MM/dd</string>
+    <string name="simple_date_format">yyyy-MM-dd</string>
     <string name="simple_time_format">HH:mm</string>
-    <string name="simple_date_time_format">yyyy/MM/dd HH:mm</string>
+    <string name="simple_date_time_format">yyyy-MM-ddTHH:mm</string>
     <string name="date_format">%04d/%02d/%02d</string>
     <string name="time_format">%02d:%02d</string>
-    <string name="date_time_format">%04d/%02d/%02d %02d:%02d</string>
+    <string name="date_time_format">%04d-%02d-%02dT%02d:%02d</string>
 
     <!-- strings for main menu cards -->
     <string name="questionnaire">問卷</string>

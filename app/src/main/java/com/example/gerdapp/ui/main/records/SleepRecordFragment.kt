@@ -3,6 +3,7 @@ package com.example.gerdapp.ui.main.records
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,10 +18,18 @@ import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSleepRecordBinding
 import com.example.gerdapp.ui.Time
+import com.example.gerdapp.ui.TimeRecord
 import com.example.gerdapp.ui.initTime
 import com.example.gerdapp.ui.resetTime
 import com.example.gerdapp.viewmodel.SleepViewModel
 import com.example.gerdapp.viewmodel.SleepViewModelFactory
+import java.io.BufferedReader
+import java.io.DataOutputStream
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import java.net.URLEncoder
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,6 +47,8 @@ class SleepRecordFragment: Fragment() {
 
     private object SleepRecord {
         var note: String? = null
+        var startTime: TimeRecord = TimeRecord()
+        var endTime: TimeRecord = TimeRecord()
     }
 
     private fun isEntryValid(): Boolean {
@@ -101,9 +112,12 @@ class SleepRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
-                addNewItem()
-                resetTime()
-                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+                // addNewItem()
+                if(isEntryValid()){
+                    postRecordApi().start()
+                    resetTime()
+                    findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+                }
             }
 
             noteCard.addNoteButton.setOnClickListener {
@@ -122,6 +136,67 @@ class SleepRecordFragment: Fragment() {
 
         initDateTimeText()
         setDateTimePicker()
+    }
+
+    private fun postRecordApi(): Thread {
+        return Thread {
+            try {
+                val url = URL(getString(R.string.post_sleep_record_url, getString(R.string.server_url)))
+                val connection = url.openConnection() as HttpURLConnection
+
+                connection.requestMethod = "POST"
+                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8")
+                connection.setRequestProperty("Accept", "application/json")
+                connection.doOutput = true
+                connection.doInput = true
+
+                val outputSystem = connection.outputStream
+                val outputStream = DataOutputStream(outputSystem)
+
+                val data: ByteArray = ("{\n" +
+                        "    \"CaseNumber\": \"T010\",\n" +
+                        "     \"StartDate\": \"2022-08-24T12:43\",\n" +
+                        "     \"EndDate\": \"2022-08-24T12:44\",\n" +
+                        "     \"SleepNote\": \"備註\"\n" +
+                        "}\n").encodeToByteArray()
+
+                outputStream.write(data)
+                outputStream.flush()
+                outputStream.close()
+                outputSystem.close()
+
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val reader = BufferedReader(InputStreamReader(inputSystem))
+                val line: String = reader.readLine()
+                postUpdateUi(line)
+                inputStreamReader.close()
+                inputSystem.close()
+            }catch (e: FileNotFoundException) {
+                Log.e("API Connection", "Service not found at ${e.message}")
+                Log.e("API Connection", e.toString())
+            }
+        }
+    }
+
+    private fun recordToJson(): String {
+        var jsonString = ""
+
+
+
+        return jsonString
+    }
+
+    private fun postUpdateUi(line: String) {
+        activity?.runOnUiThread {
+            binding.apply {
+                if(line == "1") {
+                    Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
+                }else {
+                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun validateInputText(textView: TextView): Boolean {
