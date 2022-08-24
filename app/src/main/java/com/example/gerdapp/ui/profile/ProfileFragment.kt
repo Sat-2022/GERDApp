@@ -42,7 +42,9 @@ class ProfileFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        testApi().start()
+
+        testSleepRecordApi().start()
+        //testApi().start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -71,6 +73,36 @@ class ProfileFragment: Fragment() {
 
 //                postApi().start()
             }
+        }
+    }
+
+    private fun testSleepRecordApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), "T010"))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepData>>() {}.type
+                val sleepData: List<SleepData> = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    val sleepRecord: SleepData = sleepData?.first()
+                    activity?.runOnUiThread {
+                        binding.apply {
+                            testApi.text = sleepRecord.toString()
+                        }
+                    }
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$questions")
+            } else
+                Log.e("API Connection", "failed")
         }
     }
 
