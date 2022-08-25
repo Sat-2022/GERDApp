@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
+import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentSleepRecordBinding
 import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.ui.initTime
@@ -37,6 +38,12 @@ class SleepRecordFragment: Fragment() {
         var endTime: TimeRecord = TimeRecord()
     }
 
+    private fun setRecord() {
+        SleepRecord.note = null
+        SleepRecord.startTime = TimeRecord()
+        SleepRecord.endTime = TimeRecord()
+    }
+
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
@@ -47,11 +54,13 @@ class SleepRecordFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
+//        setRecord()
     }
 
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
+//        setRecord()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -80,7 +89,6 @@ class SleepRecordFragment: Fragment() {
 
             completeButton.setOnClickListener {
                 postRecordApi().start()
-                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
 
             noteCard.addNoteButton.setOnClickListener {
@@ -162,8 +170,11 @@ class SleepRecordFragment: Fragment() {
         activity?.runOnUiThread {
             binding.apply {
                 if(line == "\"1\"") {
+                    setRecord()
                     Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
+                    findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
                 }else {
+                    setRecord()
                     Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
                 }
             }
@@ -172,7 +183,7 @@ class SleepRecordFragment: Fragment() {
 
     private fun validateInputText(textView: TextView): Boolean {
         if(textView.text.length > 20) {
-            textView.error = "超過字數限制"
+            textView.error = getString(R.string.input_exceed_number_limit)
             return false
         }
         return true

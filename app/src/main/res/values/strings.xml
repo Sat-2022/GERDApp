@@ -11,9 +11,13 @@
 
     <!-- get record urls -->
     <string name="get_sleep_record_url">http://%s/GERD_API/api/SleepRecord/%s</string>
+    <string name="get_food_record_url">http://%s/GERD_API/api/FoodRecord/%s</string>
+    <string name="get_event_record_url">http://%s/GERD_API/api/ActivityRecord/%s</string>
 
     <!-- post record urls -->
     <string name="post_sleep_record_url">http://%s/GERD_API/api/SleepRecord/</string>
+    <string name="post_food_record_url">http://%s/GERD_API/api/FoodRecord/</string>
+    <string name="post_event_record_url">http://%s/GERD_API/api/ActivityRecord/</string>
 
     <!-- strings for login -->
     <string name="login_headline">已經有帳號嗎？</string>
@@ -131,25 +135,11 @@
     <string name="weekly_questionnaire">每週問卷</string>
     <string name="daily_questionnaire">每日問卷</string>
 
-
     <!-- questionnaire note url -->
-    <string name="questionnaire_note_title">您已完成此次問卷內容，感謝您的回覆！\n</string>
     <string name="questionnaire_note_additional_text">系統將於 %d 秒內自動跳回</string>
     <string name="questionnaire_note_leave">離開</string>
-    <string name="no1">褲子不要穿太緊,可以減少胃食道逆流喔\n</string>
-    <string name="no2">睡前兩小時不要吃東西可以減少夜間逆流\n</string>
-    <string name="no3">咖啡跟茶不要喝太多可以控制逆流\n</string>
-    <string name="no4">腹式呼吸法可以改善胃食道逆流\n</string>
-    <string name="no5">睡覺不要右側躺,比較不會逆流喔\n</string>
-    <string name="no6">避免刺激辛辣的食物,火燒心就不會再困擾你\n</string>
-    <string name="no7">菸酒不上手,逆流不會來\n</string>
-    <string name="no8">心窩口疼痛時,慢慢深呼吸,放輕鬆\n</string>
-    <string name="no9">運動減重,趕走逆流\n</string>
-    <string name="no10">吃的巧,睡的好,放寬心,逆流不再來\n</string>
-    <string name="no11">盡量避免食用紅酒,巧克力,薄荷,柑橘類,來減少逆流症狀\n</string>
-    <string name="no12">晚上睡覺會被逆流干擾的話,可以床頭墊個枕頭抬高一些,減少逆流\n</string>
-    <string name="no13">吃東西不要吃太飽,逆流就會少\n</string>
-    <string name="no14">逆流發生的時候不要怕,依照醫囑服用藥物就可以改善了\n</string>
-    <string name="no15">掌握逆流,快樂生活\n</string>
+
+    <string name="input_exceed_number_limit">超過字數限制</string>
+    <string name="input_null">項目欄位不得為空</string>
 
 </resources>
