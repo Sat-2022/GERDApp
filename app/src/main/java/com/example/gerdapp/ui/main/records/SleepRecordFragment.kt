@@ -11,26 +11,18 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSleepRecordBinding
-import com.example.gerdapp.ui.Time
-import com.example.gerdapp.ui.TimeRecord
+import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.ui.initTime
-import com.example.gerdapp.ui.resetTime
-import com.example.gerdapp.viewmodel.SleepViewModel
-import com.example.gerdapp.viewmodel.SleepViewModelFactory
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.net.URLEncoder
-import java.text.SimpleDateFormat
 import java.util.*
 
 class SleepRecordFragment: Fragment() {
@@ -39,35 +31,10 @@ class SleepRecordFragment: Fragment() {
 
     private var bottomNavigationViewVisibility = View.GONE
 
-    private val viewModel: SleepViewModel by activityViewModels {
-        SleepViewModelFactory(
-            (activity?.application as BasicApplication).sleepDatabase.sleepDao()
-        )
-    }
-
     private object SleepRecord {
         var note: String? = null
         var startTime: TimeRecord = TimeRecord()
         var endTime: TimeRecord = TimeRecord()
-    }
-
-    private fun isEntryValid(): Boolean {
-        return viewModel.isEntryValid(
-            binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
-            binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString()
-        )
-    }
-
-    private fun addNewItem(){
-        if(isEntryValid()) {
-            viewModel.addSleepRecord(
-                binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
-                binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString()
-            )
-            Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
-        }
     }
 
     private fun setBottomNavigationVisibility() {
@@ -112,12 +79,8 @@ class SleepRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
-                // addNewItem()
-                if(isEntryValid()){
-                    postRecordApi().start()
-                    resetTime()
-                    findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
-                }
+                postRecordApi().start()
+                findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
             }
 
             noteCard.addNoteButton.setOnClickListener {
@@ -138,60 +101,68 @@ class SleepRecordFragment: Fragment() {
         setDateTimePicker()
     }
 
+    private fun isRecordEmpty(): Boolean {
+        return SleepRecord.startTime.isTimeRecordEmpty() || SleepRecord.endTime.isTimeRecordEmpty()
+    }
+
     private fun postRecordApi(): Thread {
         return Thread {
-            try {
-                val url = URL(getString(R.string.post_sleep_record_url, getString(R.string.server_url)))
-                val connection = url.openConnection() as HttpURLConnection
+            if(!isRecordEmpty()){
+                try {
+                    val url = URL(
+                        getString(
+                            R.string.post_sleep_record_url,
+                            getString(R.string.server_url)
+                        )
+                    )
+                    val connection = url.openConnection() as HttpURLConnection
 
-                connection.requestMethod = "POST"
-                connection.setRequestProperty("Content-Type", "application/json;charset=UTF-8")
-                connection.setRequestProperty("Accept", "application/json")
-                connection.doOutput = true
-                connection.doInput = true
+                    connection.requestMethod = "POST"
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    connection.setRequestProperty("Accept", "application/json")
+                    connection.doOutput = true
+                    connection.doInput = true
 
-                val outputSystem = connection.outputStream
-                val outputStream = DataOutputStream(outputSystem)
+                    val outputSystem = connection.outputStream
+                    val outputStream = DataOutputStream(outputSystem)
 
-                val data: ByteArray = ("{\n" +
-                        "    \"CaseNumber\": \"T010\",\n" +
-                        "     \"StartDate\": \"2022-08-24T12:43\",\n" +
-                        "     \"EndDate\": \"2022-08-24T12:44\",\n" +
-                        "     \"SleepNote\": \"備註\"\n" +
-                        "}\n").encodeToByteArray()
+                    val data: ByteArray = recordToJson()
+                    outputStream.write(data)
+                    outputStream.flush()
+                    outputStream.close()
+                    outputSystem.close()
 
-                outputStream.write(data)
-                outputStream.flush()
-                outputStream.close()
-                outputSystem.close()
-
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val reader = BufferedReader(InputStreamReader(inputSystem))
-                val line: String = reader.readLine()
-                postUpdateUi(line)
-                inputStreamReader.close()
-                inputSystem.close()
-            }catch (e: FileNotFoundException) {
-                Log.e("API Connection", "Service not found at ${e.message}")
-                Log.e("API Connection", e.toString())
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val reader = BufferedReader(InputStreamReader(inputSystem))
+                    val line: String = reader.readLine()
+                    postUpdateUi(line)
+                    inputStreamReader.close()
+                    inputSystem.close()
+                } catch (e: FileNotFoundException) {
+                    Log.e("API Connection", "Service not found at ${e.message}")
+                    Log.e("API Connection", e.toString())
+                }
             }
         }
     }
 
-    private fun recordToJson(): String {
-        var jsonString = ""
+    private fun recordToJson(): ByteArray {
+        var recordString = "{"
+        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SleepRecord.startTime.YEAR, SleepRecord.startTime.MONTH+1, SleepRecord.startTime.DAY, SleepRecord.startTime.HOUR, SleepRecord.startTime.MIN, SleepRecord.startTime.SEC) + "\", "
+        recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, SleepRecord.endTime.YEAR, SleepRecord.endTime.MONTH+1, SleepRecord.endTime.DAY, SleepRecord.endTime.HOUR, SleepRecord.endTime.MIN, SleepRecord.endTime.SEC) + "\", "
+        recordString += "\"SleepNote\": \"${SleepRecord.note}\""
+        recordString += "}"
 
-
-
-        return jsonString
+        return recordString.encodeToByteArray()
     }
 
     private fun postUpdateUi(line: String) {
         activity?.runOnUiThread {
             binding.apply {
-                if(line == "1") {
-                    Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
+                if(line == "\"1\"") {
+                    Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
                 }else {
                     Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
                 }
@@ -210,72 +181,63 @@ class SleepRecordFragment: Fragment() {
     private fun setDateTimePicker() {
         binding.apply {
             timeCard.startDate.setOnClickListener {
-                DatePickerDialog(requireContext(), { _, year, month, date ->
-                    run {
-                        val format = getString(R.string.date_format, year, month+1, date)
-                        timeCard.startDate.text = format
-                        Time.year = year
-                        Time.month = month
-                        Time.date = date
-                    }
-                }, Time.year, Time.month, Time.date).show()
+                setDatePicker(timeCard.startDate, SleepRecord.startTime, 0).show()
             }
 
             timeCard.endDate.setOnClickListener {
-                DatePickerDialog(requireContext(), { _, year, month, date ->
-                    run {
-                        val format = getString(R.string.date_format, year, month+1, date)
-                        timeCard.endDate.text = format
-                        Time.year = year
-                        Time.month = month
-                        Time.date = date
-                    }
-                }, Time.year, Time.month, Time.date).show()
+                setDatePicker(timeCard.endDate, SleepRecord.endTime).show()
             }
 
             timeCard.startTime.setOnClickListener {
-                TimePickerDialog(requireContext(), { _, hour, min ->
-                    run {
-                        val format = getString(R.string.time_format, hour, min)
-                        timeCard.startTime.text = format
-                        Time.hour = hour
-                        Time.min = min
-                        Time.sec = 0
-                    }
-                }, Time.hour, Time.min, true).show()
+                setTimePicker(timeCard.startTime, SleepRecord.startTime).show()
             }
 
             timeCard.endTime.setOnClickListener {
-                TimePickerDialog(requireContext(), { _, hour, min ->
-                    run {
-                        val format = getString(R.string.time_format, hour, min)
-                        timeCard.endTime.text = format
-                        Time.hour = hour
-                        Time.min = min
-                        Time.sec = 0
-                    }
-                }, Time.hour, Time.min, true).show()
+                setTimePicker(timeCard.endTime, SleepRecord.endTime).show()
             }
         }
     }
 
+    private fun setDatePicker(textView: TextView, timeRecord: TimeRecord, tag: Int = 0): DatePickerDialog {
+        val datePicker = DatePickerDialog(requireContext(), { _, year, month, day ->
+            run {
+                textView.text = getString(R.string.date_format, year, month+1, day)
+                timeRecord.YEAR = year
+                timeRecord.MONTH = month
+                timeRecord.DAY = day
+            }
+        }, timeRecord.YEAR, timeRecord.MONTH, timeRecord.DAY)
+
+        return datePicker
+    }
+
+    private fun setTimePicker(textView: TextView, timeRecord: TimeRecord, tag: Int = 0): TimePickerDialog {
+        val timePicker = TimePickerDialog(requireContext(), { _, hour, min ->
+            run {
+                textView.text = getString(R.string.time_format, hour, min)
+                timeRecord.HOUR = hour
+                timeRecord.MIN = min
+                timeRecord.SEC = 0
+            }
+        }, timeRecord.HOUR, timeRecord.MIN, true)
+
+        return timePicker
+    }
+
     private fun initDateTimeText() {
         val calendar = Calendar.getInstance()
-        val current = calendar.time // TODO: Check if the time match the device time zone
 
-        val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
-        val currentDate = formatDate.format(current)
         binding.apply {
-            timeCard.startDate.text = currentDate.toString()
-            timeCard.endDate.text = currentDate.toString()
+            timeCard.startDate.text = getString(R.string.date_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+            timeCard.endDate.text = getString(R.string.date_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+            timeCard.startTime.text = getString(R.string.time_format, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
+            timeCard.endTime.text = getString(R.string.time_format, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1)
         }
 
-        val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
-        val currentTime = formatTime.format(current)
-        binding.apply {
-            timeCard.startTime.text = currentTime.toString()
-            timeCard.endTime.text = currentTime.toString()
-        }
+        SleepRecord.startTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+            calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], calendar[Calendar.SECOND])
+        SleepRecord.endTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+            calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1, calendar[Calendar.SECOND])
 
         initTime(calendar)
     }
