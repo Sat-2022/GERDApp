@@ -2,15 +2,19 @@ package com.example.gerdapp.ui.questionnaire
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentQuestionnaireBinding
+import com.google.android.material.snackbar.Snackbar
+
 
 class QuestionnaireFragment: Fragment() {
 
@@ -23,6 +27,8 @@ class QuestionnaireFragment: Fragment() {
     private lateinit var webViewClient: WebViewClient
     private lateinit var webSettings: WebSettings
     private lateinit var cookieManager: CookieManager
+
+    private val WEB_VIEW_TIME_OUT: Long = 10000 // 10 sec
 
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
@@ -56,7 +62,25 @@ class QuestionnaireFragment: Fragment() {
         webView.addJavascriptInterface(WebInterface(context), "android")
 
         // Show website within the app
-        webViewClient = WebViewClient()
+        webViewClient = object : WebViewClient() {
+
+            // Detect when url changes
+            override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
+                super.doUpdateVisitedHistory(view, url, isReload)
+
+                if(isWebViewFinished(url)) {
+                    val snackBar = Snackbar.make(binding.root, getString(R.string.questionnaire_note_additional_text, WEB_VIEW_TIME_OUT/1000), Snackbar.LENGTH_LONG)
+                    snackBar.setAction(R.string.questionnaire_note_leave) {
+                        findNavController().navigate(R.id.action_questionnaireFragment_to_calendarFragment)
+                    }
+                    snackBar.show()
+
+                    Handler().postDelayed({
+                                findNavController().navigate(R.id.action_questionnaireFragment_to_calendarFragment)
+                            }, WEB_VIEW_TIME_OUT)
+                }
+            }
+        }
         webView.webViewClient = webViewClient
 
         webSettings = webView.settings
@@ -76,5 +100,14 @@ class QuestionnaireFragment: Fragment() {
         fun showToast(toast: String) {
             Toast.makeText(context, toast, Toast.LENGTH_SHORT).show()
         }
+    }
+
+    private fun isWebViewFinished(url: String?): Boolean {
+        if(url != null) {
+            if (url.length > 52) {
+                return true
+            }
+        }
+        return false
     }
 }

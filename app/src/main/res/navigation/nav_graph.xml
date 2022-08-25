@@ -84,7 +84,11 @@
         android:id="@+id/navigation_questionnaire"
         android:name="com.example.gerdapp.ui.questionnaire.QuestionnaireFragment"
         android:label="fragment_questionnaire"
-        tools:layout="@layout/fragment_questionnaire" />
+        tools:layout="@layout/fragment_questionnaire" >
+        <action
+            android:id="@+id/action_questionnaireFragment_to_calendarFragment"
+            app:destination="@id/navigation_calendar" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.gerdapp.ui.profile.ProfileFragment"
