@@ -11,48 +11,62 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.gerdapp.*
+import com.example.gerdapp.BasicApplication
+import com.example.gerdapp.MainActivity
+import com.example.gerdapp.R
 import com.example.gerdapp.data.model.TimeRecord
-import com.example.gerdapp.databinding.FragmentFoodRecordBinding
+import com.example.gerdapp.databinding.FragmentEventRecordBinding
+import com.example.gerdapp.ui.Time
 import com.example.gerdapp.ui.initTime
+import com.example.gerdapp.viewmodel.OthersViewModel
+import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
+import java.text.SimpleDateFormat
 import java.util.*
 
-class FoodRecordFragment: Fragment() {
-    private var _binding: FragmentFoodRecordBinding? = null
+class EventRecordFragment: Fragment() {
+    private var _binding: FragmentEventRecordBinding? = null
     private val binding get() = _binding!!
-    
+
     private var bottomNavigationViewVisibility = View.GONE
 
-    private object FoodRecord {
-        var food: String? = null
+    private val viewModel: OthersViewModel by activityViewModels {
+        OthersViewModelFactory(
+            (activity?.application as BasicApplication).othersDatabase.othersDao()
+        )
+    }
+
+    private object EventRecord {
+        var event: String? = null
         var note: String? = null
         var startTime: TimeRecord = TimeRecord()
         var endTime: TimeRecord = TimeRecord()
     }
 
     private fun setRecord() {
-        FoodRecord.food = null
-        FoodRecord.note = null
-        FoodRecord.startTime = TimeRecord()
-        FoodRecord.endTime = TimeRecord()
+        EventRecord.event = null
+        EventRecord.note = null
+        EventRecord.startTime = TimeRecord()
+        EventRecord.endTime = TimeRecord()
     }
+
 
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
         mainActivity.setActionBarExpanded(false)
     }
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(false)
+        setHasOptionsMenu(true)
         setBottomNavigationVisibility()
     }
 
@@ -63,7 +77,7 @@ class FoodRecordFragment: Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
-        _binding = FragmentFoodRecordBinding.inflate(inflater, container, false)
+        _binding = FragmentEventRecordBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -72,13 +86,13 @@ class FoodRecordFragment: Fragment() {
 
         binding.apply {
             noteCard.addNote.userInputText.hint = getString(R.string.add_note)
-            foodCard.addFood.userInputText.hint = getString(R.string.food_record_add_food)
+            othersCard.addOthers.userInputText.hint = getString(R.string.event_record_add_others)
 
-            foodCard.addFood.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
+            othersCard.addOthers.userInputText.setOnEditorActionListener { textView, actionId, keyEvent ->
                 return@setOnEditorActionListener when(actionId) {
                     EditorInfo.IME_ACTION_DONE -> {
                         if(validateInputText(textView)) {
-                            FoodRecord.food = textView.text.toString()
+                            EventRecord.event = textView.text.toString()
                         }
                         false
                     }
@@ -90,7 +104,7 @@ class FoodRecordFragment: Fragment() {
                 return@setOnEditorActionListener when(actionId) {
                     EditorInfo.IME_ACTION_DONE -> {
                         if(validateInputText(textView)) {
-                            FoodRecord.note = textView.text.toString()
+                            EventRecord.note = textView.text.toString()
                         }
                         false
                     }
@@ -102,9 +116,9 @@ class FoodRecordFragment: Fragment() {
                 postRecordApi().start()
             }
 
-            foodCard.addFoodButton.setOnClickListener {
-                foodCard.addFood.layout.visibility = View.VISIBLE
-                foodCard.addFoodButton.visibility = View.GONE
+            othersCard.addOthersButton.setOnClickListener {
+                othersCard.addOthers.layout.visibility = View.VISIBLE
+                othersCard.addOthersButton.visibility = View.GONE
             }
 
             noteCard.addNoteButton.setOnClickListener {
@@ -112,12 +126,12 @@ class FoodRecordFragment: Fragment() {
                 noteCard.addNoteButton.visibility = View.GONE
             }
 
-            foodCard.addFood.cancel.setOnClickListener {
-                foodCard.addFood.layout.visibility = View.GONE
-                foodCard.addFoodButton.visibility = View.VISIBLE
-                foodCard.addFood.userInputText.text = null
-                foodCard.addFood.userInputText.error = null
-                FoodRecord.food = null
+            othersCard.addOthers.cancel.setOnClickListener {
+                othersCard.addOthers.layout.visibility = View.GONE
+                othersCard.addOthersButton.visibility = View.VISIBLE
+                othersCard.addOthers.userInputText.text = null
+                othersCard.addOthers.userInputText.error = null
+                EventRecord.event = null
             }
 
             noteCard.addNote.cancel.setOnClickListener {
@@ -125,7 +139,7 @@ class FoodRecordFragment: Fragment() {
                 noteCard.addNoteButton.visibility = View.VISIBLE
                 noteCard.addNote.userInputText.text = null
                 noteCard.addNote.userInputText.error = null
-                FoodRecord.note = null
+                EventRecord.note = null
             }
         }
 
@@ -134,14 +148,14 @@ class FoodRecordFragment: Fragment() {
     }
 
     private fun isRecordEmpty(): Boolean {
-        return FoodRecord.food.isNullOrBlank() || FoodRecord.startTime.isTimeRecordEmpty() || FoodRecord.endTime.isTimeRecordEmpty()
+        return EventRecord.event.isNullOrBlank() || EventRecord.startTime.isTimeRecordEmpty() || EventRecord.endTime.isTimeRecordEmpty()
     }
 
     private fun postRecordApi(): Thread {
         return Thread {
             if(!isRecordEmpty()){
                 try {
-                    val url = URL(getString(R.string.post_food_record_url, getString(R.string.server_url)))
+                    val url = URL(getString(R.string.post_event_record_url, getString(R.string.server_url)))
                     val connection = url.openConnection() as HttpURLConnection
 
                     connection.requestMethod = "POST"
@@ -176,7 +190,7 @@ class FoodRecordFragment: Fragment() {
             } else {
                 activity?.runOnUiThread {
                     binding.apply {
-                        foodCard.addFood.userInputText.error = getString(R.string.input_null)
+                        othersCard.addOthers.userInputText.error = getString(R.string.input_null)
                     }
                 }
             }
@@ -186,10 +200,10 @@ class FoodRecordFragment: Fragment() {
     private fun recordToJson(): ByteArray {
         var recordString = "{"
         recordString += "\"CaseNumber\": \"T010\", "
-        recordString += "\"FoodItem\": \"${FoodRecord.food}\","
-        recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, FoodRecord.startTime.YEAR, FoodRecord.startTime.MONTH+1, FoodRecord.startTime.DAY, FoodRecord.startTime.HOUR, FoodRecord.startTime.MIN, FoodRecord.startTime.SEC) + "\", "
-        recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, FoodRecord.endTime.YEAR, FoodRecord.endTime.MONTH+1, FoodRecord.endTime.DAY, FoodRecord.endTime.HOUR, FoodRecord.endTime.MIN, FoodRecord.endTime.SEC) + "\", "
-        recordString += "\"FoodNote\": \"${FoodRecord.note}\""
+        recordString += "\"ActivityItem\": \"${EventRecord.event}\","
+        recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, EventRecord.startTime.YEAR, EventRecord.startTime.MONTH+1, EventRecord.startTime.DAY, EventRecord.startTime.HOUR, EventRecord.startTime.MIN, EventRecord.startTime.SEC) + "\", "
+        recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, EventRecord.endTime.YEAR, EventRecord.endTime.MONTH+1, EventRecord.endTime.DAY, EventRecord.endTime.HOUR, EventRecord.endTime.MIN, EventRecord.endTime.SEC) + "\", "
+        recordString += "\"ActivityNote\": \"${EventRecord.note}\""
         recordString += "}"
 
         return recordString.encodeToByteArray()
@@ -212,7 +226,7 @@ class FoodRecordFragment: Fragment() {
 
     private fun validateInputText(textView: TextView): Boolean {
         if(textView.text.length > 20) {
-            textView.error = getString(R.string.input_exceed_number_limit)
+            textView.error = "超過字數限制"
             return false
         }
         return true
@@ -221,19 +235,19 @@ class FoodRecordFragment: Fragment() {
     private fun setDateTimePicker() {
         binding.apply {
             timeCard.startDate.setOnClickListener {
-                setDatePicker(timeCard.startDate, FoodRecord.startTime, 0).show()
+                setDatePicker(timeCard.startDate, EventRecord.startTime, 0).show()
             }
 
             timeCard.endDate.setOnClickListener {
-                setDatePicker(timeCard.endDate, FoodRecord.endTime).show()
+                setDatePicker(timeCard.endDate, EventRecord.endTime, 0).show()
             }
 
             timeCard.startTime.setOnClickListener {
-                setTimePicker(timeCard.startTime, FoodRecord.startTime).show()
+                setTimePicker(timeCard.startTime, EventRecord.startTime, 0).show()
             }
 
             timeCard.endTime.setOnClickListener {
-                setTimePicker(timeCard.endTime, FoodRecord.endTime).show()
+                setTimePicker(timeCard.endTime, EventRecord.endTime, 0).show()
             }
         }
     }
@@ -274,9 +288,9 @@ class FoodRecordFragment: Fragment() {
             timeCard.endTime.text = getString(R.string.time_format, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1)
         }
 
-        FoodRecord.startTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+        EventRecord.startTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
             calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], calendar[Calendar.SECOND])
-        FoodRecord.endTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+        EventRecord.endTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
             calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1, calendar[Calendar.SECOND])
     }
 }

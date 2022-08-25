@@ -73,9 +73,9 @@
         tools:layout="@layout/fragment_chart" />
     <fragment
         android:id="@+id/navigation_others"
-        android:name="com.example.gerdapp.ui.main.records.OthersRecordFragment"
+        android:name="com.example.gerdapp.ui.main.records.EventRecordFragment"
         android:label="@string/others"
-        tools:layout="@layout/fragment_others_record" >
+        tools:layout="@layout/fragment_event_record" >
         <action
             android:id="@+id/action_othersFragment_to_mainFragment"
             app:destination="@id/navigation_main" />

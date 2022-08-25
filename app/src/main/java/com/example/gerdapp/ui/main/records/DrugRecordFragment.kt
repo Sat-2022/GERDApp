@@ -15,16 +15,11 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Drug
-import com.example.gerdapp.data.Others
 import com.example.gerdapp.databinding.FragmentDrugRecordBinding
-import com.example.gerdapp.databinding.FragmentOthersRecordBinding
 import com.example.gerdapp.ui.Time
 import com.example.gerdapp.ui.initTime
 import com.example.gerdapp.viewmodel.DrugViewModel
 import com.example.gerdapp.viewmodel.DrugViewModelFactory
-import com.example.gerdapp.viewmodel.OthersViewModel
-import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.text.SimpleDateFormat
 import java.util.*
 
