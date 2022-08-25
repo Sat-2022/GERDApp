@@ -2,8 +2,6 @@ package com.example.gerdapp.ui.main
 
 import android.app.AlertDialog
 import android.graphics.Color
-import android.graphics.ColorMatrixColorFilter
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,20 +10,13 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.*
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.*
 import com.example.gerdapp.adapter.CardItemAdapter
-import com.example.gerdapp.data.Result
 import com.example.gerdapp.databinding.FragmentMainBinding
-import com.example.gerdapp.ui.main.records.SymptomsRecordFragment
 import com.example.gerdapp.viewmodel.*
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -34,7 +25,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainFragment : Fragment() {
 
@@ -43,7 +33,8 @@ class MainFragment : Fragment() {
 
     private var bottomNavigationViewVisibility = View.VISIBLE
 
-    private lateinit var recyclerView: RecyclerView
+    private lateinit var mainRecyclerView: RecyclerView
+    private lateinit var notificationRecyclerView: RecyclerView
 
     private var returnMachine: ReturnMachine? = null
 
@@ -141,8 +132,7 @@ class MainFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerView = binding.mainRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(context)
+        mainRecyclerView = binding.mainRecyclerView
 
         var sleepRecentData = "sleep data"
 
@@ -187,7 +177,10 @@ class MainFragment : Fragment() {
             recentRecord
         }
 
-        recyclerView.adapter = adapter
+        mainRecyclerView.adapter = adapter
+
+        notificationRecyclerView = binding.notificationRecyclerView
+
 
         binding.apply {
             val calendar = Calendar.getInstance()
