@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Sleep
 import com.example.gerdapp.databinding.FragmentSleepRecordBinding
 import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.ui.initTime

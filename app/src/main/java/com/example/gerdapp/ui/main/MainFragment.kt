@@ -11,7 +11,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.*
 import com.example.gerdapp.adapter.CardItemAdapter
@@ -77,12 +76,6 @@ class MainFragment : Fragment() {
         Toast.makeText(context, "record added", Toast.LENGTH_SHORT).show()
     } else {
         Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
-    }
-
-    private val sleepViewModel: SleepViewModel by activityViewModels {
-        SleepViewModelFactory(
-            (activity?.application as BasicApplication).sleepDatabase.sleepDao()
-        )
     }
 
 //    private val othersViewModel: OthersViewModel by activityViewModels {

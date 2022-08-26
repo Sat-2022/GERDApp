@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
 import com.example.gerdapp.data.CardDataSource
 import com.example.gerdapp.data.CardItem
-import com.example.gerdapp.viewmodel.SleepViewModel
 
 class CardItemAdapter(
     private val clickListener: (CardItem) -> Unit,
