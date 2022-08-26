@@ -3,6 +3,7 @@ package com.example.gerdapp.ui.questionnaire
 import android.content.Context
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,10 +64,11 @@ class QuestionnaireFragment: Fragment() {
 
         // Show website within the app
         webViewClient = object : WebViewClient() {
-
             // Detect when url changes
             override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
                 super.doUpdateVisitedHistory(view, url, isReload)
+
+                Log.e("Questionnaire", url.toString())
 
                 if(isWebViewFinished(url)) {
                     val snackBar = Snackbar.make(binding.root, getString(R.string.questionnaire_note_additional_text, WEB_VIEW_TIME_OUT/1000), Snackbar.LENGTH_LONG)
@@ -104,7 +106,7 @@ class QuestionnaireFragment: Fragment() {
 
     private fun isWebViewFinished(url: String?): Boolean {
         if(url != null) {
-            if (url.length > 52) {
+            if (url.length > 55) {
                 return true
             }
         }
