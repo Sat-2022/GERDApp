@@ -67,7 +67,7 @@
     <string name="medicine">用藥</string>
     <string name="sleep">平躺睡眠</string>
     <string name="food">飲食</string>
-    <string name="others">其他活動</string>
+    <string name="event">其他活動</string>
     <string name="chart">事件內容查詢</string>
 
     <!-- strings for time record -->
@@ -96,7 +96,7 @@
     <string name="sleep_record_added_successfully">新增睡眠成功</string>
     <string name="sleep_record_added_failed">新增睡眠失敗</string>
 
-    <!-- string for other fragment -->
+    <!-- string for event fragment -->
     <string name="event_record_title">其他活動或事件</string>
     <string name="event_record_others_headline">活動項目</string>
     <string name="event_record_add_others">新增活動項目</string>

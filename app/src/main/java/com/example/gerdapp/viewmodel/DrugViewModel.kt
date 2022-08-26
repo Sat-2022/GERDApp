@@ -3,8 +3,6 @@ package com.example.gerdapp.viewmodel
 import androidx.lifecycle.*
 import com.example.gerdapp.data.Drug
 import com.example.gerdapp.data.DrugDao
-import com.example.gerdapp.data.Others
-import com.example.gerdapp.data.OthersDao
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 

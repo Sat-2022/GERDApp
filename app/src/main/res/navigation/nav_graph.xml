@@ -24,8 +24,8 @@
             android:id="@+id/action_mainFragment_self"
             app:destination="@id/navigation_main" />
         <action
-            android:id="@+id/action_mainFragment_to_othersFragment"
-            app:destination="@id/navigation_others" />
+            android:id="@+id/action_mainFragment_to_eventFragment"
+            app:destination="@id/navigation_event" />
         <action
             android:id="@+id/action_mainFragment_to_drugRecordFragment"
             app:destination="@id/navigation_drug" />
@@ -72,12 +72,12 @@
         android:label="fragment_chart"
         tools:layout="@layout/fragment_chart" />
     <fragment
-        android:id="@+id/navigation_others"
+        android:id="@+id/navigation_event"
         android:name="com.example.gerdapp.ui.main.records.EventRecordFragment"
-        android:label="@string/others"
+        android:label="@string/event"
         tools:layout="@layout/fragment_event_record" >
         <action
-            android:id="@+id/action_othersFragment_to_mainFragment"
+            android:id="@+id/action_eventFragment_to_mainFragment"
             app:destination="@id/navigation_main" />
     </fragment>
     <fragment

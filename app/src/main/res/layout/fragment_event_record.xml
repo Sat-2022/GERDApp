@@ -22,7 +22,7 @@
 
             <include
                 android:id="@+id/others_card"
-                layout="@layout/card_others"/>
+                layout="@layout/card_event"/>
 
             <include layout="@layout/card_divider" />
 

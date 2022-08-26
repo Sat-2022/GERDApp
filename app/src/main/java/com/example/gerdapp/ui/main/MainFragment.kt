@@ -154,7 +154,7 @@ class MainFragment : Fragment() {
                 R.string.medicine -> MainFragmentDirections.actionMainFragmentToDrugRecordFragment()
                 R.string.food -> MainFragmentDirections.actionMainFragmentToFoodFragment()
                 R.string.sleep -> MainFragmentDirections.actionMainFragmentToSleepFragment()
-                R.string.others -> MainFragmentDirections.actionMainFragmentToOthersFragment()
+                R.string.event -> MainFragmentDirections.actionMainFragmentToEventFragment()
                 else -> MainFragmentDirections.actionMainFragmentSelf()
             }
             findNavController().navigate(action)

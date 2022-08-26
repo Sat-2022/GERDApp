@@ -18,17 +18,12 @@ import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.databinding.FragmentEventRecordBinding
-import com.example.gerdapp.ui.Time
-import com.example.gerdapp.ui.initTime
-import com.example.gerdapp.viewmodel.OthersViewModel
-import com.example.gerdapp.viewmodel.OthersViewModelFactory
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.SimpleDateFormat
 import java.util.*
 
 class EventRecordFragment: Fragment() {
@@ -36,12 +31,6 @@ class EventRecordFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
-
-    private val viewModel: OthersViewModel by activityViewModels {
-        OthersViewModelFactory(
-            (activity?.application as BasicApplication).othersDatabase.othersDao()
-        )
-    }
 
     private object EventRecord {
         var event: String? = null
@@ -215,7 +204,7 @@ class EventRecordFragment: Fragment() {
                 if(line == "\"1\"") {
                     Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
                     setRecord()
-                    findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
+                    findNavController().navigate(R.id.action_eventFragment_to_mainFragment)
                 }else {
                     setRecord()
                     Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
