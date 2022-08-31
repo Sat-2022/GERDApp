@@ -3,6 +3,7 @@ package com.example.gerdapp.ui.main.records
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +16,19 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
+import com.example.gerdapp.data.Drug
+import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.databinding.FragmentDrugRecordBinding
 import com.example.gerdapp.ui.Time
 import com.example.gerdapp.ui.initTime
 import com.example.gerdapp.viewmodel.DrugViewModel
 import com.example.gerdapp.viewmodel.DrugViewModelFactory
+import java.io.BufferedReader
+import java.io.DataOutputStream
+import java.io.FileNotFoundException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -38,31 +47,15 @@ class DrugRecordFragment: Fragment() {
     private object DrugRecord {
         var drug: String? = null
         var note: String? = null
+        var startTime: TimeRecord = TimeRecord()
+        var endTime: TimeRecord = TimeRecord()
     }
 
-    private fun isEntryValid(): Boolean {
-        return viewModel.isEntryValid(
-            binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
-            binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-            DrugRecord.drug.toString()
-        ) && !isRecordEmpty()
-    }
-
-    private fun isRecordEmpty(): Boolean {
-        return DrugRecord.drug.isNullOrBlank()
-    }
-
-    private fun addNewItem(){
-        if(isEntryValid()) {
-            viewModel.addDrugRecord(
-                binding.timeCard.startDate.text.toString()+" "+binding.timeCard.startTime.text.toString(),
-                binding.timeCard.endDate.text.toString()+" "+binding.timeCard.endTime.text.toString(),
-                DrugRecord.drug.toString()
-            )
-            Toast.makeText(context, R.string.drug_record_added_successfully, Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, R.string.drug_record_added_failed, Toast.LENGTH_SHORT).show()
-        }
+    private fun setRecord() {
+        DrugRecord.drug = null
+        DrugRecord.note = null
+        DrugRecord.startTime = TimeRecord()
+        DrugRecord.endTime = TimeRecord()
     }
 
     private fun setBottomNavigationVisibility() {
@@ -94,7 +87,6 @@ class DrugRecordFragment: Fragment() {
         binding.apply {
             timeCard.endLayout.visibility = View.GONE
 
-
             noteCard.addNote.userInputText.hint = getString(R.string.add_note)
             drugCard.addDrug.userInputText.hint = getString(R.string.drug_record_add_drug)
 
@@ -123,7 +115,7 @@ class DrugRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
-                addNewItem()
+                postRecordApi().start()
                 findNavController().navigate(R.id.action_drugFragment_to_mainFragment)
             }
 
@@ -162,6 +154,82 @@ class DrugRecordFragment: Fragment() {
         setDateTimePicker()
     }
 
+    private fun isRecordEmpty(): Boolean {
+        return DrugRecord.drug.isNullOrBlank() || DrugRecord.startTime.isTimeRecordEmpty() || DrugRecord.endTime.isTimeRecordEmpty()
+    }
+
+    private fun postRecordApi(): Thread {
+        return Thread {
+            if(!isRecordEmpty()){
+                try {
+                    val url = URL(getString(R.string.post_drug_record_url, getString(R.string.server_url)))
+                    val connection = url.openConnection() as HttpURLConnection
+
+                    connection.requestMethod = "POST"
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    connection.setRequestProperty("Accept", "application/json")
+                    connection.doOutput = true
+                    connection.doInput = true
+
+                    val outputSystem = connection.outputStream
+                    val outputStream = DataOutputStream(outputSystem)
+
+                    val data: ByteArray = recordToJson()
+                    outputStream.write(data)
+                    outputStream.flush()
+                    outputStream.close()
+                    outputSystem.close()
+
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val reader = BufferedReader(InputStreamReader(inputSystem))
+                    val line: String = reader.readLine()
+                    postUpdateUi(line)
+                    inputStreamReader.close()
+                    inputSystem.close()
+
+                } catch (e: FileNotFoundException) {
+
+                    Log.e("API Connection", "Service not found at ${e.message}")
+                    Log.e("API Connection", e.toString())
+
+                }
+            } else {
+                activity?.runOnUiThread {
+                    binding.apply {
+                        drugCard.addDrug.userInputText.error = getString(R.string.input_null)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun recordToJson(): ByteArray {
+        var recordString = "{"
+        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"DrugItem\": \"${DrugRecord.drug}\","
+        recordString += "\"MedicineTime\": \"" + getString(R.string.date_time_format, DrugRecord.startTime.YEAR, DrugRecord.startTime.MONTH+1, DrugRecord.startTime.DAY, DrugRecord.startTime.HOUR, DrugRecord.startTime.MIN, DrugRecord.startTime.SEC) + "\", "
+        recordString += "\"DrugNote\": \"${DrugRecord.note}\""
+        recordString += "}"
+
+        return recordString.encodeToByteArray()
+    }
+
+    private fun postUpdateUi(line: String) {
+        activity?.runOnUiThread {
+            binding.apply {
+                if(line == "\"1\"") {
+                    Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
+                    setRecord()
+                    findNavController().navigate(R.id.action_eventFragment_to_mainFragment)
+                }else {
+                    setRecord()
+                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     private fun validateInputText(textView: TextView): Boolean {
         if(textView.text.length > 20) {
             textView.error = "超過字數限制"
@@ -173,73 +241,62 @@ class DrugRecordFragment: Fragment() {
     private fun setDateTimePicker() {
         binding.apply {
             timeCard.startDate.setOnClickListener {
-                DatePickerDialog(requireContext(), { _, year, month, date ->
-                    run {
-                        val format = getString(R.string.date_format, year, month+1, date)
-                        timeCard.startDate.text = format
-                        Time.year = year
-                        Time.month = month
-                        Time.date = date
-                    }
-                }, Time.year, Time.month, Time.date).show()
+                setDatePicker(timeCard.startDate, DrugRecord.startTime, 0).show()
             }
 
             timeCard.endDate.setOnClickListener {
-                DatePickerDialog(requireContext(), { _, year, month, date ->
-                    run {
-                        val format = getString(R.string.date_format, year, month+1, date)
-                        timeCard.endDate.text = format
-                        Time.year = year
-                        Time.month = month
-                        Time.date = date
-                    }
-                }, Time.year, Time.month, Time.date).show()
+                setDatePicker(timeCard.startDate, DrugRecord.endTime, 0).show()
             }
 
             timeCard.startTime.setOnClickListener {
-                TimePickerDialog(requireContext(), { _, hour, min ->
-                    run {
-                        val format = getString(R.string.time_format, hour, min)
-                        timeCard.startTime.text = format
-                        Time.hour = hour
-                        Time.min = min
-                        Time.sec = 0
-                    }
-                }, Time.hour, Time.min, true).show()
+                setTimePicker(timeCard.startDate, DrugRecord.startTime, 0).show()
             }
 
             timeCard.endTime.setOnClickListener {
-                TimePickerDialog(requireContext(), { _, hour, min ->
-                    run {
-                        val format = getString(R.string.time_format, hour, min)
-                        timeCard.endTime.text = format
-                        Time.hour = hour
-                        Time.min = min
-                        Time.sec = 0
-                    }
-                }, Time.hour, Time.min, true).show()
+                setTimePicker(timeCard.startDate, DrugRecord.endTime, 0).show()
             }
         }
     }
 
+    private fun setDatePicker(textView: TextView, timeRecord: TimeRecord, tag: Int = 0): DatePickerDialog {
+        val datePicker = DatePickerDialog(requireContext(), { _, year, month, day ->
+            run {
+                textView.text = getString(R.string.date_format, year, month+1, day)
+                timeRecord.YEAR = year
+                timeRecord.MONTH = month
+                timeRecord.DAY = day
+            }
+        }, timeRecord.YEAR, timeRecord.MONTH, timeRecord.DAY)
+
+        return datePicker
+    }
+
+    private fun setTimePicker(textView: TextView, timeRecord: TimeRecord, tag: Int = 0): TimePickerDialog {
+        val timePicker = TimePickerDialog(requireContext(), { _, hour, min ->
+            run {
+                textView.text = getString(R.string.time_format, hour, min)
+                timeRecord.HOUR = hour
+                timeRecord.MIN = min
+                timeRecord.SEC = 0
+            }
+        }, timeRecord.HOUR, timeRecord.MIN, true)
+
+        return timePicker
+    }
+
     private fun initDateTimeText() {
         val calendar = Calendar.getInstance()
-        val current = calendar.time // TODO: Check if the time match the device time zone
 
-        val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
-        val currentDate = formatDate.format(current)
         binding.apply {
-            timeCard.startDate.text = currentDate.toString()
-            timeCard.endDate.text = currentDate.toString()
+            timeCard.startDate.text = getString(R.string.date_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+            timeCard.endDate.text = getString(R.string.date_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+            timeCard.startTime.text = getString(R.string.time_format, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE])
+            timeCard.endTime.text = getString(R.string.time_format, calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1)
         }
 
-        val formatTime = SimpleDateFormat(getString(R.string.simple_time_format), Locale.getDefault())
-        val currentTime = formatTime.format(current)
-        binding.apply {
-            timeCard.startTime.text = currentTime.toString()
-            timeCard.endTime.text = currentTime.toString()
-        }
-
-        initTime(calendar)
+        DrugRecord.startTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+            calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], calendar[Calendar.SECOND])
+        DrugRecord.endTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+            calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1, calendar[Calendar.SECOND])
     }
 }
