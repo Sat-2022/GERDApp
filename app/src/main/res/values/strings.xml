@@ -14,12 +14,14 @@
     <string name="get_food_record_url">http://%s/GERD_API/api/FoodRecord/%s</string>
     <string name="get_event_record_url">http://%s/GERD_API/api/ActivityRecord/%s</string>
     <string name="get_drug_record_url">http://%s/GERD_API/api/DrugRecord/%s</string>
+    <string name="get_symptoms_record_url">http://%s/GERD_API/api/SymptomRecord/%s</string>
 
     <!-- post record urls -->
     <string name="post_sleep_record_url">http://%s/GERD_API/api/SleepRecord/</string>
     <string name="post_food_record_url">http://%s/GERD_API/api/FoodRecord/</string>
     <string name="post_event_record_url">http://%s/GERD_API/api/ActivityRecord/</string>
     <string name="post_drug_record_url">http://%s/GERD_API/api/DrugRecord/</string>
+    <string name="post_symptoms_record_url">http://%s/GERD_API/api/SymptomRecord/</string>
 
     <!-- strings for login -->
     <string name="login_headline">已經有帳號嗎？</string>
