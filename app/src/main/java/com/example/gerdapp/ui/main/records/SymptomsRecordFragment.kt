@@ -205,6 +205,9 @@ class SymptomsRecordFragment: Fragment() {
 
                 }
             } else {
+                activity?.runOnUiThread {
+                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -216,7 +219,7 @@ class SymptomsRecordFragment: Fragment() {
         recordString += "\"SymptomOther\": \"${SymptomsRecord.othersSymptoms}\","
         recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC) + "\", "
         recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.endTime.YEAR, SymptomsRecord.endTime.MONTH+1, SymptomsRecord.endTime.DAY, SymptomsRecord.endTime.HOUR, SymptomsRecord.endTime.MIN, SymptomsRecord.endTime.SEC) + "\", "
-        recordString += "\"FoodNote\": \"${SymptomsRecord.note}\""
+        recordString += "\"SymptomNote\": \"${SymptomsRecord.note}\""
         recordString += "}"
 
         return recordString.encodeToByteArray()
@@ -329,9 +332,9 @@ class SymptomsRecordFragment: Fragment() {
                     it.setBackgroundResource(R.drawable.circular)
                     SymptomsRecord.symptoms[HOARSENESS] = 1
                 } else {
-                it.setBackgroundColor(Color.TRANSPARENT)
-                SymptomsRecord.symptoms[HOARSENESS] = 0
-            }
+                    it.setBackgroundColor(Color.TRANSPARENT)
+                    SymptomsRecord.symptoms[HOARSENESS] = 0
+                }
             }
             symptomsCard.symptomsButtons.symptomsAppetiteLoss.setOnClickListener {
                 if(SymptomsRecord.symptoms[APPETITE_LOSS] == 0){

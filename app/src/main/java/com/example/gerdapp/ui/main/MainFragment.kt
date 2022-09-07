@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -14,11 +15,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.*
 import com.example.gerdapp.adapter.CardItemAdapter
+import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.databinding.FragmentMainBinding
+import com.example.gerdapp.ui.main.records.SymptomsRecordFragment
 import com.example.gerdapp.viewmodel.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.BufferedReader
+import java.io.DataOutputStream
+import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -37,58 +43,28 @@ class MainFragment : Fragment() {
 
     private var returnMachine: ReturnMachine? = null
 
-    private object SymptomsScore {
-        var time: String ?= null
-        var coughScore: Int = 0
-        var heartBurnScore: Int = 0
-        var acidRefluxScore: Int = 0
-        var chestPainScore: Int = 0
-        var sourMouthScore: Int = 0
-        var hoarsenessScore: Int = 0
-        var appetiteLossScore: Int = 0
-        var stomachGasScore: Int = 0
+    val COUGH = 0
+    val HEART_BURN = 1
+    val ACID_REFLUX = 2
+    val CHEST_PAIN = 3
+    val SOUR_MOUTH = 4
+    val HOARSENESS = 5
+    val APPETITE_LOSS = 6
+    val STOMACH_GAS = 7
+
+    val TOTAL_SYMPTOMS_NUM = 10
+
+    private object SymptomsRecord {
+        var symptoms = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        var startTime: TimeRecord = TimeRecord()
+        var endTime: TimeRecord = TimeRecord()
     }
 
-    private val viewModel: RecordViewModel by activityViewModels {
-        RecordViewModelFactory(
-            (activity?.application as BasicApplication).recordDatabase.recordDao()
-        )
+    private fun setRecord() {
+        SymptomsRecord.symptoms = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
+        SymptomsRecord.startTime = TimeRecord()
+        SymptomsRecord.endTime = TimeRecord()
     }
-
-    private fun isEntryValid(): Boolean {
-        return viewModel.isEntryValid(
-            SymptomsScore.time.toString()
-        ) && !symptomsScoreIsEmpty()
-    }
-
-    private fun symptomsScoreIsEmpty(): Boolean {
-        return SymptomsScore.coughScore==0 && SymptomsScore.heartBurnScore==0 && SymptomsScore.acidRefluxScore==0 && SymptomsScore.chestPainScore==0
-                && SymptomsScore.sourMouthScore==0 && SymptomsScore.hoarsenessScore==0 && SymptomsScore.appetiteLossScore==0 && SymptomsScore.stomachGasScore==0
-    }
-
-    private fun addNewItem() = if(isEntryValid()) {
-        viewModel.addSymptomRecord(
-            SymptomsScore.time!!,
-            SymptomsScore.coughScore, SymptomsScore.heartBurnScore, SymptomsScore.acidRefluxScore, SymptomsScore.chestPainScore,
-            SymptomsScore.sourMouthScore, SymptomsScore.hoarsenessScore, SymptomsScore.appetiteLossScore, SymptomsScore.stomachGasScore,
-            ""
-        )
-        Toast.makeText(context, "record added", Toast.LENGTH_SHORT).show()
-    } else {
-        Toast.makeText(context, "invalid input", Toast.LENGTH_SHORT).show()
-    }
-
-//    private val othersViewModel: OthersViewModel by activityViewModels {
-//        OthersViewModelFactory(
-//            (activity?.application as BasicApplication).othersDatabase.othersDao()
-//        )
-//    }
-//
-//    private val foodViewModel: FoodViewModel by activityViewModels {
-//        FoodViewModelFactory(
-//            (activity?.application as BasicApplication).foodDatabase.foodDao()
-//        )
-//    }
 
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
@@ -126,20 +102,6 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mainRecyclerView = binding.mainRecyclerView
-
-        var sleepRecentData = "sleep data"
-
-//        sleepViewModel.getRecentRecord().observe(this.viewLifecycleOwner) {
-//            sleepRecentData = it.startTime
-//        }
-//        var othersRecentData = "others data"
-//        othersViewModel.getRecentRecord().observe(this.viewLifecycleOwner) {
-//            othersRecentData = it.startTime
-//        }
-//        var foodRecentData = ""
-//        foodViewModel.getRecentRecord().observe(this.viewLifecycleOwner) {
-//            foodRecentData = it.startTime
-//        }
 
         val adapter = CardItemAdapter({ cardItem ->
             val action = when (cardItem.stringResourceId) {
@@ -198,6 +160,96 @@ class MainFragment : Fragment() {
 //                notification.layout.visibility = View.GONE
 //                Notification.notificationOn = false
 //            }
+        }
+    }
+
+    private fun isRecordEmpty(): Boolean {
+        for(i in 0 until TOTAL_SYMPTOMS_NUM) {
+            if(SymptomsRecord.symptoms[i] != 0) return false
+        }
+        return true
+    }
+
+    private fun postRecordApi(): Thread {
+        return Thread {
+            if(!isRecordEmpty()){
+                try {
+                    val url = URL(getString(R.string.post_symptoms_record_url, getString(R.string.server_url)))
+                    val connection = url.openConnection() as HttpURLConnection
+
+                    connection.requestMethod = "POST"
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    connection.setRequestProperty("Accept", "application/json")
+                    connection.doOutput = true
+                    connection.doInput = true
+
+                    val outputSystem = connection.outputStream
+                    val outputStream = DataOutputStream(outputSystem)
+
+                    val data: ByteArray = recordToJson()
+                    outputStream.write(data)
+                    outputStream.flush()
+                    outputStream.close()
+                    outputSystem.close()
+
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val reader = BufferedReader(InputStreamReader(inputSystem))
+                    val line: String = reader.readLine()
+                    postUpdateUi(line)
+                    inputStreamReader.close()
+                    inputSystem.close()
+
+                } catch (e: FileNotFoundException) {
+
+                    Log.e("API Connection", "Service not found at ${e.message}")
+                    Log.e("API Connection", e.toString())
+
+                }
+            } else {
+                activity?.runOnUiThread {
+                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
+    private fun recordToJson(): ByteArray {
+        var recordString = "{"
+        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"SymptomItem\": \"" + symptomsToString() + "\","
+        recordString += "\"SymptomOther\": \"\","
+        recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC) + "\", "
+        recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.endTime.YEAR, SymptomsRecord.endTime.MONTH+1, SymptomsRecord.endTime.DAY, SymptomsRecord.endTime.HOUR, SymptomsRecord.endTime.MIN, SymptomsRecord.endTime.SEC) + "\", "
+        recordString += "\"SymptomNote\": \"\""
+        recordString += "}"
+
+        return recordString.encodeToByteArray()
+    }
+
+    private fun symptomsToString(): String {
+        var symptomsString = ""
+
+        for(i in 1..TOTAL_SYMPTOMS_NUM) {
+            if(SymptomsRecord.symptoms[i-1] == 1) {
+                symptomsString += "$i,"
+            }
+        }
+
+        return symptomsString
+    }
+
+    private fun postUpdateUi(line: String) {
+        activity?.runOnUiThread {
+            binding.apply {
+                if(line == "\"1\"") {
+                    Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
+                    setRecord()
+                }else {
+                    setRecord()
+                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 
@@ -268,96 +320,87 @@ class MainFragment : Fragment() {
     private fun setSymptomsCard() {
         binding.apply {
             symptomsButtons.symptomsCough.setOnClickListener {
-                if(SymptomsScore.coughScore==0){
+                if(SymptomsRecord.symptoms[COUGH] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.coughScore = 1
+                    SymptomsRecord.symptoms[COUGH] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.coughScore = 0
+                    SymptomsRecord.symptoms[COUGH] = 0
                 }
             }
             symptomsButtons.symptomsHeartBurn.setOnClickListener{
-                if(SymptomsScore.heartBurnScore==0){
+                if(SymptomsRecord.symptoms[HEART_BURN] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.heartBurnScore = 1
+                    SymptomsRecord.symptoms[HEART_BURN] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.heartBurnScore = 0
+                    SymptomsRecord.symptoms[HEART_BURN] = 0
                 }
             }
             symptomsButtons.symptomsAcidReflux.setOnClickListener {
-                if(SymptomsScore.acidRefluxScore==0){
+                if(SymptomsRecord.symptoms[ACID_REFLUX] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.acidRefluxScore = 1
+                    SymptomsRecord.symptoms[ACID_REFLUX] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.acidRefluxScore = 0
+                    SymptomsRecord.symptoms[ACID_REFLUX] = 0
                 }
             }
             symptomsButtons.symptomsChestPain.setOnClickListener{
-                if(SymptomsScore.chestPainScore==0){
+                if(SymptomsRecord.symptoms[CHEST_PAIN] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.chestPainScore = 1
+                    SymptomsRecord.symptoms[CHEST_PAIN] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.chestPainScore = 0
+                    SymptomsRecord.symptoms[CHEST_PAIN] = 0
                 }
             }
             symptomsButtons.symptomsSourMouth.setOnClickListener {
-                if(SymptomsScore.sourMouthScore==0){
+                if(SymptomsRecord.symptoms[SOUR_MOUTH] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.sourMouthScore = 1
+                    SymptomsRecord.symptoms[SOUR_MOUTH] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.sourMouthScore = 0
+                    SymptomsRecord.symptoms[SOUR_MOUTH] = 0
                 }
             }
             symptomsButtons.symptomsHoarseness.setOnClickListener{
-                if(SymptomsScore.hoarsenessScore==0){
+                if(SymptomsRecord.symptoms[HOARSENESS] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.hoarsenessScore = 1
+                    SymptomsRecord.symptoms[HOARSENESS] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.hoarsenessScore = 0
+                    SymptomsRecord.symptoms[HOARSENESS] = 0
                 }
             }
             symptomsButtons.symptomsAppetiteLoss.setOnClickListener {
-                if(SymptomsScore.appetiteLossScore==0){
+                if(SymptomsRecord.symptoms[APPETITE_LOSS] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.appetiteLossScore = 1
+                    SymptomsRecord.symptoms[APPETITE_LOSS] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.appetiteLossScore = 0
+                    SymptomsRecord.symptoms[APPETITE_LOSS] = 0
                 }
             }
             symptomsButtons.symptomsStomachGas.setOnClickListener{
-                if(SymptomsScore.stomachGasScore==0){
+                if(SymptomsRecord.symptoms[STOMACH_GAS] == 0){
                     it.setBackgroundResource(R.drawable.circular)
-                    SymptomsScore.stomachGasScore = 1
+                    SymptomsRecord.symptoms[STOMACH_GAS] = 1
                 } else {
                     it.setBackgroundColor(Color.TRANSPARENT)
-                    SymptomsScore.stomachGasScore = 0
+                    SymptomsRecord.symptoms[STOMACH_GAS] = 0
                 }
             }
 
             addSymptoms.setOnClickListener {
                 val calendar = Calendar.getInstance()
-                val current = calendar.time // TODO: Check if the time match the device time zone
-                val formatDateTime = SimpleDateFormat(getString(R.string.simple_date_time_format), Locale.getDefault())
-                val currentDateTime = formatDateTime.format(current)
 
-                SymptomsScore.time = currentDateTime
+                SymptomsRecord.startTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+                    calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], calendar[Calendar.SECOND])
+                SymptomsRecord.endTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
+                    calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1, calendar[Calendar.SECOND])
 
-                addNewItem()
-
-                SymptomsScore.time = null
-                SymptomsScore.coughScore = 0
-                SymptomsScore.heartBurnScore = 0
-                SymptomsScore.acidRefluxScore = 0
-                SymptomsScore.sourMouthScore = 0
-                SymptomsScore.hoarsenessScore = 0
-                SymptomsScore.appetiteLossScore = 0
-                SymptomsScore.stomachGasScore = 0
+                postRecordApi().start()
 
                 symptomsButtons.symptomsCough.setBackgroundColor(Color.TRANSPARENT)
                 symptomsButtons.symptomsHeartBurn.setBackgroundColor(Color.TRANSPARENT)
