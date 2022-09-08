@@ -38,12 +38,6 @@ class DrugRecordFragment: Fragment() {
 
     private var bottomNavigationViewVisibility = View.GONE
 
-    private val viewModel: DrugViewModel by activityViewModels {
-        DrugViewModelFactory(
-            (activity?.application as BasicApplication).drugDatabase.drugDao()
-        )
-    }
-
     private object DrugRecord {
         var drug: String? = null
         var note: String? = null
@@ -116,7 +110,6 @@ class DrugRecordFragment: Fragment() {
 
             completeButton.setOnClickListener {
                 postRecordApi().start()
-                findNavController().navigate(R.id.action_drugFragment_to_mainFragment)
             }
 
             drugCard.addDrugButton.setOnClickListener {
@@ -208,7 +201,7 @@ class DrugRecordFragment: Fragment() {
         var recordString = "{"
         recordString += "\"CaseNumber\": \"T010\", "
         recordString += "\"DrugItem\": \"${DrugRecord.drug}\","
-        recordString += "\"MedicineTime\": \"" + getString(R.string.date_time_format, DrugRecord.startTime.YEAR, DrugRecord.startTime.MONTH+1, DrugRecord.startTime.DAY, DrugRecord.startTime.HOUR, DrugRecord.startTime.MIN, DrugRecord.startTime.SEC) + "\", "
+        recordString += "\"MedicationTime\": \"" + getString(R.string.date_time_format, DrugRecord.startTime.YEAR, DrugRecord.startTime.MONTH+1, DrugRecord.startTime.DAY, DrugRecord.startTime.HOUR, DrugRecord.startTime.MIN, DrugRecord.startTime.SEC) + "\", "
         recordString += "\"DrugNote\": \"${DrugRecord.note}\""
         recordString += "}"
 
@@ -221,7 +214,7 @@ class DrugRecordFragment: Fragment() {
                 if(line == "\"1\"") {
                     Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
                     setRecord()
-                    findNavController().navigate(R.id.action_eventFragment_to_mainFragment)
+                    findNavController().navigate(R.id.action_drugFragment_to_mainFragment)
                 }else {
                     setRecord()
                     Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
