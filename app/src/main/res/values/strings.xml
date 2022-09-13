@@ -3,7 +3,7 @@
 
     <!-- urls -->
     <string name="server_url">120.126.40.182</string>
-    <string name="questionnaire_url">https://egerd.bml.lab.nycu.edu.tw/GERD/Login.aspx</string>
+    <string name="questionnaire_url">http://%s/GERD/UserInfo?account=%s</string>
     <string name="get_record_url">http://%s/GERD_API/api/test/%s&amp;%s</string>
     <string name="get_user_url">http://%s/GERD_API/api/Test/</string>
     <string name="get_return_machine_url">http://%s/GERD_API/api/ReturnMachine/%s</string>

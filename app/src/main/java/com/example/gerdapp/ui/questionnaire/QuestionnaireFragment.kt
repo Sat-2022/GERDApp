@@ -58,7 +58,7 @@ class QuestionnaireFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         webView = binding.webview
-        webView.loadUrl(getString(R.string.questionnaire_url))
+        webView.loadUrl(getString(R.string.questionnaire_url, getString(R.string.server_url), "T010"))
         // bind to the JavaScript that runs the webView
         webView.addJavascriptInterface(WebInterface(context), "android")
 
@@ -106,7 +106,8 @@ class QuestionnaireFragment: Fragment() {
 
     private fun isWebViewFinished(url: String?): Boolean {
         if(url != null) {
-            if (url.length > 55) {
+            val urlTag = url[34]
+            if (urlTag == 'R') {
                 return true
             }
         }
