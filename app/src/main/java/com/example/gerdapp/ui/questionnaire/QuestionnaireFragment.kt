@@ -71,15 +71,19 @@ class QuestionnaireFragment: Fragment() {
                 Log.e("Questionnaire", url.toString())
 
                 if(isWebViewFinished(url)) {
+                    var isBackPressed = false
                     val snackBar = Snackbar.make(binding.root, getString(R.string.questionnaire_note_additional_text, WEB_VIEW_TIME_OUT/1000), Snackbar.LENGTH_LONG)
                     snackBar.setAction(R.string.questionnaire_note_leave) {
+                        isBackPressed = true
                         findNavController().navigate(R.id.action_questionnaireFragment_to_calendarFragment)
                     }
                     snackBar.show()
 
                     Handler().postDelayed({
+                            if(!isBackPressed) {
                                 findNavController().navigate(R.id.action_questionnaireFragment_to_calendarFragment)
-                            }, WEB_VIEW_TIME_OUT)
+                            }
+                        }, WEB_VIEW_TIME_OUT)
                 }
             }
         }
