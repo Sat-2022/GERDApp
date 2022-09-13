@@ -5,6 +5,8 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -74,35 +76,36 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            val calendar = Calendar.getInstance()
-            var greets: String? = null
+            toolbarLayout.isTitleEnabled = true
 
-            greets = if(calendar[Calendar.HOUR_OF_DAY] in 5..10) "早安"
-                        else if(calendar[Calendar.HOUR_OF_DAY] in 11..17) "午安"
-                        else if(calendar[Calendar.HOUR_OF_DAY] in 18..24 && calendar[Calendar.HOUR_OF_DAY] in 0..4) "晚安"
-                        else "您好"
-
-            toolbar.title = "${calendar[Calendar.MONTH]+1} 月 ${calendar[Calendar.DAY_OF_MONTH]} 日，星期" +
-                    when(calendar[Calendar.DAY_OF_WEEK]) {
-                        Calendar.MONDAY -> "一"
-                        Calendar.TUESDAY -> "二"
-                        Calendar.WEDNESDAY -> "三"
-                        Calendar.THURSDAY -> "四"
-                        Calendar.FRIDAY -> "五"
-                        Calendar.SATURDAY -> "六"
-                        else -> "日"
-                    }
-
-            val preferences: SharedPreferences = getSharedPreferences("config", 0)
-            val userName = preferences.getString("nickname", "")
-
-            when(preferences.getString("gender", "")) {
-                "1" -> appBarTitle.text = "${userName}先生，${greets}！"
-                "2" -> appBarTitle.text = "${userName}女士，${greets}！"
-                else -> appBarTitle.text = "${userName}，${greets}！"
-            }
+//            val calendar = Calendar.getInstance()
+//            var greets: String? = null
+//
+//            greets = if(calendar[Calendar.HOUR_OF_DAY] in 5..10) "早安"
+//                        else if(calendar[Calendar.HOUR_OF_DAY] in 11..17) "午安"
+//                        else if(calendar[Calendar.HOUR_OF_DAY] in 18..24 && calendar[Calendar.HOUR_OF_DAY] in 0..4) "晚安"
+//                        else "您好"
+//
+//            toolbar.title = "${calendar[Calendar.MONTH]+1} 月 ${calendar[Calendar.DAY_OF_MONTH]} 日，星期" +
+//                    when(calendar[Calendar.DAY_OF_WEEK]) {
+//                        Calendar.MONDAY -> "一"
+//                        Calendar.TUESDAY -> "二"
+//                        Calendar.WEDNESDAY -> "三"
+//                        Calendar.THURSDAY -> "四"
+//                        Calendar.FRIDAY -> "五"
+//                        Calendar.SATURDAY -> "六"
+//                        else -> "日"
+//                    }
+//
+//            val preferences: SharedPreferences = getSharedPreferences("config", 0)
+//            val userName = preferences.getString("nickname", "")
+//
+//            when(preferences.getString("gender", "")) {
+//                "1" -> appBarTitle.text = "${userName}先生，${greets}！"
+//                "2" -> appBarTitle.text = "${userName}女士，${greets}！"
+//                else -> appBarTitle.text = "${userName}，${greets}！"
+//            }
         }
-
 
 //        val intent = Intent(this, LoginActivity::class.java)
 //        startActivity(intent)
@@ -110,6 +113,20 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return super.onSupportNavigateUp() || navController.navigateUp(appBarConfiguration)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.top_app_bar, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId) {
+            R.id.menu_settings -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     fun setBottomNavigationVisibility(visibility: Int) {
