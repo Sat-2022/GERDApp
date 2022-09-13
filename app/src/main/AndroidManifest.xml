@@ -18,24 +18,26 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".SignUpActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.GERDApp.NoActionBar">
-        </activity>
+            android:theme="@style/Theme.GERDApp.NoActionBar"></activity>
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
-
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/Theme.GERDApp.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.GERDApp.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
     </application>

@@ -45,9 +45,14 @@ class LoginActivity : AppCompatActivity() {
                 goToSignup()
             }
             btForgotPassword.setOnClickListener {
-
+                performForgotPassword()
             }
         }
+    }
+
+    private fun performForgotPassword() {
+        val intent = Intent(this, ForgotPasswordActivity::class.java)
+        startActivity(intent)
     }
 
 

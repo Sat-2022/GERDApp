@@ -25,13 +25,13 @@
 
     <!-- strings for login -->
     <string name="login_headline">已經有帳號嗎？</string>
-    <string name="login">登入</string>
+    <string name="login_title">登入</string>
     <string name="account">帳號、案號</string>
     <string name="password">密碼</string>
     <string name="check_password">確認密碼</string>
     <string name="forgot_password">忘記密碼？</string>
     <string name="sign_up_headline">還沒有帳號嗎？</string>
-    <string name="sign_up">註冊</string>
+    <string name="sign_up_title">註冊</string>
     <string name="user_name">暱稱</string>
     <string name="user_gender">性別</string>
     <string name="user_account">帳號</string>
@@ -39,6 +39,11 @@
     <string name="sign_up_failed">註冊失敗</string>
     <string name="login_success">登入成功</string>
     <string name="login_failed">登入失敗</string>
+    <string name="forgot_password_title">忘記密碼</string>
+    <string name="verification_code">驗證碼</string>
+    <string name="resend_verification_code">重新發送驗證碼</string>
+    <string name="send_verification_code">發送驗證碼</string>
+    <string name="verification">驗證</string>
 
     <!-- strings for dialog -->
     <string name="notification_title">繳回機器通知</string>
