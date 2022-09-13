@@ -60,20 +60,25 @@ class LoginActivity : AppCompatActivity() {
     private fun validateInput(): Boolean {
         binding.apply {
             // TODO: Handle login event here
-//            if (etAccount.text.toString() == "") {
-//                etAccount.error = "Please Enter Email"
-//                return false
-//            }
-//            if (etPassword.text.toString() == "") {
-//                etPassword.error = "Please Enter Password"
-//                return false
-//            }
-//
-//            // checking the proper email format
-//            if (!isEmailValid(etAccount.text.toString())) {
-//                etAccount.error = "Please Enter Valid Email"
-//                return false
-//            }
+            if (etAccount.text.toString() == "") {
+                etAccount.error = getString(R.string.error_enter_account)
+                return false
+            }
+            if (etPassword.text.toString() == "") {
+                etPassword.error = getString(R.string.error_enter_password)
+                return false
+            }
+
+            // checking the proper email format
+            if (!isValidString(etAccount.text.toString())) {
+                etAccount.error = getString(R.string.error_invalid_input)
+                return false
+            }
+
+            if(!isValidString(etPassword.text.toString())) {
+                etPassword.error = getString(R.string.error_invalid_input)
+                return false
+            }
 //
 //            // checking minimum password Length
 //            if (etPassword.text.length < MIN_PASSWORD_LENGTH) {
@@ -85,8 +90,11 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun isEmailValid(email: String?): Boolean {
-        return true //Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun isValidString(string: String): Boolean {
+        if(string.contains(getString(R.string.check_input_valid).toRegex())) {
+            return false
+        }
+        return true
     }
 
     // Hook Click Event

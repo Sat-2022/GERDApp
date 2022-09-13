@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">GERDApp</string>
 
+    <string name="check_input_valid">[&amp;]</string>
+    <string name="check_alphabetic">[A-Za-z]</string>
+    <string name="check_numeric">[0-9]</string>
+
     <!-- urls -->
     <string name="server_url">120.126.40.182</string>
     <string name="questionnaire_url">http://%s/GERD/UserInfo?account=%s</string>
@@ -44,6 +48,15 @@
     <string name="resend_verification_code">重新發送驗證碼</string>
     <string name="send_verification_code">發送驗證碼</string>
     <string name="verification">驗證</string>
+    <string name="error_enter_nickname">請輸入暱稱</string>
+    <string name="error_enter_gender">請輸入性別</string>
+    <string name="error_enter_account">請輸入帳號</string>
+    <string name="error_enter_password">請輸入密碼</string>
+    <string name="error_check_password_failed">密碼不相符</string>
+    <string name="error_illegal_password_length">密碼長度須為6~12英數字</string>
+    <string name="error_illegal_password">密碼需包含英文與數字</string>
+    <string name="error_illegal_account">帳號已存在</string>
+    <string name="error_invalid_input">字串不可包含特殊符號</string>
 
     <!-- strings for dialog -->
     <string name="notification_title">繳回機器通知</string>
