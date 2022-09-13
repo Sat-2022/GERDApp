@@ -182,10 +182,19 @@ class SleepRecordFragment: Fragment() {
 
     private fun validateInputText(textView: TextView): Boolean {
         if(textView.text.length > 20) {
-            textView.error = getString(R.string.input_exceed_number_limit)
+            textView.error = getString(R.string.error_input_too_long)
             return false
         }
+        if(isInvalidString(textView.text.toString()))
+            textView.error = getString(R.string.error_invalid_input)
         return true
+    }
+
+    private fun isInvalidString(string: String): Boolean {
+        if(string.contains(getString(R.string.check_input_valid).toRegex())) {
+            return true
+        }
+        return false
     }
 
     private fun setDateTimePicker() {

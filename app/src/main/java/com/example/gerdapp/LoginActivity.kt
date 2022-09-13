@@ -24,7 +24,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
-    val MIN_PASSWORD_LENGTH = 6
+    val MAX_PASSWORD_LENGTH = 12
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,13 +79,12 @@ class LoginActivity : AppCompatActivity() {
                 etPassword.error = getString(R.string.error_invalid_input)
                 return false
             }
-//
-//            // checking minimum password Length
-//            if (etPassword.text.length < MIN_PASSWORD_LENGTH) {
 
-//                etPassword.error = "Password Length must be more than " + MIN_PASSWORD_LENGTH + "characters"
-//                return false
-//            }
+            // checking minimum password Length
+            if (etPassword.text.length > MAX_PASSWORD_LENGTH) {
+                etPassword.error = getString(R.string.error_wrong_password)
+                return false
+            }
             return true
         }
     }

@@ -48,7 +48,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.apply {
             // TODO: Handle register event here
             if (etNickname.text.toString() == "") {
-                etNickname.error = getString(R.string.error_enter_account)
+                etNickname.error = getString(R.string.error_enter_nickname)
                 return false
             }
             if (etGender.text.toString() == "") {
@@ -91,12 +91,12 @@ class SignUpActivity : AppCompatActivity() {
             }
 
             // checking password input
-            if (etPassword.text.length < MIN_PASSWORD_LENGTH || etPassword.text.length > MAX_PASSWORD_LENGTH) {
-                etPassword.error = getString(R.string.error_illegal_password_length)
-                return false
-            }
             if(isInvalidString(etPassword.text.toString())) {
                 etPassword.error = getString(R.string.error_invalid_input)
+                return false
+            }
+            if (etPassword.text.length < MIN_PASSWORD_LENGTH || etPassword.text.length > MAX_PASSWORD_LENGTH) {
+                etPassword.error = getString(R.string.error_illegal_password_length)
                 return false
             }
             if(!isPasswordValid(etPassword.text.toString())) {
