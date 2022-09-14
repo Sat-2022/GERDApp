@@ -1,14 +1,17 @@
 package com.example.gerdapp.ui.main
 
 import android.app.AlertDialog
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -22,6 +25,7 @@ import com.example.gerdapp.viewmodel.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.coroutines.NonDisposableHandle.parent
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException
@@ -42,6 +46,9 @@ class MainFragment : Fragment() {
     private lateinit var notificationRecyclerView: RecyclerView
 
     private var returnMachine: ReturnMachine? = null
+
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
 
     val COUGH = 0
     val HEART_BURN = 1
@@ -76,6 +83,9 @@ class MainFragment : Fragment() {
         setHasOptionsMenu(true)
 
         getMachineReturnApi().start()
+
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        editor = preferences.edit()
     }
 
     override fun onResume() {
@@ -162,6 +172,11 @@ class MainFragment : Fragment() {
 //                notification.layout.visibility = View.GONE
 //                Notification.notificationOn = false
 //            }
+            val showNotification = preferences.getBoolean("showNotification", true)
+            if(!showNotification) {
+                notificationCard.visibility = View.GONE
+                notificationHeadline.visibility = View.GONE
+            }
         }
     }
 
@@ -264,12 +279,30 @@ class MainFragment : Fragment() {
 
                 notificationCard.setOnClickListener {
                     // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+                    var notificationClosed = false
+                    val inflater = requireActivity().layoutInflater
+                    val checkBoxView = inflater.inflate(R.layout.checkbox, null)
+                    val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
+                    checkBox.setOnCheckedChangeListener { compoundButton, b ->
+                        editor.putBoolean("showNotification", !b)
+                        editor.commit()
+                        notificationClosed = b
+                    }
+
                     val dialogBuilder = AlertDialog.Builder(context)
-                    dialogBuilder.setTitle(R.string.notification_title)
+                    dialogBuilder.setView(checkBoxView)
+                        .setTitle(R.string.notification_title)
                         .setMessage(getString(R.string.notification_message, returnTime))
-                        .setNeutralButton(R.string.notification_neutral_button) { dialog, _ ->
+                        .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
                             dialog.dismiss()
+                            if(notificationClosed) {
+                                notificationCard.visibility = View.GONE
+                                notificationHeadline.visibility = View.GONE
+                            }
                         }
+//                        .setOnDismissListener {
+//                            (checkBoxView.parent as ViewGroup).removeView(checkBoxView)
+//                        }
                     dialogBuilder.create()
                     dialogBuilder.show()
                 }

@@ -59,6 +59,7 @@
 <!--                layout="@layout/list_item_card"/>-->
 
             <FrameLayout
+                android:id="@+id/notification_headline"
                 android:layout_width="match_parent"
                 android:layout_height="48dp">
 

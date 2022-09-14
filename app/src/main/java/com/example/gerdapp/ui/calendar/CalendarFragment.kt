@@ -1,6 +1,7 @@
 package com.example.gerdapp.ui.calendar
 
 import android.app.AlertDialog
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,6 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
@@ -36,6 +39,9 @@ class CalendarFragment: Fragment() {
 
     private var returnMachine: ReturnMachine? = null
 
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
@@ -48,6 +54,9 @@ class CalendarFragment: Fragment() {
         // Connect to Api
         testApi().start()
         getMachineReturnApi().start()
+
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        editor = preferences.edit()
     }
 
     override fun onResume() {
@@ -93,6 +102,12 @@ class CalendarFragment: Fragment() {
 //            notification.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_info_24))
 //            notification.cardItemIcon.setColorFilter(Color.parseColor("#F12B2B"))
 
+            val showNotification = preferences.getBoolean("showNotification", true)
+            if(!showNotification) {
+                notificationCard.visibility = View.GONE
+                notificationHeadline.visibility = View.GONE
+            }
+
             weeklyQuestionnaire.cardItemTitle.text = getString(R.string.weekly_questionnaire)
             weeklyQuestionnaire.cardItemRecentTime.text = "8 月 6 日"
             weeklyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
@@ -115,11 +130,26 @@ class CalendarFragment: Fragment() {
 
                 notificationCard.setOnClickListener {
                     // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+                    var notificationClosed = false
+                    val inflater = requireActivity().layoutInflater
+                    val checkBoxView = inflater.inflate(R.layout.checkbox, null)
+                    val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
+                    checkBox.setOnCheckedChangeListener { compoundButton, b ->
+                        editor.putBoolean("showNotification", !b)
+                        editor.commit()
+                        notificationClosed = b
+                    }
+
                     val dialogBuilder = AlertDialog.Builder(context)
-                    dialogBuilder.setTitle(R.string.notification_title)
+                    dialogBuilder.setView(checkBoxView)
+                        .setTitle(R.string.notification_title)
                         .setMessage(getString(R.string.notification_message, returnTime))
-                        .setNeutralButton(R.string.notification_neutral_button) { dialog, _ ->
+                        .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
                             dialog.dismiss()
+                            if(notificationClosed) {
+                                notificationCard.visibility = View.GONE
+                                notificationHeadline.visibility = View.GONE
+                            }
                         }
                     dialogBuilder.create()
                     dialogBuilder.show()

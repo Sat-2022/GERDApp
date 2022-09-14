@@ -115,6 +115,8 @@ class LoginActivity : AppCompatActivity() {
 //                editor.putString("gender", "男")
                 editor.putBoolean("loggedIn", true)
 
+                editor.putBoolean("showNotification", true)
+
                 editor.commit()
             }
 
