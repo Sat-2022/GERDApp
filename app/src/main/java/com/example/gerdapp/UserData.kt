@@ -6,7 +6,3 @@ data class UserData(
     var userName: String,
     var Gender: String
 )
-
-object Notification {
-    var notificationOn: Boolean = true
-}

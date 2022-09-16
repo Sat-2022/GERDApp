@@ -9,10 +9,13 @@ import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.gerdapp.databinding.ActivityLoginBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.io.BufferedReader
+import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -25,6 +28,10 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var editor: SharedPreferences.Editor
 
     val MAX_PASSWORD_LENGTH = 12
+
+    data class LoginResult(
+        val ResultContent: String
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -103,28 +110,21 @@ class LoginActivity : AppCompatActivity() {
             val password: String?
 
             binding.apply {
-                account = "T010" // etAccount!!.text.toString()
-                password = "1234" // etPassword!!.text.toString()
+                account = etAccount.text.toString()
+                password = etPassword.text.toString()
 
-                editor.putString("account", account)
-                editor.putString("password", password)
+//                editor.putString("account", account)
+//                editor.putString("password", password)
 
                 // TODO: Get user information from API
-                getUserApi(account).start()
-                editor.putString("nickname", "王小明")
-//                editor.putString("gender", "男")
-                editor.putBoolean("loggedIn", true)
+                getUserApi(account, password).start()
 
-                editor.putBoolean("showNotification", true)
-
-                editor.commit()
             }
 
-            Toast.makeText(this, R.string.login_success, Toast.LENGTH_SHORT).show()
+            // Toast.makeText(this, R.string.login_success, Toast.LENGTH_SHORT).show()
             // Here you can call you API
             // Check this tutorial to call server api through Google Volley Library https://handyopinion.com
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+
         } else {
             Toast.makeText(this, R.string.login_failed, Toast.LENGTH_SHORT).show()
         }
@@ -137,30 +137,53 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun getUserApi(account: String): Thread {
+    private fun getUserApi(account: String, password: String): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_user_data_url, getString(R.string.server_url), account))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(getString(R.string.login_url, getString(R.string.server_url), account, password))
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<UserData>>() {}.type
-                val userData: List<UserData> = Gson().fromJson(inputStreamReader, type)
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? = object: TypeToken<List<LoginResult>>() {}.type
+                    val list: List<LoginResult> = Gson().fromJson(inputStreamReader, type)
 
-                try {
-                    val user: UserData = userData.first()
-                    editor.putString("gender", user.Gender)
-                    editor.commit()
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
+                    val result = list.first()
+                    updateUi(result)
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+
+                } else {
+                    Log.e("API Connection", "failed")
                 }
+            } catch (e: FileNotFoundException) {
+                Log.e("API Connection", "Service not found at ${e.message}")
+            }
+        }
+    }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "user data: $userData")
-            } else
-                Log.e("API Connection", "failed")
+    private fun updateUi(result: LoginResult) {
+        this.runOnUiThread {
+            binding.apply {
+                if(result.ResultContent == "1") {
+                    Toast.makeText(this@LoginActivity, R.string.login_success, Toast.LENGTH_SHORT).show()
+
+                    editor.putString("nickname", "王小明")
+                    editor.putString("gender", "男")
+                    editor.putBoolean("loggedIn", true)
+                    editor.putBoolean("showNotification", true)
+
+                    editor.commit()
+
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                } else {
+                    Log.e("API Connection", "$result")
+                    Toast.makeText(this@LoginActivity, R.string.login_failed, Toast.LENGTH_SHORT).show()
+                }
+            }
         }
     }
 }
