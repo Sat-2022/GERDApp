@@ -42,7 +42,7 @@ class CardItemAdapter(
         val recentRecord = subtitle(item)
 
         holder.recentTextView.text = when(recentRecord) {
-            "" -> "no data"
+            "", null -> "no data"
             else -> recentRecord
         }
 

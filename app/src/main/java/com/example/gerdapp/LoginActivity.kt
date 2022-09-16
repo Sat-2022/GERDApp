@@ -170,6 +170,7 @@ class LoginActivity : AppCompatActivity() {
                 if(result.ResultContent == "1") {
                     Toast.makeText(this@LoginActivity, R.string.login_success, Toast.LENGTH_SHORT).show()
 
+                    editor.putString("caseNumber", "T010")
                     editor.putString("nickname", "王小明")
                     editor.putString("gender", "男")
                     editor.putBoolean("loggedIn", true)

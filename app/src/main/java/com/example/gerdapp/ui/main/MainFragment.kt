@@ -16,6 +16,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.*
 import com.example.gerdapp.adapter.CardItemAdapter
+import com.example.gerdapp.data.*
 import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.databinding.FragmentMainBinding
 import com.google.android.material.snackbar.Snackbar
@@ -45,6 +46,12 @@ class MainFragment : Fragment() {
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
+    object User {
+        var caseNumber = ""
+        var gender = ""
+        var nickname = ""
+    }
+
     val COUGH = 0
     val HEART_BURN = 1
     val ACID_REFLUX = 2
@@ -55,6 +62,12 @@ class MainFragment : Fragment() {
     val STOMACH_GAS = 7
 
     val TOTAL_SYMPTOMS_NUM = 10
+
+    private var symptomCurrent: SymptomCurrent? = null
+    private var drugCurrent: DrugCurrent? = null
+    private var sleepCurrent: SleepCurrent? = null
+    private var foodCurrent: FoodCurrent? = null
+    private var eventCurrent: EventCurrent? = null
 
     private object SymptomsRecord {
         var symptoms = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
@@ -77,10 +90,18 @@ class MainFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        getMachineReturnApi().start()
-
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
         editor = preferences.edit()
+
+        User.caseNumber = "T010"
+            preferences.getString("caseNumber", "").toString()
+
+        getMachineReturnApi().start()
+        getSymptomCurrentApi().start()
+        getDrugCurrentApi().start()
+        getSleepCurrentApi().start()
+        getFoodCurrentApi().start()
+        getEventCurrentApi().start()
     }
 
     override fun onResume() {
@@ -122,20 +143,33 @@ class MainFragment : Fragment() {
             findNavController().navigate(action)
         }) { cardItem ->
             val recentRecord = when (cardItem.stringResourceId) {
-                R.string.symptoms -> ""
-//                R.string.food -> foodRecentData
-                R.string.sleep -> {
-//                    try {
-//                        sleepViewModel.getRecentRecord().value?.startTime
-//                    } catch (e: NullPointerException) {
-//                        "No Current Data"
-//                    }
-                    ""
+                R.string.symptoms -> {
+                    if(symptomCurrent != null) { symptomCurrent!!.StartDate }
+                    else { "" }
                 }
-//                R.string.others -> othersRecentData
+
+                R.string.medicine -> {
+                    if(drugCurrent != null) { drugCurrent!!.MedicationTime }
+                    else { "" }
+                }
+
+                R.string.sleep -> {
+                    if(sleepCurrent != null) { sleepCurrent!!.StartDate }
+                    else { "" }
+                }
+
+                R.string.food -> {
+                    if(foodCurrent != null) { foodCurrent!!.StartDate }
+                    else { "" }
+                }
+
+                R.string.event -> {
+                    if(eventCurrent != null) { eventCurrent?.StartDate }
+                    else { "" }
+                }
+
                 else -> ""
             }
-//            text = recentRecord.toString()
             recentRecord
         }
 
@@ -143,30 +177,17 @@ class MainFragment : Fragment() {
 
         notificationRecyclerView = binding.notificationRecyclerView
 
-
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time
-            val formatDate =
-                SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
+            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
             val currentDate = formatDate.format(current)
             testButton.setOnClickListener { view ->
-                Snackbar.make(view, "", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+                Snackbar.make(view, "", Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }
 
             setSymptomsCard()
 
-//            if(!Notification.notificationOn) {
-//                notification.layout.visibility = View.GONE
-//            } else {
-//                notification.layout.visibility = View.VISIBLE
-//            }
-//
-//            notification.cancelButton.setOnClickListener {
-//                notification.layout.visibility = View.GONE
-//                Notification.notificationOn = false
-//            }
             val showNotification = preferences.getBoolean("showNotification", true)
             if(!showNotification) {
                 notificationCard.visibility = View.GONE
@@ -307,7 +328,7 @@ class MainFragment : Fragment() {
 
     private fun getMachineReturnApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_return_machine_url, getString(R.string.server_url), "R099"))
+            val url = URL(getString(R.string.get_return_machine_url, getString(R.string.server_url), User.caseNumber))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
@@ -441,6 +462,131 @@ class MainFragment : Fragment() {
                 symptomsButtons.symptomsAppetiteLoss.setBackgroundColor(Color.TRANSPARENT)
                 symptomsButtons.symptomsStomachGas.setBackgroundColor(Color.TRANSPARENT)
             }
+        }
+    }
+
+    private fun getSymptomCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_symptoms_record_url, getString(R.string.server_url), User.caseNumber))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<SymptomCurrent>>() {}.type
+                val symptomData: List<SymptomCurrent> = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    symptomCurrent = symptomData.first()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$symptomCurrent")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun getDrugCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_drug_record_url, getString(R.string.server_url), User.caseNumber))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<DrugCurrent>>() {}.type
+                val drugData: List<DrugCurrent> = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    drugCurrent = drugData.first()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$drugCurrent")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun getSleepCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
+                val sleepData: List<SleepCurrent> = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    sleepCurrent = sleepData.first()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$sleepCurrent")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun getFoodCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_food_record_url, getString(R.string.server_url), User.caseNumber))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<FoodCurrent>>() {}.type
+                val foodData: List<FoodCurrent> = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    foodCurrent = foodData.first()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$foodCurrent")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun getEventCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_event_record_url, getString(R.string.server_url), User.caseNumber))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<EventCurrent>>() {}.type
+                val eventData: List<EventCurrent> = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    eventCurrent = eventData.first()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$eventCurrent")
+            } else
+                Log.e("API Connection", "failed")
         }
     }
 }
