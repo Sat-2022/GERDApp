@@ -19,17 +19,6 @@ import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.databinding.FragmentSymptomsRecordBinding
-import com.example.gerdapp.ui.Time
-import com.example.gerdapp.ui.Time.date
-import com.example.gerdapp.ui.Time.hour
-import com.example.gerdapp.ui.Time.min
-import com.example.gerdapp.ui.Time.month
-import com.example.gerdapp.ui.Time.sec
-import com.example.gerdapp.ui.Time.year
-import com.example.gerdapp.ui.initTime
-import com.example.gerdapp.ui.resetTime
-import com.example.gerdapp.viewmodel.RecordViewModel
-import com.example.gerdapp.viewmodel.RecordViewModelFactory
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException

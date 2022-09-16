@@ -16,7 +16,6 @@ import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSleepRecordBinding
 import com.example.gerdapp.data.model.TimeRecord
-import com.example.gerdapp.ui.initTime
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException
@@ -257,7 +256,5 @@ class SleepRecordFragment: Fragment() {
             calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE], calendar[Calendar.SECOND])
         SleepRecord.endTime.setTimeRecord(calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH],
             calendar[Calendar.HOUR_OF_DAY], calendar[Calendar.MINUTE]+1, calendar[Calendar.SECOND])
-
-        initTime(calendar)
     }
 }

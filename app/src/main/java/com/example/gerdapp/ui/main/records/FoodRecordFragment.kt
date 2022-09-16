@@ -15,7 +15,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
 import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.databinding.FragmentFoodRecordBinding
-import com.example.gerdapp.ui.initTime
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException

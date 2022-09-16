@@ -11,25 +11,17 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Drug
 import com.example.gerdapp.data.model.TimeRecord
 import com.example.gerdapp.databinding.FragmentDrugRecordBinding
-import com.example.gerdapp.ui.Time
-import com.example.gerdapp.ui.initTime
-import com.example.gerdapp.viewmodel.DrugViewModel
-import com.example.gerdapp.viewmodel.DrugViewModelFactory
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.SimpleDateFormat
 import java.util.*
 
 class DrugRecordFragment: Fragment() {

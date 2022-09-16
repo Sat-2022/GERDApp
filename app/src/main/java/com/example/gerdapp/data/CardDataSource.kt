@@ -2,7 +2,6 @@ package com.example.gerdapp.data
 
 import android.graphics.Color
 import com.example.gerdapp.R
-import com.example.gerdapp.viewmodel.*
 
 class CardDataSource {
     fun loadCards(): List<CardItem> {
