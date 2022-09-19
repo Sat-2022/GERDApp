@@ -93,8 +93,7 @@ class MainFragment : Fragment() {
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
         editor = preferences.edit()
 
-        User.caseNumber = "T010"
-            preferences.getString("caseNumber", "").toString()
+        User.caseNumber = preferences.getString("caseNumber", "").toString()
 
         getMachineReturnApi().start()
         getSymptomCurrentApi().start()

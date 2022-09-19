@@ -1,6 +1,7 @@
 package com.example.gerdapp.ui.questionnaire
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
@@ -29,6 +31,8 @@ class QuestionnaireFragment: Fragment() {
     private lateinit var webSettings: WebSettings
     private lateinit var cookieManager: CookieManager
 
+    private lateinit var preferences: SharedPreferences
+
     private val WEB_VIEW_TIME_OUT: Long = 10000 // 10 sec
 
     private fun setBottomNavigationVisibility() {
@@ -41,6 +45,8 @@ class QuestionnaireFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
+
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -57,8 +63,10 @@ class QuestionnaireFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val caseNumber  = preferences.getString("caseNumber", "").toString()
+
         webView = binding.webview
-        webView.loadUrl(getString(R.string.questionnaire_url, getString(R.string.server_url), "T010"))
+        webView.loadUrl(getString(R.string.questionnaire_url, getString(R.string.server_url), caseNumber))
         // bind to the JavaScript that runs the webView
         webView.addJavascriptInterface(WebInterface(context), "android")
 
