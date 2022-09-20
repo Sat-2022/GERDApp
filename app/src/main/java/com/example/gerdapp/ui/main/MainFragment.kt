@@ -143,31 +143,41 @@ class MainFragment : Fragment() {
         }) { cardItem ->
             val recentRecord = when (cardItem.stringResourceId) {
                 R.string.symptoms -> {
-                    if(symptomCurrent != null) { symptomCurrent!!.StartDate }
-                    else { "" }
+                    if(symptomCurrent != null) {
+                        val timeRecord = TimeRecord().stringToTimeRecord(symptomCurrent!!.StartDate)
+                        timeRecord.toString()
+                    } else { "No Data" }
                 }
 
                 R.string.medicine -> {
-                    if(drugCurrent != null) { drugCurrent!!.MedicationTime }
-                    else { "" }
+                    if(drugCurrent != null) {
+                        val timeRecord = TimeRecord().stringToTimeRecord(drugCurrent!!.MedicationTime)
+                        timeRecord.toString()
+                    } else { "No Data" }
                 }
 
                 R.string.sleep -> {
-                    if(sleepCurrent != null) { sleepCurrent!!.StartDate }
-                    else { "" }
+                    if(sleepCurrent != null) {
+                        val timeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.StartDate)
+                        timeRecord.toString()
+                    } else { "No Data" }
                 }
 
                 R.string.food -> {
-                    if(foodCurrent != null) { foodCurrent!!.StartDate }
-                    else { "" }
+                    if(foodCurrent != null) {
+                        val timeRecord = TimeRecord().stringToTimeRecord(foodCurrent!!.StartDate)
+                        timeRecord.toString()
+                    } else { "No Data" }
                 }
 
                 R.string.event -> {
-                    if(eventCurrent != null) { eventCurrent?.StartDate }
-                    else { "" }
+                    if(eventCurrent != null) {
+                        val timeRecord = TimeRecord().stringToTimeRecord(eventCurrent!!.StartDate)
+                        timeRecord.toString()
+                    } else { "No Data" }
                 }
 
-                else -> ""
+                else -> "No Data"
             }
             recentRecord
         }
@@ -288,9 +298,9 @@ class MainFragment : Fragment() {
     private fun updateMachineReturnTime() {
         activity?.runOnUiThread {
             binding.apply {
-                val returnTime = dateTimeString(returnMachine?.ReturnDate)
+                val timeRecord = TimeRecord().stringToTimeRecord(returnMachine?.ReturnDate!!)
 
-                cardItemRecentTime.text = returnTime
+                cardItemRecentTime.text = timeRecord.toString()
 
                 notificationCard.setOnClickListener {
                     // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
@@ -307,7 +317,7 @@ class MainFragment : Fragment() {
                     val dialogBuilder = AlertDialog.Builder(context)
                     dialogBuilder.setView(checkBoxView)
                         .setTitle(R.string.notification_title)
-                        .setMessage(getString(R.string.notification_message, returnTime))
+                        .setMessage(getString(R.string.notification_message, timeRecord.toString()))
                         .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
                             dialog.dismiss()
                             if(notificationClosed) {

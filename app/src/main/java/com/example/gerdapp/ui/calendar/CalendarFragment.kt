@@ -192,7 +192,7 @@ class CalendarFragment: Fragment() {
         }
     }
 
-    fun formatDate(date: String?): String {
+    private fun formatDate(date: String?): String {
         var formatted = ""
 
         if (date != null) {
