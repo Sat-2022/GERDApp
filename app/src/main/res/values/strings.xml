@@ -13,6 +13,7 @@
     <string name="get_user_url">http://%s/GERD_API/api/Test/</string>
     <string name="get_return_machine_url">http://%s/GERD_API/api/ReturnMachine/%s</string>
     <string name="get_user_data_url">http://%s/GERD_API/api/Personal/%s</string>
+    <string name="get_questionnaire_status_url">http://%s/GERD_API/api/DiaryQuestionnaireCheck/%s</string>
 
     <!-- get record urls -->
     <string name="get_sleep_record_url">http://%s/GERD_API/api/SleepRecord/%s</string>
@@ -161,6 +162,7 @@
     <!-- string for questionnaire -->
     <string name="weekly_questionnaire">每週問卷</string>
     <string name="daily_questionnaire">每日問卷</string>
+    <string name="questionnaire_complete">今日已填完所有問卷！</string>
 
     <!-- questionnaire note url -->
     <string name="questionnaire_note_additional_text">系統將於 %d 秒內自動跳回</string>

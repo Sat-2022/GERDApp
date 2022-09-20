@@ -160,12 +160,16 @@
             </FrameLayout>
 
             <include
-                android:id="@+id/weekly_questionnaire"
-                layout="@layout/list_item_card"/>
-
-            <include
                 android:id="@+id/daily_questionnaire"
                 layout="@layout/list_item_card"/>
+
+            <TextView
+                android:id="@+id/tv_questionnaire_complete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/questionnaire_complete"
+                android:gravity="center"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

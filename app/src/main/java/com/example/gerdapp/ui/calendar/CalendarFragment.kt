@@ -1,6 +1,5 @@
 package com.example.gerdapp.ui.calendar
 
-import android.app.AlertDialog
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Typeface
@@ -9,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -42,6 +40,18 @@ class CalendarFragment: Fragment() {
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
+    data class QuestionnaireStatus(
+        val ResultContent: String
+    )
+
+    object User {
+        var caseNumber = ""
+        var gender = ""
+        var nickname = ""
+    }
+
+    private var currentQuestionnaireStatus: QuestionnaireStatus ?= null
+
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
@@ -51,12 +61,13 @@ class CalendarFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        // Connect to Api
-        testApi().start()
-        getMachineReturnApi().start()
-
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
         editor = preferences.edit()
+
+        User.caseNumber = preferences.getString("caseNumber", "").toString()
+        // Connect to Api
+        testApi().start()
+        getQuestionnaireStatus().start()
     }
 
     override fun onResume() {
@@ -65,7 +76,7 @@ class CalendarFragment: Fragment() {
 //        testApi().start()
 //        getMachineReturnApi().start()
         updateUi()
-        updateMachineReturnTime()
+        updateQuestionnaireStatus()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -79,9 +90,6 @@ class CalendarFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.apply {
 
-            weeklyQuestionnaire.layout.setOnClickListener{
-                findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
-            }
             dailyQuestionnaire.layout.setOnClickListener {
                 findNavController().navigate(R.id.action_calendarFragment_to_questionnaireFragment)
             }
@@ -108,12 +116,6 @@ class CalendarFragment: Fragment() {
                 notificationHeadline.visibility = View.GONE
             }
 
-            weeklyQuestionnaire.cardItemTitle.text = getString(R.string.weekly_questionnaire)
-            weeklyQuestionnaire.cardItemRecentTime.text = "8 月 6 日"
-            weeklyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
-            weeklyQuestionnaire.cardItemIcon.setColorFilter(Color.parseColor("#09ADEA"))
-            weeklyQuestionnaire.layout.visibility = View.GONE
-
             dailyQuestionnaire.cardItemTitle.text = getString(R.string.daily_questionnaire)
             dailyQuestionnaire.cardItemRecentTime.text = "8 月 5 日"
             dailyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
@@ -121,63 +123,41 @@ class CalendarFragment: Fragment() {
         }
     }
 
-    private fun updateMachineReturnTime() {
+    private fun updateQuestionnaireStatus() {
         activity?.runOnUiThread {
             binding.apply {
-                val returnTime = dateTimeString(returnMachine?.ReturnDate)
-
-                cardItemRecentTime.text = returnTime
-
-                notificationCard.setOnClickListener {
-                    // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
-                    var notificationClosed = false
-                    val inflater = requireActivity().layoutInflater
-                    val checkBoxView = inflater.inflate(R.layout.checkbox, null)
-                    val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
-                    checkBox.setOnCheckedChangeListener { compoundButton, b ->
-                        editor.putBoolean("showNotification", !b)
-                        editor.commit()
-                        notificationClosed = b
-                    }
-
-                    val dialogBuilder = AlertDialog.Builder(context)
-                    dialogBuilder.setView(checkBoxView)
-                        .setTitle(R.string.notification_title)
-                        .setMessage(getString(R.string.notification_message, returnTime))
-                        .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
-                            dialog.dismiss()
-                            if(notificationClosed) {
-                                notificationCard.visibility = View.GONE
-                                notificationHeadline.visibility = View.GONE
-                            }
-                        }
-                    dialogBuilder.create()
-                    dialogBuilder.show()
+                if(currentQuestionnaireStatus?.ResultContent == "1") {
+                    dailyQuestionnaire.layout.visibility = View.GONE
+                    tvQuestionnaireComplete.visibility = View.VISIBLE
+                }
+                else {
+                    dailyQuestionnaire.layout.visibility = View.VISIBLE
+                    tvQuestionnaireComplete.visibility = View.GONE
                 }
             }
         }
     }
 
-    private fun getMachineReturnApi(): Thread {
+    private fun getQuestionnaireStatus(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_return_machine_url, getString(R.string.server_url), "R099"))
+            val url = URL(getString(R.string.get_questionnaire_status_url, getString(R.string.server_url), User.caseNumber))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
                 val inputSystem = connection.inputStream
                 val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<ReturnMachine>>() {}.type
-                val list: List<ReturnMachine> = Gson().fromJson(inputStreamReader, type)
+                val type: java.lang.reflect.Type? = object : TypeToken<List<QuestionnaireStatus>>() {}.type
+                val list: List<QuestionnaireStatus> = Gson().fromJson(inputStreamReader, type)
                 try{
-                    returnMachine = list.first()
-                    updateMachineReturnTime()
+                    currentQuestionnaireStatus = list.first()
+                    updateQuestionnaireStatus()
                 } catch (e: Exception) {
                     // TODO: Handle exception
                 }
 
                 inputStreamReader.close()
                 inputSystem.close()
-                Log.e("API Connection", "$returnMachine")
+                Log.e("API Connection", "$currentQuestionnaireStatus")
             } else
                 Log.e("API Connection", "failed")
         }
@@ -199,7 +179,6 @@ class CalendarFragment: Fragment() {
 
         return formatted
     }
-
 
     private fun testApi(): Thread {
         return Thread {
