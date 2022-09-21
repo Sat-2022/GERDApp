@@ -4,17 +4,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.util.Patterns
-import android.view.View
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.gerdapp.databinding.ActivityLoginBinding
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import java.io.BufferedReader
 import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
@@ -117,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
 //                editor.putString("password", password)
 
                 // TODO: Get user information from API
-                getUserApi(account, password).start()
+                getLoginStatusApi(account, password).start()
 
             }
 
@@ -137,7 +131,7 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun getUserApi(account: String, password: String): Thread {
+    private fun getLoginStatusApi(account: String, password: String): Thread {
         return Thread {
             try {
                 val url = URL(getString(R.string.login_url, getString(R.string.server_url), account, password))
@@ -164,17 +158,52 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    private fun getUserInfoApi(): Thread {
+        return Thread {
+            try {
+                val caseNumber = preferences.getString("caseNumber", "").toString()
+                val url = URL(getString(R.string.get_user_url, getString(R.string.server_url), caseNumber))
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? = object: TypeToken<List<UserData>>() {}.type
+                    val list: List<UserData> = Gson().fromJson(inputStreamReader, type)
+
+                    val result = list.first()
+
+                    editor.putString("nickname", result.userName)
+                    editor.putString("gender", result.Gender)
+
+                    editor.commit()
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+
+                    Log.e("API Connection", "$result")
+
+                } else {
+                    Log.e("API Connection", "failed")
+                }
+            } catch (e: FileNotFoundException) {
+                Log.e("API Connection", "Service not found at ${e.message}")
+            }
+        }
+    }
+
     private fun updateUi(result: LoginResult) {
         this.runOnUiThread {
             binding.apply {
                 if(result.ResultContent == "1") {
                     Toast.makeText(this@LoginActivity, R.string.login_success, Toast.LENGTH_SHORT).show()
 
-                    editor.putString("caseNumber", "T010")
-                    editor.putString("nickname", "王小明")
-                    editor.putString("gender", "男")
+                    editor.putString("caseNumber", etAccount.text.toString())
+
                     editor.putBoolean("loggedIn", true)
                     editor.putBoolean("showNotification", true)
+
+                    getUserInfoApi().start()
 
                     editor.commit()
 

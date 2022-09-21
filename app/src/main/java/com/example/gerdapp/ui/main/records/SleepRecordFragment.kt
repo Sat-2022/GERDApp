@@ -2,6 +2,7 @@ package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
@@ -29,6 +31,8 @@ class SleepRecordFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
+
+    private lateinit var preferences: SharedPreferences
 
     private object SleepRecord {
         var note: String? = null
@@ -52,6 +56,7 @@ class SleepRecordFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
 //        setRecord()
     }
 
@@ -154,8 +159,9 @@ class SleepRecordFragment: Fragment() {
     }
 
     private fun recordToJson(): ByteArray {
+        val caseNumber = preferences.getString("caseNumber", "")
         var recordString = "{"
-        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"CaseNumber\": \"$caseNumber\", "
         recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SleepRecord.startTime.YEAR, SleepRecord.startTime.MONTH+1, SleepRecord.startTime.DAY, SleepRecord.startTime.HOUR, SleepRecord.startTime.MIN, SleepRecord.startTime.SEC) + "\", "
         recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, SleepRecord.endTime.YEAR, SleepRecord.endTime.MONTH+1, SleepRecord.endTime.DAY, SleepRecord.endTime.HOUR, SleepRecord.endTime.MIN, SleepRecord.endTime.SEC) + "\", "
         recordString += "\"SleepNote\": \"${SleepRecord.note}\""

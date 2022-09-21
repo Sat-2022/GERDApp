@@ -2,6 +2,7 @@ package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +12,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -33,6 +35,8 @@ class SymptomsRecordFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
+
+    private lateinit var preferences: SharedPreferences
 
     val COUGH = 0
     val HEART_BURN = 1
@@ -70,6 +74,7 @@ class SymptomsRecordFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
     }
 
     override fun onResume() {
@@ -202,8 +207,9 @@ class SymptomsRecordFragment: Fragment() {
     }
 
     private fun recordToJson(): ByteArray {
+        val caseNumber = preferences.getString("caseNumber", "")
         var recordString = "{"
-        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"CaseNumber\": \"$caseNumber\", "
         recordString += "\"SymptomItem\": \"" + symptomsToString() + "\","
         recordString += "\"SymptomOther\": \"${SymptomsRecord.othersSymptoms}\","
         recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC) + "\", "

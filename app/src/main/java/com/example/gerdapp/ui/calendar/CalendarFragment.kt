@@ -95,7 +95,7 @@ class CalendarFragment: Fragment() {
             }
 
             dailyQuestionnaire.cardItemTitle.text = getString(R.string.daily_questionnaire)
-            dailyQuestionnaire.cardItemRecentTime.text = "8 月 5 日"
+            dailyQuestionnaire.cardItemRecentTime.text = "點選進入問卷頁面"
             dailyQuestionnaire.cardItemIcon.setImageDrawable(context?.getDrawable(R.drawable.ic_baseline_text_snippet_24))
             dailyQuestionnaire.cardItemIcon.setColorFilter(Color.parseColor("#09ADEA"))
         }
@@ -120,6 +120,8 @@ class CalendarFragment: Fragment() {
         return Thread {
             val url = URL(getString(R.string.get_questionnaire_status_url, getString(R.string.server_url), User.caseNumber))
             val connection = url.openConnection() as HttpURLConnection
+
+            Log.e("questionnaire status", User.caseNumber)
 
             if(connection.responseCode == 200) {
                 val inputSystem = connection.inputStream

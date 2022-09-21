@@ -2,6 +2,7 @@ package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
@@ -28,6 +30,8 @@ class FoodRecordFragment: Fragment() {
     private val binding get() = _binding!!
     
     private var bottomNavigationViewVisibility = View.GONE
+
+    private lateinit var preferences: SharedPreferences
 
     private object FoodRecord {
         var food: String? = null
@@ -53,6 +57,7 @@ class FoodRecordFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(false)
         setBottomNavigationVisibility()
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
     }
 
     override fun onResume() {
@@ -183,8 +188,9 @@ class FoodRecordFragment: Fragment() {
     }
 
     private fun recordToJson(): ByteArray {
+        val caseNumber = preferences.getString("caseNumber", "")
         var recordString = "{"
-        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"CaseNumber\": \"$caseNumber\", "
         recordString += "\"FoodItem\": \"${FoodRecord.food}\","
         recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, FoodRecord.startTime.YEAR, FoodRecord.startTime.MONTH+1, FoodRecord.startTime.DAY, FoodRecord.startTime.HOUR, FoodRecord.startTime.MIN, FoodRecord.startTime.SEC) + "\", "
         recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, FoodRecord.endTime.YEAR, FoodRecord.endTime.MONTH+1, FoodRecord.endTime.DAY, FoodRecord.endTime.HOUR, FoodRecord.endTime.MIN, FoodRecord.endTime.SEC) + "\", "

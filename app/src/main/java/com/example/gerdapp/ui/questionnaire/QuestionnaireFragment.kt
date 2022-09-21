@@ -63,7 +63,7 @@ class QuestionnaireFragment: Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val caseNumber  = preferences.getString("caseNumber", "").toString()
+        val caseNumber = preferences.getString("caseNumber", "").toString()
 
         webView = binding.webview
         webView.loadUrl(getString(R.string.questionnaire_url, getString(R.string.server_url), caseNumber))
@@ -76,7 +76,7 @@ class QuestionnaireFragment: Fragment() {
             override fun doUpdateVisitedHistory(view: WebView?, url: String?, isReload: Boolean) {
                 super.doUpdateVisitedHistory(view, url, isReload)
 
-                Log.e("Questionnaire", url.toString())
+                Log.e("Questionnaire", caseNumber)
 
                 if(isWebViewFinished(url)) {
                     var isBackPressed = false

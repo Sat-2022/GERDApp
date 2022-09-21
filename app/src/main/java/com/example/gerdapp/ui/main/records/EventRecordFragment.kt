@@ -2,6 +2,7 @@ package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
@@ -29,6 +31,8 @@ class EventRecordFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
+
+    private lateinit var preferences: SharedPreferences
 
     private object EventRecord {
         var event: String? = null
@@ -55,6 +59,7 @@ class EventRecordFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
     }
 
     override fun onResume() {
@@ -185,8 +190,9 @@ class EventRecordFragment: Fragment() {
     }
 
     private fun recordToJson(): ByteArray {
+        val caseNumber = preferences.getString("caseNumber", "")
         var recordString = "{"
-        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"CaseNumber\": \"$caseNumber\", "
         recordString += "\"ActivityItem\": \"${EventRecord.event}\","
         recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, EventRecord.startTime.YEAR, EventRecord.startTime.MONTH+1, EventRecord.startTime.DAY, EventRecord.startTime.HOUR, EventRecord.startTime.MIN, EventRecord.startTime.SEC) + "\", "
         recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, EventRecord.endTime.YEAR, EventRecord.endTime.MONTH+1, EventRecord.endTime.DAY, EventRecord.endTime.HOUR, EventRecord.endTime.MIN, EventRecord.endTime.SEC) + "\", "

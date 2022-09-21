@@ -258,7 +258,7 @@ class MainFragment : Fragment() {
 
     private fun recordToJson(): ByteArray {
         var recordString = "{"
-        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"CaseNumber\": \"${User.caseNumber}\", "
         recordString += "\"SymptomItem\": \"" + symptomsToString() + "\","
         recordString += "\"SymptomOther\": \"\","
         recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC) + "\", "

@@ -2,6 +2,7 @@ package com.example.gerdapp.ui.main.records
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
@@ -29,6 +31,8 @@ class DrugRecordFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
+
+    private lateinit var preferences: SharedPreferences
 
     private object DrugRecord {
         var drug: String? = null
@@ -54,6 +58,7 @@ class DrugRecordFragment: Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
     }
 
     override fun onResume() {
@@ -190,8 +195,9 @@ class DrugRecordFragment: Fragment() {
     }
 
     private fun recordToJson(): ByteArray {
+        val caseNumber = preferences.getString("caseNumber", "")
         var recordString = "{"
-        recordString += "\"CaseNumber\": \"T010\", "
+        recordString += "\"CaseNumber\": \"$caseNumber\", "
         recordString += "\"DrugItem\": \"${DrugRecord.drug}\","
         recordString += "\"MedicationTime\": \"" + getString(R.string.date_time_format, DrugRecord.startTime.YEAR, DrugRecord.startTime.MONTH+1, DrugRecord.startTime.DAY, DrugRecord.startTime.HOUR, DrugRecord.startTime.MIN, DrugRecord.startTime.SEC) + "\", "
         recordString += "\"DrugNote\": \"${DrugRecord.note}\""
