@@ -66,7 +66,7 @@ class CalendarFragment: Fragment() {
 
         User.caseNumber = preferences.getString("caseNumber", "").toString()
         // Connect to Api
-        testApi().start()
+        getQuestionnaireResultApi().start()
         getQuestionnaireStatus().start()
     }
 
@@ -75,7 +75,7 @@ class CalendarFragment: Fragment() {
         setBottomNavigationVisibility()
 //        testApi().start()
 //        getMachineReturnApi().start()
-        updateUi()
+        updateBarChart()
         updateQuestionnaireStatus()
     }
 
@@ -160,9 +160,9 @@ class CalendarFragment: Fragment() {
         return formatted
     }
 
-    private fun testApi(): Thread {
+    private fun getQuestionnaireResultApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), "T010", "20220801"))
+            val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), User.caseNumber))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
@@ -172,7 +172,7 @@ class CalendarFragment: Fragment() {
                 questions = Gson().fromJson(inputStreamReader, type)
                 try{
                     currentResult = questions?.first()
-                    updateUi()
+                    updateBarChart()
                 } catch (e: Exception) {
                     // TODO: Handle empty list exception
                 }
@@ -185,7 +185,7 @@ class CalendarFragment: Fragment() {
         }
     }
 
-    private fun updateUi() {
+    private fun updateBarChart() {
         activity?.runOnUiThread {
             binding.apply {
                 initBarChart()
@@ -210,7 +210,7 @@ class CalendarFragment: Fragment() {
                     if (date[i] == '0') formatted = formatted
                     else formatted += date[i]
                 }
-                else if (i == 7) formatted += date[i] + " 日 "
+                else if (i == 7) formatted += date[i] + " 日 問卷結果"
             }
             return formatted
         }
@@ -299,7 +299,7 @@ class CalendarFragment: Fragment() {
         addBarEntry(entries, 9, currentResult?.Question10?.toInt())
 
         val barDataSet = BarDataSet(entries, "")
-        barDataSet.color = Color.BLUE
+        barDataSet.color = Color.rgb(147, 208, 109)
 
         val barData = BarData(barDataSet)
 

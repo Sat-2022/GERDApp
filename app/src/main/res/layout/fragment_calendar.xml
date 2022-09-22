@@ -21,6 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:padding="8dp"
             android:background="@color/white">
 
             <FrameLayout
@@ -38,7 +39,7 @@
 
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/bar_chart"
-                android:layout_width="360dp"
+                android:layout_width="match_parent"
                 android:layout_height="240dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
