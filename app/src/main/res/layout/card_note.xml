@@ -10,7 +10,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="8dp">
 
         <FrameLayout
             android:layout_width="48dp"
@@ -39,7 +40,6 @@
 
     <include layout="@layout/divider" />
 
-    <include layout="@layout/card_divider"/>
 
     <include
         android:id="@+id/add_note"

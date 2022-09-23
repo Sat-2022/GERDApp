@@ -107,7 +107,7 @@ class MainFragment : Fragment() {
         super.onResume()
         setBottomNavigationVisibility()
 //        getMachineReturnApi().start()
-        updateMachineReturnTime()
+        updateReturnTime()
     }
 
     override fun onCreateView(
@@ -291,6 +291,44 @@ class MainFragment : Fragment() {
                     setRecord()
                     Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+    }
+
+    private fun updateReturnTime() {
+        binding.apply {
+            val timeRecord = TimeRecord().stringToTimeRecord(returnMachine?.ReturnDate!!)
+
+            cardItemRecentTime.text = timeRecord.toString()
+
+            notificationCard.setOnClickListener {
+                // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+                var notificationClosed = false
+                val inflater = requireActivity().layoutInflater
+                val checkBoxView = inflater.inflate(R.layout.checkbox, null)
+                val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
+                checkBox.setOnCheckedChangeListener { compoundButton, b ->
+                    editor.putBoolean("showNotification", !b)
+                    editor.commit()
+                    notificationClosed = b
+                }
+
+                val dialogBuilder = AlertDialog.Builder(context)
+                dialogBuilder.setView(checkBoxView)
+                    .setTitle(R.string.notification_title)
+                    .setMessage(getString(R.string.notification_message, timeRecord.toString()))
+                    .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
+                        dialog.dismiss()
+                        if(notificationClosed) {
+                            notificationCard.visibility = View.GONE
+                            notificationHeadline.visibility = View.GONE
+                        }
+                    }
+//                        .setOnDismissListener {
+//                            (checkBoxView.parent as ViewGroup).removeView(checkBoxView)
+//                        }
+                dialogBuilder.create()
+                dialogBuilder.show()
             }
         }
     }

@@ -13,42 +13,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-    <!--    <include-->
-    <!--        android:id="@+id/symptoms_card_main"-->
-    <!--        layout="@layout/list_item_card"/>-->
-
-    <!--    <include-->
-    <!--        android:id="@+id/medicine_card_main"-->
-    <!--        layout="@layout/list_item_card"/>-->
-
-    <!--    <include-->
-    <!--        android:id="@+id/sleep_card_main"-->
-    <!--        layout="@layout/list_item_card"/>-->
-
-    <!--    <include-->
-    <!--        android:id="@+id/food_card_main"-->
-    <!--        layout="@layout/list_item_card"/>-->
-
-    <!--    <include-->
-    <!--        android:id="@+id/others_card_main"-->
-    <!--        layout="@layout/list_item_card"/>-->
-
-        <!--
-        <TextView
-            android:id="@+id/message"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="MainFragment"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-            -->
-
-<!--        <include-->
-<!--            android:id="@+id/notification"-->
-<!--            layout="@layout/card_notification"/>-->
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -181,14 +145,13 @@
                 android:textStyle="bold"
                 android:textAppearance="@style/TitleText"
                 android:textColor="@color/grey"/>
+
         </FrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/main_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="8dp"
-            android:clipToPadding="false"
             android:nestedScrollingEnabled="false"
             app:layoutManager="LinearLayoutManager" />
 
@@ -201,7 +164,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="56dp"/>
+            android:layout_height="60dp"/>
 
 
 

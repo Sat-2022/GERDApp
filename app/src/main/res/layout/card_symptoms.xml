@@ -10,7 +10,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="48dp"
+        android:layout_marginHorizontal="8dp">
 
         <FrameLayout
             android:layout_width="48dp"
@@ -38,13 +39,13 @@
 
     <include layout="@layout/divider"/>
 
-    <include layout="@layout/card_divider"/>
-
     <com.google.android.material.card.MaterialCardView
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="12dp">
+        app:cardCornerRadius="12dp"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="4dp">
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
@@ -66,8 +67,6 @@
         </androidx.cardview.widget.CardView>
 
     </com.google.android.material.card.MaterialCardView>
-
-    <include layout="@layout/card_divider"/>
 
     <include
         android:id="@+id/add_other_symptoms"
