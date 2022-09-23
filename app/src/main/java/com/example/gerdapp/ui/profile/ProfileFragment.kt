@@ -9,6 +9,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.*
 import com.example.gerdapp.databinding.FragmentProfileBinding
@@ -30,17 +31,22 @@ class ProfileFragment: Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var barChart: BarChart
+    private lateinit var preferences: SharedPreferences
 
-    private var postResult = ""
-
-    var questions: List<Questions>? = null
-
-    private var currentResult: Questions? = null
+    object User {
+        var caseNumber = ""
+        var gender = ""
+        var nickname = ""
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        User.caseNumber = preferences.getString("caseNumber", "").toString()
+        User.gender = preferences.getString("gender", "").toString()
+        User.nickname = preferences.getString("nickname", "").toString()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -64,9 +70,13 @@ class ProfileFragment: Fragment() {
 
                 val intent = Intent(requireContext(), SplashActivity::class.java)
                 startActivity(intent)
-
-//                postApi().start()
             }
+
+            tvUserAcc.text = "\t案號：" + User.caseNumber
+            tvUserNickname.text = "\t暱稱：" + User.nickname
+            if(User.gender == "1") tvUserGender.text = "\t性別：男"
+            else if(User.gender == "2") tvUserGender.text = "\t性別：女"
+            else tvUserGender.text = "\t性別："
         }
     }
 }
