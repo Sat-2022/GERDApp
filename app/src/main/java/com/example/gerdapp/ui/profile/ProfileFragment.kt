@@ -41,18 +41,11 @@ class ProfileFragment: Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-
-
-        testSleepRecordApi().start()
-        //testApi().start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
-
-        barChart = binding.barChart
-//        initBarChart()
 
         return binding.root
     }
@@ -64,6 +57,7 @@ class ProfileFragment: Fragment() {
             testButton.setOnClickListener {
                 val preferences: SharedPreferences = context?.getSharedPreferences("config", 0)!!
                 val editor: SharedPreferences.Editor = preferences.edit()
+
                 editor.putBoolean("loggedIn", false)
 
                 editor.commit()
@@ -74,212 +68,5 @@ class ProfileFragment: Fragment() {
 //                postApi().start()
             }
         }
-    }
-
-    private fun testSleepRecordApi(): Thread {
-        return Thread {
-            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), "T010"))
-            val connection = url.openConnection() as HttpURLConnection
-
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepData>>() {}.type
-                val sleepData: List<SleepData> = Gson().fromJson(inputStreamReader, type)
-
-                try {
-                    val sleepRecord: SleepData = sleepData?.first()
-                    activity?.runOnUiThread {
-                        binding.apply {
-                            testApi.text = sleepRecord.toString()
-                        }
-                    }
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
-                }
-
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$questions")
-            } else
-                Log.e("API Connection", "failed")
-        }
-    }
-
-    private fun testApi(): Thread {
-        return Thread {
-            val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), "T010", "20220801"))
-            val connection = url.openConnection() as HttpURLConnection
-
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
-                questions = Gson().fromJson(inputStreamReader, type)
-
-                try {
-                    currentResult = questions?.first()
-                    UpdateUI()
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
-                }
-
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$questions")
-            } else
-                Log.e("API Connection", "failed")
-        }
-    }
-
-    private fun postApi(): Thread {
-        return Thread {
-            val url = URL(getString(R.string.get_user_url))
-            val connection = url.openConnection() as HttpURLConnection
-
-            connection.requestMethod = "POST"
-            connection.setRequestProperty("Content-Type", "application/json")
-            connection.setRequestProperty("Accept", "application/json")
-            connection.doOutput = true
-
-            val outputSystem = connection.outputStream
-            val outputStream = DataOutputStream(outputSystem)
-            val jsonString = "{\n" +
-                    "    \"CaseNumber\": \"\"\n" +
-                    "}"
-
-            outputStream.writeBytes(jsonString)
-            outputStream.flush()
-            outputStream.close()
-            outputSystem.close()
-
-
-            val inputSystem = connection.inputStream
-            val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-            val reader = BufferedReader(InputStreamReader(inputSystem))
-
-            val line: String = reader.readLine()
-            postResult = line
-            postUpdateUI()
-            inputStreamReader.close()
-            inputSystem.close()
-        }
-    }
-
-    private fun postUpdateUI() {
-        activity?.runOnUiThread {
-            binding.apply {
-                testApi.text = postResult
-            }
-        }
-    }
-
-    private fun UpdateUI() {
-        activity?.runOnUiThread {
-            binding.apply {
-                testApi.text = questions.toString()
-                initBarChart()
-            }
-        }
-    }
-
-
-    private fun initBarChart() {
-        // set data
-        initBarChartData()
-
-        barChart.setBackgroundColor(Color.WHITE)
-        barChart.description.isEnabled = false
-//        chart.setTouchEnabled(false)
-//        chart.isDragEnabled = false
-
-
-        // add animation
-        barChart.animateY(1400)
-
-//        val l: Legend = chart.legend
-//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-//        l.orientation = Legend.LegendOrientation.HORIZONTAL
-//        l.setDrawInside(false)
-//        l.typeface = Typeface.DEFAULT //
-//        l.xEntrySpace = 7f
-//        l.yEntrySpace = 5f
-//        //l.form = Legend.LegendForm.LINE
-//        l.textColor = Color.BLACK
-        // remove legend
-        barChart.legend.isEnabled = false
-
-        val xAxis: XAxis = barChart.xAxis
-        xAxis.typeface = Typeface.DEFAULT
-        xAxis.textSize = 12f
-        xAxis.yOffset = 0f
-        xAxis.xOffset = 0f
-        xAxis.setDrawGridLines(false)
-//        xAxis.textColor = Color.BLACK
-//        xAxis.setDrawGridLines(true)
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.setLabelCount(5, true)
-
-        val mActivities = arrayOf(
-            getString(R.string.cough),
-            getString(R.string.heart_burn),
-            getString(R.string.acid_reflux),
-            getString(R.string.chest_pain),
-            getString(R.string.sour_mouth),
-            getString(R.string.hoarseness),
-            getString(R.string.appetite_loss),
-            getString(R.string.stomach_gas),
-            getString(R.string.cough_night),
-            getString(R.string.acid_reflux_night)
-        )
-        val formatter = IAxisValueFormatter { value, axis ->
-            mActivities[value.toInt() % mActivities.size]
-        }
-        xAxis.valueFormatter = formatter
-
-        val yAxis = barChart.axisLeft
-        yAxis.axisMaximum = 5f
-        yAxis.axisMinimum = 0f
-        yAxis.setLabelCount(4, false)
-        yAxis.setDrawAxisLine(false)
-        //yAxis.setDrawLabels(false)
-        barChart.axisRight.isEnabled = false
-    }
-
-    private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
-        if (data == null) entries.add(BarEntry(index.toFloat(), 0f))
-        else entries.add(BarEntry(index.toFloat(), data.toFloat()))
-    }
-
-    private fun initBarChartData() {
-        val entries: ArrayList<BarEntry> = ArrayList()
-
-        Log.e("API", currentResult?.Question01?.toInt().toString())
-
-        addBarEntry(entries, 0, currentResult?.Question01?.toInt())
-        addBarEntry(entries, 1, currentResult?.Question02?.toInt())
-        addBarEntry(entries, 2, currentResult?.Question03?.toInt())
-        addBarEntry(entries, 3, currentResult?.Question04?.toInt())
-        addBarEntry(entries, 4, currentResult?.Question05?.toInt())
-        addBarEntry(entries, 5, currentResult?.Question06?.toInt())
-        addBarEntry(entries, 6, currentResult?.Question07?.toInt())
-        addBarEntry(entries, 7, currentResult?.Question08?.toInt())
-        addBarEntry(entries, 8, currentResult?.Question09?.toInt())
-        addBarEntry(entries, 9, currentResult?.Question10?.toInt())
-
-        val barDataSet = BarDataSet(entries, "")
-        barDataSet.color = Color.BLUE
-
-        val barData = BarData(barDataSet)
-
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
-
-        barData.setDrawValues(true)
-
-        barChart.data = barData
-        barChart.invalidate()
     }
 }
