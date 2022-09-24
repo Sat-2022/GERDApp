@@ -97,7 +97,6 @@
     <string name="sleep">平躺睡眠</string>
     <string name="food">飲食</string>
     <string name="event">其他活動</string>
-    <string name="chart">事件內容查詢</string>
 
     <!-- strings for time record -->
     <string name="year">年</string>
@@ -119,21 +118,18 @@
     <string name="symptoms_added_failed">新增症狀失敗</string>
 
     <!-- strings for sleep fragment -->
-    <string name="sleep_record_title">睡眠平躺</string>
     <string name="sleep_record_start_headline">開始就寢時間</string>
     <string name="sleep_record_end_headline">結束就寢時間</string>
     <string name="sleep_record_added_successfully">新增睡眠成功</string>
     <string name="sleep_record_added_failed">新增睡眠失敗</string>
 
     <!-- string for event fragment -->
-    <string name="event_record_title">其他活動或事件</string>
     <string name="event_record_others_headline">活動項目</string>
     <string name="event_record_add_others">新增活動項目</string>
     <string name="event_record_added_successfully">新增活動成功</string>
     <string name="event_record_added_failed">新增活動失敗</string>
 
     <!-- string for food fragment -->
-    <string name="food_record_title">進食</string>
     <string name="food_record_food_headline">進食項目</string>
     <string name="food_record_add_food">新增進食項目</string>
     <string name="food_record_added_successfully">新增飲食成功</string>

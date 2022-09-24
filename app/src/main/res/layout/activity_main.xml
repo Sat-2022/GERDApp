@@ -32,7 +32,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="top"
-                    android:text="先生，早安！"
                     app:layout_collapseMode="parallax"
                     app:layout_anchor="@id/toolbar"
                     app:layout_anchorGravity="top|start"
@@ -47,7 +46,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     app:menu="@menu/top_app_bar"
-                    app:title="8 月 5 日，星期五"
                     app:layout_collapseMode="pin"
                     app:popupTheme="@style/Theme.GERDApp.PopupOverlay">
 

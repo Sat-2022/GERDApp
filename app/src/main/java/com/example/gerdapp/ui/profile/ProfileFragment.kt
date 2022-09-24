@@ -31,12 +31,28 @@ class ProfileFragment: Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
+    private var bottomNavigationViewVisibility = View.VISIBLE
+    private var actionbarTitleEnable = true
+
     private lateinit var preferences: SharedPreferences
 
     object User {
         var caseNumber = ""
         var gender = ""
         var nickname = ""
+    }
+
+    private fun setBottomNavigationVisibility() {
+        val mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+
+        mainActivity.setActionBarTitleEnable(actionbarTitleEnable)
+        mainActivity.setActionBarTitle()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBottomNavigationVisibility()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

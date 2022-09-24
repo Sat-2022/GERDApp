@@ -1,27 +1,18 @@
 package com.example.gerdapp
 
-import android.annotation.SuppressLint
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.gerdapp.databinding.ActivityMainBinding
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.io.InputStreamReader
-import java.net.HttpURLConnection
-import java.net.URL
-import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.exp
 
 
 class MainActivity : AppCompatActivity() {
@@ -76,35 +67,24 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            toolbarLayout.isTitleEnabled = true
+            toolbarLayout.isTitleEnabled = false
 
-//            val calendar = Calendar.getInstance()
-//            var greets: String? = null
-//
-//            greets = if(calendar[Calendar.HOUR_OF_DAY] in 5..10) "早安"
-//                        else if(calendar[Calendar.HOUR_OF_DAY] in 11..17) "午安"
-//                        else if(calendar[Calendar.HOUR_OF_DAY] in 18..24 && calendar[Calendar.HOUR_OF_DAY] in 0..4) "晚安"
-//                        else "您好"
-//
-//            toolbar.title = "${calendar[Calendar.MONTH]+1} 月 ${calendar[Calendar.DAY_OF_MONTH]} 日，星期" +
-//                    when(calendar[Calendar.DAY_OF_WEEK]) {
-//                        Calendar.MONDAY -> "一"
-//                        Calendar.TUESDAY -> "二"
-//                        Calendar.WEDNESDAY -> "三"
-//                        Calendar.THURSDAY -> "四"
-//                        Calendar.FRIDAY -> "五"
-//                        Calendar.SATURDAY -> "六"
-//                        else -> "日"
-//                    }
-//
-//            val preferences: SharedPreferences = getSharedPreferences("config", 0)
-//            val userName = preferences.getString("nickname", "")
-//
-//            when(preferences.getString("gender", "")) {
-//                "1" -> appBarTitle.text = "${userName}先生，${greets}！"
-//                "2" -> appBarTitle.text = "${userName}女士，${greets}！"
-//                else -> appBarTitle.text = "${userName}，${greets}！"
-//            }
+            val calendar = Calendar.getInstance()
+            var greets: String? = null
+
+            greets = if(calendar[Calendar.HOUR_OF_DAY] in 5..10) "早安"
+            else if(calendar[Calendar.HOUR_OF_DAY] in 11..17) "午安"
+            else if(calendar[Calendar.HOUR_OF_DAY] in 18..24 && calendar[Calendar.HOUR_OF_DAY] in 0..4) "晚安"
+            else "您好"
+
+            val preferences: SharedPreferences = getSharedPreferences("config", 0)
+            val userName = preferences.getString("nickname", "")
+
+            when(preferences.getString("gender", "")) {
+                "1" -> appBarTitle.text = "${userName}先生，${greets}！"
+                "2" -> appBarTitle.text = "${userName}女士，${greets}！"
+                else -> appBarTitle.text = "${userName}，${greets}！"
+            }
         }
 
 //        val intent = Intent(this, LoginActivity::class.java)
@@ -135,5 +115,33 @@ class MainActivity : AppCompatActivity() {
 
     fun setActionBarExpanded(expanded: Boolean) {
         binding.appBar.setExpanded(expanded)
+    }
+
+    fun setActionBarTitle() {
+        binding.apply {
+
+            val calendar = Calendar.getInstance()
+            var title: String? = null
+
+            title = "${calendar[Calendar.MONTH]+1} 月 ${calendar[Calendar.DAY_OF_MONTH]} 日，星期" +
+                    when(calendar[Calendar.DAY_OF_WEEK]) {
+                        Calendar.MONDAY -> "一"
+                        Calendar.TUESDAY -> "二"
+                        Calendar.WEDNESDAY -> "三"
+                        Calendar.THURSDAY -> "四"
+                        Calendar.FRIDAY -> "五"
+                        Calendar.SATURDAY -> "六"
+                        else -> "日"
+                    }
+
+
+            toolbar.title = title
+        }
+    }
+
+    fun setActionBarTitleEnable(boolean: Boolean) {
+        binding.apply {
+            toolbarLayout.isTitleEnabled = boolean
+        }
     }
 }

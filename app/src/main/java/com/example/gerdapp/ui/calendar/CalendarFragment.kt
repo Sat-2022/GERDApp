@@ -28,6 +28,7 @@ class CalendarFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.VISIBLE
+    private var actionbarTitleEnable = true
 
     private lateinit var barChart: BarChart
 
@@ -55,6 +56,9 @@ class CalendarFragment: Fragment() {
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+
+        mainActivity.setActionBarTitleEnable(actionbarTitleEnable)
+        mainActivity.setActionBarTitle()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

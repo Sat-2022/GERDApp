@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.example.gerdapp.MainActivity
 import com.example.gerdapp.databinding.FragmentChartBinding
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.tabs.TabLayoutMediator
@@ -13,13 +14,29 @@ class ChartFragment: Fragment() {
     private var _binding: FragmentChartBinding? = null
     private val binding get() = _binding!!
 
+    private var bottomNavigationViewVisibility = View.VISIBLE
+    private var actionbarTitleEnable = true
+
     private lateinit var pagerAdapter: ChartAdapter
+
+    private fun setBottomNavigationVisibility() {
+        val mainActivity = activity as MainActivity
+        mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+
+        mainActivity.setActionBarTitleEnable(actionbarTitleEnable)
+        mainActivity.setActionBarTitle()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
         pagerAdapter = ChartAdapter(childFragmentManager, lifecycle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setBottomNavigationVisibility()
     }
 
     override fun onCreateView(

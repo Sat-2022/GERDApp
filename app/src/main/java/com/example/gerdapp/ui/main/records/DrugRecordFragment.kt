@@ -31,6 +31,7 @@ class DrugRecordFragment: Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.GONE
+    private var actionbarTitleEnable = false
 
     private lateinit var preferences: SharedPreferences
 
@@ -52,6 +53,7 @@ class DrugRecordFragment: Fragment() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
         mainActivity.setActionBarExpanded(false)
+        mainActivity.setActionBarTitleEnable(actionbarTitleEnable)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

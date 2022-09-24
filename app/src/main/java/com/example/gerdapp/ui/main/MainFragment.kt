@@ -37,6 +37,7 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var bottomNavigationViewVisibility = View.VISIBLE
+    private var actionbarTitleEnable = true
 
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var notificationRecyclerView: RecyclerView
@@ -84,11 +85,16 @@ class MainFragment : Fragment() {
     private fun setBottomNavigationVisibility() {
         val mainActivity = activity as MainActivity
         mainActivity.setBottomNavigationVisibility(bottomNavigationViewVisibility)
+
+        mainActivity.setActionBarTitleEnable(actionbarTitleEnable)
+        mainActivity.setActionBarTitle()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
+
+        requireActivity().title = "Hello World"
 
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
         editor = preferences.edit()
@@ -124,8 +130,6 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        activity?.actionBar?.title = "hello world"
 
         mainRecyclerView = binding.mainRecyclerView
 

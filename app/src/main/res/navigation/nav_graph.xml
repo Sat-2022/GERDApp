@@ -9,8 +9,8 @@
     <fragment
         android:id="@+id/navigation_main"
         android:name="com.example.gerdapp.ui.main.MainFragment"
-        android:label="XX月XX日"
-        tools:layout="@layout/fragment_main" >
+        android:label="@string/app_name"
+        tools:layout="@layout/fragment_main">
         <action
             android:id="@+id/action_mainFragment_to_foodFragment"
             app:destination="@id/navigation_food" />
@@ -60,8 +60,8 @@
     <fragment
         android:id="@+id/navigation_calendar"
         android:name="com.example.gerdapp.ui.calendar.CalendarFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" >
+        android:label="@string/list"
+        tools:layout="@layout/fragment_calendar">
         <action
             android:id="@+id/action_calendarFragment_to_questionnaireFragment"
             app:destination="@id/navigation_questionnaire" />
@@ -69,7 +69,7 @@
     <fragment
         android:id="@+id/navigation_chart"
         android:name="com.example.gerdapp.ui.chart.ChartFragment"
-        android:label="fragment_chart"
+        android:label="@string/stat"
         tools:layout="@layout/fragment_chart" />
     <fragment
         android:id="@+id/navigation_event"
@@ -92,13 +92,13 @@
     <fragment
         android:id="@+id/navigation_profile"
         android:name="com.example.gerdapp.ui.profile.ProfileFragment"
-        android:label="fragment_profile"
+        android:label="@string/prof"
         tools:layout="@layout/fragment_profile" />
     <fragment
         android:id="@+id/navigation_drug"
         android:name="com.example.gerdapp.ui.main.records.DrugRecordFragment"
-        android:label="fragment_drug"
-        tools:layout="@layout/fragment_drug_record" >
+        android:label="@string/medicine"
+        tools:layout="@layout/fragment_drug_record">
         <action
             android:id="@+id/action_drugFragment_to_mainFragment"
             app:destination="@id/navigation_main" />
