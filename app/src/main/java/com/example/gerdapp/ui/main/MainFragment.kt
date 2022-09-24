@@ -106,8 +106,7 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
-//        getMachineReturnApi().start()
-        updateReturnTime()
+        getMachineReturnApi().start()
     }
 
     override fun onCreateView(

@@ -52,7 +52,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp"
             android:orientation="vertical">
 
 <!--            <include-->
@@ -61,6 +60,7 @@
 
             <FrameLayout
                 android:layout_width="match_parent"
+                android:layout_marginHorizontal="8dp"
                 android:layout_height="48dp">
 
                 <TextView
@@ -89,7 +89,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="48dp" />
+            android:layout_height="60dp" />
 
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
