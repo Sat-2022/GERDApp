@@ -1,8 +1,7 @@
 package com.example.gerdapp
 
 data class UserData(
-    var userId: String,
     var CaseNumber: String,
-    var userName: String,
+    var Nickname: String,
     var Gender: String
 )

@@ -81,9 +81,9 @@ class MainActivity : AppCompatActivity() {
             val userName = preferences.getString("nickname", "")
 
             when(preferences.getString("gender", "")) {
-                "1" -> appBarTitle.text = "${userName}先生，${greets}！"
-                "2" -> appBarTitle.text = "${userName}女士，${greets}！"
-                else -> appBarTitle.text = "${userName}，${greets}！"
+                "1" -> appBarTitle.text = "$userName 先生，$greets！"
+                "2" -> appBarTitle.text = "$userName 女士，$greets！"
+                else -> appBarTitle.text = "$userName，$greets！"
             }
         }
 

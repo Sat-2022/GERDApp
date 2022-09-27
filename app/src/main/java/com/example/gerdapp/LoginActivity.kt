@@ -173,7 +173,7 @@ class LoginActivity : AppCompatActivity() {
 
                     val result = list.first()
 
-                    editor.putString("nickname", result.userName)
+                    editor.putString("nickname", result.Nickname)
                     editor.putString("gender", result.Gender)
 
                     editor.commit()
