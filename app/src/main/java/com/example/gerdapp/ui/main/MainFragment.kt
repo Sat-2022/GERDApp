@@ -94,8 +94,6 @@ class MainFragment : Fragment() {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
 
-        requireActivity().title = "Hello World"
-
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
         editor = preferences.edit()
 
@@ -147,36 +145,31 @@ class MainFragment : Fragment() {
             val recentRecord = when (cardItem.stringResourceId) {
                 R.string.symptoms -> {
                     if(symptomCurrent != null) {
-                        val timeRecord = TimeRecord().stringToTimeRecord(symptomCurrent!!.StartDate)
-                        timeRecord.toString()
+                        symptomCurrentToString()
                     } else { "No Data" }
                 }
 
                 R.string.medicine -> {
                     if(drugCurrent != null) {
-                        val timeRecord = TimeRecord().stringToTimeRecord(drugCurrent!!.MedicationTime)
-                        timeRecord.toString()
+                        drugCurrentToString()
                     } else { "No Data" }
                 }
 
                 R.string.sleep -> {
                     if(sleepCurrent != null) {
-                        val timeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.StartDate)
-                        timeRecord.toString()
+                        sleepCurrentToString()
                     } else { "No Data" }
                 }
 
                 R.string.food -> {
                     if(foodCurrent != null) {
-                        val timeRecord = TimeRecord().stringToTimeRecord(foodCurrent!!.StartDate)
-                        timeRecord.toString()
+                        foodCurrentToString()
                     } else { "No Data" }
                 }
 
                 R.string.event -> {
                     if(eventCurrent != null) {
-                        val timeRecord = TimeRecord().stringToTimeRecord(eventCurrent!!.StartDate)
-                        timeRecord.toString()
+                        eventCurrentToString()
                     } else { "No Data" }
                 }
 
@@ -298,44 +291,6 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun updateReturnTime() {
-        binding.apply {
-            val timeRecord = TimeRecord().stringToTimeRecord(returnMachine?.ReturnDate!!)
-
-            cardItemRecentTime.text = timeRecord.toString()
-
-            notificationCard.setOnClickListener {
-                // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
-                var notificationClosed = false
-                val inflater = requireActivity().layoutInflater
-                val checkBoxView = inflater.inflate(R.layout.checkbox, null)
-                val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
-                checkBox.setOnCheckedChangeListener { compoundButton, b ->
-                    editor.putBoolean("showNotification", !b)
-                    editor.commit()
-                    notificationClosed = b
-                }
-
-                val dialogBuilder = AlertDialog.Builder(context)
-                dialogBuilder.setView(checkBoxView)
-                    .setTitle(R.string.notification_title)
-                    .setMessage(getString(R.string.notification_message, timeRecord.toString()))
-                    .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
-                        dialog.dismiss()
-                        if(notificationClosed) {
-                            notificationCard.visibility = View.GONE
-                            notificationHeadline.visibility = View.GONE
-                        }
-                    }
-//                        .setOnDismissListener {
-//                            (checkBoxView.parent as ViewGroup).removeView(checkBoxView)
-//                        }
-                dialogBuilder.create()
-                dialogBuilder.show()
-            }
-        }
-    }
-
     private fun updateMachineReturnTime() {
         activity?.runOnUiThread {
             binding.apply {
@@ -416,6 +371,109 @@ class MainFragment : Fragment() {
         }
 
         return formatted
+    }
+
+    private fun symptomCurrentToString(): String {
+        var string = ""
+
+        val symptomItem = symptomCurrent!!.SymptomItem.split(",").toTypedArray()
+        var symptomItemString = ""
+        var itemCount = 0
+        for(i in symptomItem) {
+
+            if(itemCount > 2) {
+                symptomItemString += ", ..."
+                break
+            }
+
+            if(i != symptomItem[0]) symptomItemString += ", "
+
+            when (i) {
+                "1" -> {
+                    symptomItemString += getString(R.string.cough)
+                    itemCount ++
+                }
+                "2" -> {
+                    symptomItemString += getString(R.string.heart_burn)
+                    itemCount ++
+                }
+                "3" -> {
+                    symptomItemString += getString(R.string.acid_reflux)
+                    itemCount ++
+                }
+                "4" -> {
+                    symptomItemString += getString(R.string.chest_pain)
+                    itemCount ++
+                }
+                "5" -> {
+                    symptomItemString += getString(R.string.sour_mouth)
+                    itemCount ++
+                }
+                "6" -> {
+                    symptomItemString += getString(R.string.hoarseness)
+                    itemCount ++
+                }
+                "7" -> {
+                    symptomItemString += getString(R.string.appetite_loss)
+                    itemCount ++
+                }
+                "8" -> {
+                    symptomItemString += getString(R.string.stomach_gas)
+                    itemCount ++
+                }
+            }
+        }
+        string += "$symptomItemString - "
+
+        val startTimeRecord = TimeRecord().stringToTimeRecord(symptomCurrent!!.StartDate)
+        string += "$startTimeRecord"
+
+        return string
+    }
+
+    private fun drugCurrentToString(): String {
+        var string = ""
+
+        string += drugCurrent!!.DrugItem + " - "
+
+        val timeRecord = TimeRecord().stringToTimeRecord(drugCurrent!!.MedicationTime)
+        string += "$timeRecord"
+
+        return string
+    }
+
+    private fun sleepCurrentToString(): String {
+        var string = ""
+
+        val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.StartDate)
+        string += "$startTimeRecord 至 "
+
+        val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.StartDate)
+        string += "$endTimeRecord"
+
+        return string
+    }
+
+    private fun foodCurrentToString(): String {
+        var string = ""
+
+        string += foodCurrent!!.FoodItem + " - "
+
+        val startTimeRecord = TimeRecord().stringToTimeRecord(foodCurrent!!.StartDate)
+        string += "$startTimeRecord"
+
+        return string
+    }
+
+    private fun eventCurrentToString(): String {
+        var string = ""
+
+        string += eventCurrent!!.ActivityItem + " - "
+
+        val startTimeRecord = TimeRecord().stringToTimeRecord(eventCurrent!!.StartDate)
+        string += "$startTimeRecord"
+
+        return string
     }
 
     private fun setSymptomsCard() {

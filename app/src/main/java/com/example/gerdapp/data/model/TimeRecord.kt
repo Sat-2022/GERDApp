@@ -45,9 +45,9 @@ class TimeRecord {
     override fun toString(): String {
         var string = ""
 
-        string += this.YEAR.toString() + " 年 "
-        string += this.MONTH.toString() + " 月 "
-        string += this.DAY.toString() + " 日 "
+//        string += this.YEAR.toString() + " 年 "
+//        string += this.MONTH.toString() + " 月 "
+//        string += this.DAY.toString() + " 日 "
         string += this.HOUR.toString() + " 時 "
         string += this.MIN.toString() + "分"
 
