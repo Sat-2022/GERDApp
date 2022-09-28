@@ -17,7 +17,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentSleepRecordBinding
-import com.example.gerdapp.data.model.TimeRecord
+import com.example.gerdapp.data.TimeRecord
 import java.io.BufferedReader
 import java.io.DataOutputStream
 import java.io.FileNotFoundException

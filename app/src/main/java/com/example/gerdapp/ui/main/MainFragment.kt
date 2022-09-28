@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.*
 import com.example.gerdapp.adapter.CardItemAdapter
 import com.example.gerdapp.data.*
-import com.example.gerdapp.data.model.TimeRecord
+import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentMainBinding
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -111,6 +111,11 @@ class MainFragment : Fragment() {
         super.onResume()
         setBottomNavigationVisibility()
         getMachineReturnApi().start()
+        getSymptomCurrentApi().start()
+        getDrugCurrentApi().start()
+        getSleepCurrentApi().start()
+        getFoodCurrentApi().start()
+        getEventCurrentApi().start()
     }
 
     override fun onCreateView(

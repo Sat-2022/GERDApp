@@ -1,7 +1,4 @@
-package com.example.gerdapp.data.model
-
-import android.util.Log
-import com.example.gerdapp.R
+package com.example.gerdapp.data
 
 class TimeRecord {
     var YEAR = 0

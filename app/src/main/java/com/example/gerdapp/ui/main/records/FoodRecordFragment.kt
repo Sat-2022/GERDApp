@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
-import com.example.gerdapp.data.model.TimeRecord
+import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentFoodRecordBinding
 import java.io.BufferedReader
 import java.io.DataOutputStream

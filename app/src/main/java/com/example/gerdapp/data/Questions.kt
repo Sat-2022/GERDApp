@@ -1,4 +1,4 @@
-package com.example.gerdapp
+package com.example.gerdapp.data
 
 data class Questions (
     val CaseNumber: String,
