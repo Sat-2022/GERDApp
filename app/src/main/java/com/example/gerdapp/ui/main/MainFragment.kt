@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -16,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.*
 import com.example.gerdapp.adapter.CardItemAdapter
+import com.example.gerdapp.adapter.NotificationCardItemAdapter
 import com.example.gerdapp.data.*
 import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentMainBinding
@@ -42,7 +42,8 @@ class MainFragment : Fragment() {
     private lateinit var mainRecyclerView: RecyclerView
     private lateinit var notificationRecyclerView: RecyclerView
 
-    private var returnMachine: ReturnMachine? = null
+    private var notificationList: List<NotificationCardItem>? = null
+    private var notificationCardItem: NotificationCardItem? = null
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -99,7 +100,7 @@ class MainFragment : Fragment() {
 
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
-        getMachineReturnApi().start()
+        getNotificationApi().start()
         getSymptomCurrentApi().start()
         getDrugCurrentApi().start()
         getSleepCurrentApi().start()
@@ -110,7 +111,7 @@ class MainFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
-        getMachineReturnApi().start()
+        getNotificationApi().start()
         getSymptomCurrentApi().start()
         getDrugCurrentApi().start()
         getSleepCurrentApi().start()
@@ -187,6 +188,8 @@ class MainFragment : Fragment() {
 
         notificationRecyclerView = binding.notificationRecyclerView
 
+        Log.e("Adapter", "$notificationList")
+
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time
@@ -198,11 +201,11 @@ class MainFragment : Fragment() {
 
             setSymptomsCard()
 
-            val showNotification = preferences.getBoolean("showNotification", true)
-            if(!showNotification) {
-                notificationCard.visibility = View.GONE
-                notificationHeadline.visibility = View.GONE
-            }
+//            val showNotification = preferences.getBoolean("showNotification", true)
+//            if(!showNotification) {
+//                notificationCard.visibility = View.GONE
+//                notificationHeadline.visibility = View.GONE
+//            }
         }
     }
 
@@ -296,86 +299,84 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun updateMachineReturnTime() {
+    private fun updateNotification() {
         activity?.runOnUiThread {
             binding.apply {
-                val timeRecord = TimeRecord().stringToTimeRecord(returnMachine?.ReturnDate!!)
-
-                cardItemRecentTime.text = timeRecord.toString()
-
-                notificationCard.setOnClickListener {
+                val notificationAdapter = NotificationCardItemAdapter { notificationCardItem ->
                     // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
-                    var notificationClosed = false
-                    val inflater = requireActivity().layoutInflater
-                    val checkBoxView = inflater.inflate(R.layout.checkbox, null)
-                    val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
-                    checkBox.setOnCheckedChangeListener { compoundButton, b ->
-                        editor.putBoolean("showNotification", !b)
-                        editor.commit()
-                        notificationClosed = b
-                    }
-
                     val dialogBuilder = AlertDialog.Builder(context)
-                    dialogBuilder.setView(checkBoxView)
-                        .setTitle(R.string.notification_title)
-                        .setMessage(getString(R.string.notification_message, timeRecord.toString()))
+                    dialogBuilder.setTitle(notificationCardItem.ReturnItem)
+                        .setMessage(notificationCardItem.ReturnDesc)
                         .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
                             dialog.dismiss()
-                            if(notificationClosed) {
-                                notificationCard.visibility = View.GONE
-                                notificationHeadline.visibility = View.GONE
-                            }
                         }
-//                        .setOnDismissListener {
-//                            (checkBoxView.parent as ViewGroup).removeView(checkBoxView)
-//                        }
                     dialogBuilder.create()
                     dialogBuilder.show()
                 }
+
+                if(notificationList != null ){ notificationAdapter.updateNotification(notificationList!!) }
+
+                notificationRecyclerView.adapter = notificationAdapter
+//                val timeRecord = TimeRecord().stringToTimeRecord(notificationCardItem?.ReturnDate!!)
+//
+//                cardItemRecentTime.text = timeRecord.toString()
+//
+//                notificationCard.setOnClickListener {
+//                    // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+//                    var notificationClosed = false
+//                    val inflater = requireActivity().layoutInflater
+//                    val checkBoxView = inflater.inflate(R.layout.checkbox, null)
+//                    val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
+//                    checkBox.setOnCheckedChangeListener { compoundButton, b ->
+//                        editor.putBoolean("showNotification", !b)
+//                        editor.commit()
+//                        notificationClosed = b
+//                    }
+//
+//                    val dialogBuilder = AlertDialog.Builder(context)
+//                    dialogBuilder.setView(checkBoxView)
+//                        .setTitle(R.string.notification_title)
+//                        .setMessage(getString(R.string.notification_message, timeRecord.toString()))
+//                        .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
+//                            dialog.dismiss()
+//                            if(notificationClosed) {
+//                                notificationCard.visibility = View.GONE
+//                                notificationHeadline.visibility = View.GONE
+//                            }
+//                        }
+////                        .setOnDismissListener {
+////                            (checkBoxView.parent as ViewGroup).removeView(checkBoxView)
+////                        }
+//                    dialogBuilder.create()
+//                    dialogBuilder.show()
+//                }
             }
         }
     }
 
-    private fun getMachineReturnApi(): Thread {
+    private fun getNotificationApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_return_machine_url, getString(R.string.server_url), User.caseNumber))
+            val url = URL(getString(R.string.get_notification_url, getString(R.string.server_url), User.caseNumber))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
                 val inputSystem = connection.inputStream
                 val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<ReturnMachine>>() {}.type
-                val list: List<ReturnMachine> = Gson().fromJson(inputStreamReader, type)
+                val type: java.lang.reflect.Type? = object : TypeToken<List<NotificationCardItem>>() {}.type
+                notificationList = Gson().fromJson(inputStreamReader, type)
                 try{
-                    returnMachine = list.first()
-                    updateMachineReturnTime()
+//                    notificationCardItem = notificationList?.first()
+                    updateNotification()
                 } catch (e: Exception) {
                     // TODO: Handle exception
                 }
 
                 inputStreamReader.close()
                 inputSystem.close()
-                Log.e("API Connection", "$returnMachine")
+                Log.e("API Connection", "$notificationList")
             } else
                 Log.e("API Connection", "failed")
         }
-    }
-
-    private fun dateTimeString(dateTime: String?): String{
-        var formatted = ""
-
-        // 0123456789012345678901
-        // yyyy-mm-ddTHH:mm:ss.ss
-        if(dateTime != null){
-            for (i in 0..21) {
-                if (i == 5 && dateTime[i] != '0') formatted += dateTime[i]
-                else if (i == 6) formatted += dateTime[i] + " " + getString(R.string.month) + " "
-                else if (i == 8 && dateTime[i] != '0') formatted += dateTime[i]
-                else if (i == 9) formatted += dateTime[i] + " " + getString(R.string.date)
-            }
-        }
-
-        return formatted
     }
 
     private fun symptomCurrentToString(): String {

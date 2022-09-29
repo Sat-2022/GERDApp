@@ -4,32 +4,48 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
 import com.example.gerdapp.data.NotificationCardItem
+import com.example.gerdapp.data.TimeRecord
+import com.example.gerdapp.databinding.ListItemNotificationBinding
 
 class NotificationCardItemAdapter(
     private val clickListener: (NotificationCardItem) -> Unit
-): RecyclerView.Adapter<NotificationCardItemAdapter.NotificationCardItemViewHolder>() {
+): RecyclerView.Adapter<NotificationCardItemAdapter.NotificationViewHolder>() {
 
+    private val items: ArrayList<NotificationCardItem> = ArrayList()
 
-    class NotificationCardItemViewHolder(view: View): RecyclerView.ViewHolder(view) {
-        val titleTextView: TextView = view.findViewById(R.id.card_item_title)
-        val subtitleTextView: TextView = view.findViewById(R.id.card_item_recent_time)
+    class NotificationViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+        val titleView: TextView = itemView.findViewById(R.id.card_item_title)
+        val headlineView: TextView = itemView.findViewById(R.id.card_item_recent_time)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationCardItemViewHolder {
-        val adapterLayout = LayoutInflater.from(parent.context)
-            .inflate(R.layout.list_item_notification, parent, false)
-        return NotificationCardItemViewHolder(adapterLayout)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_notification, parent, false)
+        val viewHolder = NotificationViewHolder(view)
+
+        return viewHolder
     }
 
-    override fun onBindViewHolder(holder: NotificationCardItemViewHolder, position: Int) {
-        holder.titleTextView.text = ""
-        holder.titleTextView.text = ""
+    override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
+        val current = items[position]
+        holder.titleView.text = current.ReturnItem
+        holder.headlineView.text = TimeRecord().stringToTimeRecord(current.ReturnDate).toString()
+
+        holder.itemView.setOnClickListener {
+            clickListener(current)
+        }
     }
 
     override fun getItemCount(): Int {
-        return 1
+        return items.size
+    }
+
+    fun updateNotification(notifications: List<NotificationCardItem>) {
+        items.clear()
+        items.addAll(notifications)
     }
 }

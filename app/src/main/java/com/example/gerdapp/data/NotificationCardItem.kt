@@ -1,4 +1,14 @@
 package com.example.gerdapp.data
 
-class NotificationCardItem {
-}
+data class NotificationCardItem(
+//    val Rmno: Int,
+    val CaseNumber: String,
+//    val Uid: String,
+    val ReturnItem: String,
+    val ReturnDate: String,
+    val ReturnDesc: String,
+//    val CreateId: String,
+//    val CreateDateTime: String,
+//    val LastId: String,
+//    val LastDateTime: String
+)

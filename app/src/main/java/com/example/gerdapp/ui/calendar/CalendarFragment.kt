@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.gerdapp.*
 import com.example.gerdapp.data.Questions
-import com.example.gerdapp.data.ReturnMachine
 import com.example.gerdapp.databinding.FragmentCalendarBinding
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -37,8 +36,6 @@ class CalendarFragment: Fragment() {
     var questions: List<Questions>? = null
 
     private var currentResult: Questions? = null
-
-    private var returnMachine: ReturnMachine? = null
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
