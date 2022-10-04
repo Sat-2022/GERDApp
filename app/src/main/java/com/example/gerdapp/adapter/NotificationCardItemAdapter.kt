@@ -33,7 +33,7 @@ class NotificationCardItemAdapter(
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
         val current = items[position]
         holder.titleView.text = current.ReturnItem
-        holder.headlineView.text = TimeRecord().stringToTimeRecord(current.ReturnDate).toString()
+        holder.headlineView.text = TimeRecord().stringToTimeRecord(current.ReturnDate).toString(1)
 
         holder.itemView.setOnClickListener {
             clickListener(current)

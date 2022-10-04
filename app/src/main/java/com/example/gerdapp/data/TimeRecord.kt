@@ -1,5 +1,7 @@
 package com.example.gerdapp.data
 
+import java.util.*
+
 class TimeRecord {
     var YEAR = 0
     var MONTH = 0
@@ -39,15 +41,45 @@ class TimeRecord {
         return timeRecord
     }
 
+    private fun isToday(): Boolean {
+        val calendar = Calendar.getInstance()
+
+        if(this.YEAR != calendar[Calendar.YEAR]) return false
+        if(this.MONTH != calendar[Calendar.MONTH]+1) return false
+        if(this.DAY != calendar[Calendar.DAY_OF_MONTH]) return false
+
+        return true
+    }
+
     override fun toString(): String {
         var string = ""
 
-//        string += this.YEAR.toString() + " 年 "
-//        string += this.MONTH.toString() + " 月 "
-//        string += this.DAY.toString() + " 日 "
-        string += this.HOUR.toString() + " 時 "
-        string += this.MIN.toString() + "分"
+        if(this.isToday()) {
+            string += this.HOUR.toString() + " 時 "
+            string += this.MIN.toString() + "分"
+        } else {
+//            string += this.YEAR.toString() + " 年 "
+            string += this.MONTH.toString() + " 月 "
+            string += this.DAY.toString() + " 日 "
+        }
 
         return string
     }
+
+    fun toString(flag: Int = 0): String {
+        if(flag == 0){
+            return this.toString()
+        }
+
+        var string = ""
+
+//        string += this.YEAR.toString() + " 年 "
+        string += this.MONTH.toString() + " 月 "
+        string += this.DAY.toString() + " 日 "
+//        string += this.HOUR.toString() + " 時 "
+//        string += this.MIN.toString() + "分"
+
+        return string
+    }
+
 }

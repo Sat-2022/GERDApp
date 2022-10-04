@@ -68,7 +68,7 @@ class SleepRecordFragment: Fragment() {
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        menu?.findItem(R.id.menu_settings).isVisible = false
+        menu.findItem(R.id.menu_settings).isVisible = false
 //        menu.setGroupVisible(R.id.menu_group, false)
     }
 
