@@ -103,6 +103,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when(item.itemId) {
             R.id.menu_settings -> {
+                navController.navigate(R.id.navigation_settings)
                 true
             }
             else -> super.onOptionsItemSelected(item)

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name_en">GERDApp</string>
     <string name="app_name">逆流日誌</string>
+    <string name="version_number">X.X.X</string>
 
     <string name="check_input_valid">[&lt;&gt;.*:^+\=&amp;/]</string>
     <string name="check_alphabetic">[A-Za-z]</string>
@@ -78,6 +79,14 @@
     <string name="list">問卷</string>
     <string name="stat">圖表</string>
     <string name="prof">我的</string>
+
+    <!-- strings for settings -->
+    <string name="setting_title">設定</string>
+    <string name="version_title">版本</string>
+    <string name="text_size_title">字體大小</string>
+    <string name="text_size_large">大</string>
+    <string name="text_size_medium">中</string>
+    <string name="text_size_small">小</string>
 
     <!-- time selection -->
     <string name="time_headline">時間</string>

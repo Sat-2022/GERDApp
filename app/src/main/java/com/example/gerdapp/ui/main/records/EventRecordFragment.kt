@@ -5,9 +5,7 @@ import android.app.TimePickerDialog
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
@@ -63,6 +61,13 @@ class EventRecordFragment: Fragment() {
         setBottomNavigationVisibility()
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        menu?.findItem(R.id.menu_settings).isVisible = false
+//        menu.setGroupVisible(R.id.menu_group, false)
+    }
+
 
     override fun onResume() {
         super.onResume()

@@ -29,6 +29,9 @@
         <action
             android:id="@+id/action_mainFragment_to_drugRecordFragment"
             app:destination="@id/navigation_drug" />
+        <action
+            android:id="@+id/action_mainFragment_to_settingsFragment"
+            app:destination="@id/navigation_settings" />
     </fragment>
     <fragment
         android:id="@+id/navigation_food"
@@ -102,5 +105,14 @@
         <action
             android:id="@+id/action_drugFragment_to_mainFragment"
             app:destination="@id/navigation_main" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_settings"
+        android:name="com.example.gerdapp.ui.settings.SettingsFragment"
+        android:label="@string/setting_title"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_settingsFragment_self"
+            app:destination="@id/navigation_settings" />
     </fragment>
 </navigation>
