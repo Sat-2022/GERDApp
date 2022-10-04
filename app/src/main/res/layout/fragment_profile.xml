@@ -17,22 +17,26 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textAppearance="@style/TitleText"
             android:text="使用者資料："/>
 
         <TextView
             android:id="@+id/tv_user_acc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TitleText"/>
 
         <TextView
             android:id="@+id/tv_user_nickname"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TitleText"/>
 
         <TextView
             android:id="@+id/tv_user_gender"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TitleText"/>
 
         <include layout="@layout/card_divider"/>
         <include layout="@layout/divider"/>
