@@ -23,6 +23,7 @@
     <string name="get_event_record_url">http://%s/GERD_API/api/ActivityRecord/%s|%s|%s|%s</string>
     <string name="get_drug_record_url">http://%s/GERD_API/api/DrugRecord/%s|%s|%s|%s</string>
     <string name="get_symptoms_record_url">http://%s/GERD_API/api/SymptomRecord/%s|%s|%s|%s</string>
+    <string name="input_time_format">%04d%02d%02d</string>
 
     <!-- post record urls -->
     <string name="post_sleep_record_url">http://%s/GERD_API/api/SleepRecord/</string>

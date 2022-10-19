@@ -40,10 +40,8 @@ class MainFragment : Fragment() {
     private var actionbarTitleEnable = true
 
     private lateinit var mainRecyclerView: RecyclerView
-    private lateinit var notificationRecyclerView: RecyclerView
 
     private var notificationList: List<NotificationCardItem>? = null
-    private var notificationCardItem: NotificationCardItem? = null
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -186,26 +184,15 @@ class MainFragment : Fragment() {
 
         mainRecyclerView.adapter = adapter
 
-        notificationRecyclerView = binding.notificationRecyclerView
-
-        Log.e("Adapter", "$notificationList")
-
         binding.apply {
             val calendar = Calendar.getInstance()
             val current = calendar.time
             val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
-            val currentDate = formatDate.format(current)
             testButton.setOnClickListener { view ->
                 Snackbar.make(view, "", Snackbar.LENGTH_LONG).setAction("Action", null).show()
             }
 
             setSymptomsCard()
-
-//            val showNotification = preferences.getBoolean("showNotification", true)
-//            if(!showNotification) {
-//                notificationCard.visibility = View.GONE
-//                notificationHeadline.visibility = View.GONE
-//            }
         }
     }
 
@@ -314,7 +301,7 @@ class MainFragment : Fragment() {
                     dialogBuilder.show()
                 }
 
-                if(notificationList != null ){ notificationAdapter.updateNotification(notificationList!!) }
+                if(notificationList != null) { notificationAdapter.updateNotification(notificationList!!) }
 
                 notificationRecyclerView.adapter = notificationAdapter
 //                val timeRecord = TimeRecord().stringToTimeRecord(notificationCardItem?.ReturnDate!!)

@@ -1,15 +1,21 @@
 package com.example.gerdapp.ui.chart
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
+import com.example.gerdapp.adapter.NotificationCardItemAdapter
+import com.example.gerdapp.data.*
 import com.example.gerdapp.databinding.FragmentDailyChartBinding
+import com.example.gerdapp.ui.main.MainFragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
@@ -17,6 +23,12 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import java.util.Calendar
 
 class DailyChartFragment: Fragment() {
     private var _binding: FragmentDailyChartBinding? = null
@@ -26,20 +38,56 @@ class DailyChartFragment: Fragment() {
     private lateinit var barChart: BarChart
     private lateinit var candleStickChart: CandleStickChart
 
+    private var symptomList: List<SymptomCurrent>? = null
+    private var drugList: List<DrugCurrent>? = null
+    private var sleepList: List<SleepCurrent>? = null
+    private var foodList: List<FoodCurrent>? = null
+    private var eventList: List<EventCurrent>? = null
+
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
+    object User {
+        var caseNumber = ""
+        var gender = ""
+        var nickname = ""
+    }
+
+    private lateinit var calendar: Calendar
+    private lateinit var current: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        editor = preferences.edit()
+
+        User.caseNumber = preferences.getString("caseNumber", "").toString()
+
+        calendar = Calendar.getInstance()
+        current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH], )
+
+        getSymptomsCurrentApi().start()
+        getDrugCurrentApi().start()
+        getDrugCurrentApi().start()
+        getSleepCurrentApi().start()
+        getFoodCurrentApi().start()
+        getEventCurrentApi().start()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getSymptomsCurrentApi().start()
+        getDrugCurrentApi().start()
+        getDrugCurrentApi().start()
+        getSleepCurrentApi().start()
+        getFoodCurrentApi().start()
+        getEventCurrentApi().start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         _binding = FragmentDailyChartBinding.inflate(inflater, container, false)
-
-//        lineChart = binding.lineChart
-//        barChart = binding.barChart
-//        candleStickChart = binding.timeRangeChart
-//        initLineChart()
-//        initBarChart()
-//        initCandleStickChart()
 
         return binding.root
     }
@@ -48,244 +96,208 @@ class DailyChartFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun initLineChart(){
-        // set data
-        setLineChartData()
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
+    }
 
-        lineChart.setBackgroundColor(Color.WHITE)
-        lineChart.description.isEnabled = false
-//        chart.setTouchEnabled(false)
-//        chart.isDragEnabled = false
+    private fun getSymptomsCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_symptoms_record_url, getString(R.string.server_url), User.caseNumber, current, current, "DESC"))
+            val connection = url.openConnection() as HttpURLConnection
 
+            if (connection.responseCode == 200) {
 
-        // add animation
-        lineChart.animateY(1400)
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<SymptomCurrent>>() {}.type
+                symptomList = Gson().fromJson(inputStreamReader, type)
 
-//        val l: Legend = chart.legend
-//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-//        l.orientation = Legend.LegendOrientation.HORIZONTAL
-//        l.setDrawInside(false)
-//        l.typeface = Typeface.DEFAULT //
-//        l.xEntrySpace = 7f
-//        l.yEntrySpace = 5f
-//        //l.form = Legend.LegendForm.LINE
-//        l.textColor = Color.BLACK
-        // remove legend
-        lineChart.legend.isEnabled = false
+                try {
+                    updateSymptoms()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
 
-        val xAxis: XAxis = lineChart.xAxis
-        xAxis.typeface = Typeface.DEFAULT
-        xAxis.textSize = 12f
-        xAxis.yOffset = 0f
-        xAxis.xOffset = 0f
-        xAxis.setDrawGridLines(false)
-//        xAxis.textColor = Color.BLACK
-//        xAxis.setDrawGridLines(true)
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.setLabelCount(5, true)
-
-        val mActivities = arrayOf("一", "二", "三", "四", "五", "六", "日")
-        val formatter = IAxisValueFormatter{ value, axis ->
-            mActivities[value.toInt() % mActivities.size]
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$symptomList")
+            } else
+                Log.e("API Connection", "failed")
         }
-        xAxis.valueFormatter = formatter
-
-        val yAxis = lineChart.axisLeft
-        yAxis.axisMaximum = 5f
-        yAxis.axisMinimum = 0f
-        yAxis.setLabelCount(4, false)
-        yAxis.setDrawAxisLine(false)
-        //yAxis.setDrawLabels(false)
-        lineChart.axisRight.isEnabled = false
     }
 
-    private fun setLineChartData() {
-        val entries1: MutableList<Entry> = ArrayList()
-        val entries2: MutableList<Entry> = ArrayList()
-        for (i in 0..6) entries1.add(Entry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
-        for (i in 0..6) entries2.add(Entry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
+    private fun updateSymptoms() {
+        activity?.runOnUiThread {
+            binding.apply {
+                val symptomsAdapter = SymptomsAdapter { symptomItem ->
 
-        val data1 = LineDataSet(entries1, "Label")
-        data1.setCircleColor(Color.BLUE)
-        data1.setColor(Color.BLUE)
-//        set2.setAxisDependency(YAxis.AxisDependency.RIGHT);
-//        set2.setColor(Color.RED);
-//        set2.setCircleColor(Color.WHITE);
-//        set2.setLineWidth(2f);
-//        set2.setCircleRadius(3f);
-//        set2.setFillAlpha(65);
-//        set2.setFillColor(Color.RED);
-//        set2.setDrawCircleHole(false);
-//        set2.setHighLightColor(Color.rgb(244, 117, 117));
+                }
 
-        val data2 = LineDataSet(entries2, "Label")
-        data2.setCircleColor(Color.RED)
-        data2.setColor(Color.RED)
+                if(symptomList != null) { symptomsAdapter.updateSymptomList(symptomList!!) }
 
-        val dataset = ArrayList<ILineDataSet>()
-        dataset.add(data1)
-        dataset.add(data2)
-
-        val data = LineData(dataset)
-
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
-
-        data.setDrawValues(true)
-
-        lineChart.data = data
-        lineChart.invalidate()
-    }
-
-    private fun initBarChart() {
-        // set data
-        // initBarChartData()
-
-        setRandomResult()
-
-        barChart.setBackgroundColor(Color.WHITE)
-        barChart.description.isEnabled = false
-//        chart.setTouchEnabled(false)
-//        chart.isDragEnabled = false
-
-
-        // add animation
-        barChart.animateY(1400)
-
-//        val l: Legend = chart.legend
-//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-//        l.orientation = Legend.LegendOrientation.HORIZONTAL
-//        l.setDrawInside(false)
-//        l.typeface = Typeface.DEFAULT //
-//        l.xEntrySpace = 7f
-//        l.yEntrySpace = 5f
-//        //l.form = Legend.LegendForm.LINE
-//        l.textColor = Color.BLACK
-        // remove legend
-        barChart.legend.isEnabled = false
-
-        val xAxis: XAxis = barChart.xAxis
-        xAxis.typeface = Typeface.DEFAULT
-        xAxis.textSize = 12f
-        xAxis.yOffset = 0f
-        xAxis.xOffset = 0f
-        xAxis.setDrawGridLines(false)
-//        xAxis.textColor = Color.BLACK
-//        xAxis.setDrawGridLines(true)
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.setLabelCount(5, true)
-
-        val mActivities = arrayOf(
-            getString(R.string.cough),
-            getString(R.string.heart_burn),
-            getString(R.string.acid_reflux),
-            getString(R.string.chest_pain),
-            getString(R.string.sour_mouth),
-            getString(R.string.hoarseness),
-            getString(R.string.appetite_loss),
-            getString(R.string.stomach_gas),
-            getString(R.string.cough_night),
-            getString(R.string.acid_reflux_night)
-        )
-        val formatter = IAxisValueFormatter { value, axis ->
-            mActivities[value.toInt() % mActivities.size]
+                symptomsRecyclerView.adapter = symptomsAdapter
+            }
         }
-        xAxis.valueFormatter = formatter
-
-        val yAxis = barChart.axisLeft
-        yAxis.axisMaximum = 5f
-        yAxis.axisMinimum = 0f
-        yAxis.setLabelCount(4, false)
-        yAxis.setDrawAxisLine(false)
-        //yAxis.setDrawLabels(false)
-        barChart.axisRight.isEnabled = false
     }
 
-    private fun initCandleStickChart() {
-        // set data
-        // initBarChartData()
+    private fun getDrugCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_drug_record_url, getString(R.string.server_url), User.caseNumber, current, current, "DESC"))
+            val connection = url.openConnection() as HttpURLConnection
 
-        randomResult()
+            if (connection.responseCode == 200) {
 
-        candleStickChart.isHighlightPerDragEnabled = true
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<DrugCurrent>>() {}.type
+                drugList = Gson().fromJson(inputStreamReader, type)
 
-        val yAxis = candleStickChart.axisLeft
-        val rightAxis = candleStickChart.axisRight
-        yAxis.setDrawGridLines(false)
-        rightAxis.setDrawGridLines(false)
-        candleStickChart.requestDisallowInterceptTouchEvent(true)
+                try {
+                    updateDrug()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
 
-//        candleStickChart.animateY(1400)
-
-        val xAxis = candleStickChart.xAxis
-
-        xAxis.setDrawGridLines(false) // disable x axis grid lines
-
-        xAxis.setDrawLabels(false)
-        rightAxis.textColor = Color.WHITE
-        yAxis.setDrawLabels(false)
-        xAxis.granularity = 1f
-        xAxis.isGranularityEnabled = true
-        xAxis.setAvoidFirstLastClipping(true)
-
-        val l = candleStickChart.legend
-        l.isEnabled = false
-    }
-
-    private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
-        if (data == null) entries.add(BarEntry(index.toFloat(), 0f))
-        else entries.add(BarEntry(index.toFloat(), data.toFloat()))
-    }
-
-    private fun setRandomResult() {
-        val entries: ArrayList<BarEntry> = ArrayList()
-        for(i in 0 until 10) {
-            addBarEntry(entries, i, (0..5).random())
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$drugList")
+            } else
+                Log.e("API Connection", "failed")
         }
-
-        val barDataSet = BarDataSet(entries, "")
-        barDataSet.color = Color.BLUE
-
-        val barData = BarData(barDataSet)
-
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
-
-        barDataSet.setDrawValues(false)
-
-        barChart.data = barData
-        barChart.invalidate()
     }
 
-    private fun randomResult(){
-        val entries: ArrayList<CandleEntry> = ArrayList()
-        entries.add(CandleEntry(0f, 225.0f, 219.84f, 225.0f, 219.84f))
-        entries.add(CandleEntry(1f, 228.35f, 222.57f, 228.35f, 222.57f))
-        entries.add(CandleEntry(2f, 226.84f,  222.52f, 226.84f,  222.52f))
-        entries.add(CandleEntry(3f, 222.95f, 217.27f, 222.95f, 217.27f))
-        val candleDataSet = CandleDataSet(entries, "")
-        candleDataSet.color = Color.BLUE
-        candleDataSet.shadowColor = Color.LTGRAY
-        candleDataSet.shadowWidth = 0.8f
-        candleDataSet.decreasingColor = Color.RED
-        candleDataSet.decreasingPaintStyle = Paint.Style.FILL
-        candleDataSet.increasingColor = Color.CYAN
-        candleDataSet.increasingPaintStyle = Paint.Style.FILL
-        candleDataSet.neutralColor = Color.DKGRAY
+    private fun updateDrug() {
+        activity?.runOnUiThread {
+            binding.apply {
+                val drugAdapter = DrugAdapter { drugItem ->
 
-        val candleData = CandleData(candleDataSet)
+                }
 
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
+                if(drugList != null) { drugAdapter.updateDrugList(drugList!!) }
 
-        candleData.setDrawValues(true)
+                drugRecyclerView.adapter = drugAdapter
+            }
+        }
+    }
 
-        candleStickChart.data = candleData
-        candleStickChart.invalidate()
+    private fun getSleepCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber, current, current, "DESC"))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if (connection.responseCode == 200) {
+
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
+                sleepList = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    updateSleep()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$sleepList")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun updateSleep() {
+        activity?.runOnUiThread {
+            binding.apply {
+                val sleepAdapter = SleepAdapter { sleepItem ->
+
+                }
+
+                if(sleepList != null) { sleepAdapter.updateSleepList(sleepList!!) }
+
+                sleepRecyclerView.adapter = sleepAdapter
+            }
+        }
+    }
+
+    private fun getFoodCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_food_record_url, getString(R.string.server_url), User.caseNumber, current, current, "DESC"))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if (connection.responseCode == 200) {
+
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<FoodCurrent>>() {}.type
+                foodList = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    updateFood()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$foodList")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun updateFood() {
+        activity?.runOnUiThread {
+            binding.apply {
+                val foodAdapter = FoodAdapter { foodItem ->
+
+                }
+
+                if(foodList != null) { foodAdapter.updateFoodList(foodList!!) }
+
+                foodRecyclerView.adapter = foodAdapter
+            }
+        }
+    }
+
+    private fun getEventCurrentApi(): Thread {
+        return Thread {
+            val url = URL(getString(R.string.get_event_record_url, getString(R.string.server_url), User.caseNumber, current, current, "DESC"))
+            val connection = url.openConnection() as HttpURLConnection
+
+            if (connection.responseCode == 200) {
+
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<EventCurrent>>() {}.type
+                eventList = Gson().fromJson(inputStreamReader, type)
+
+                try {
+                    updateEvent()
+                } catch (e: Exception) {
+                    // TODO: Catch exception when no data
+                }
+
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$eventList")
+            } else
+                Log.e("API Connection", "failed")
+        }
+    }
+
+    private fun updateEvent() {
+        activity?.runOnUiThread {
+            binding.apply {
+                val eventAdapter = EventAdapter { eventItem ->
+
+                }
+
+                if(eventList != null) { eventAdapter.updateEventList(eventList!!) }
+
+                eventRecyclerView.adapter = eventAdapter
+            }
+        }
     }
 }

@@ -12,17 +12,87 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <include layout="@layout/list_item_daily_record"/>
+        <TextView
+            android:id="@+id/symptoms_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/symptoms"/>
 
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
-        <include layout="@layout/list_item_daily_record"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/symptoms_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="LinearLayoutManager"/>
+
+        <TextView
+            android:id="@+id/drug_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/medicine"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/drug_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="LinearLayoutManager"/>
+
+        <TextView
+            android:id="@+id/sleep_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sleep"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sleep_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="LinearLayoutManager"/>
+
+        <TextView
+            android:id="@+id/food_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sleep"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/food_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="LinearLayoutManager"/>
+
+        <TextView
+            android:id="@+id/event_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/event"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/event_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            app:layoutManager="LinearLayoutManager"/>
+
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
+<!--        <include layout="@layout/list_item_daily_record"/>-->
 
 
 
