@@ -18,11 +18,11 @@
     <string name="get_questionnaire_status_url">http://%s/GERD_API/api/DiaryQuestionnaireCheck/%s</string>
 
     <!-- get record urls -->
-    <string name="get_sleep_record_url">http://%s/GERD_API/api/SleepRecord/%s</string>
-    <string name="get_food_record_url">http://%s/GERD_API/api/FoodRecord/%s</string>
-    <string name="get_event_record_url">http://%s/GERD_API/api/ActivityRecord/%s</string>
-    <string name="get_drug_record_url">http://%s/GERD_API/api/DrugRecord/%s</string>
-    <string name="get_symptoms_record_url">http://%s/GERD_API/api/SymptomRecord/%s</string>
+    <string name="get_sleep_record_url">http://%s/GERD_API/api/SleepRecord/%s|%s|%s|%s</string>
+    <string name="get_food_record_url">http://%s/GERD_API/api/FoodRecord/%s|%s|%s|%s</string>
+    <string name="get_event_record_url">http://%s/GERD_API/api/ActivityRecord/%s|%s|%s|%s</string>
+    <string name="get_drug_record_url">http://%s/GERD_API/api/DrugRecord/%s|%s|%s|%s</string>
+    <string name="get_symptoms_record_url">http://%s/GERD_API/api/SymptomRecord/%s|%s|%s|%s</string>
 
     <!-- post record urls -->
     <string name="post_sleep_record_url">http://%s/GERD_API/api/SleepRecord/</string>

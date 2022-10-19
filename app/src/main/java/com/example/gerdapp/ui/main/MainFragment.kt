@@ -581,7 +581,7 @@ class MainFragment : Fragment() {
 
     private fun getSymptomCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_symptoms_record_url, getString(R.string.server_url), User.caseNumber))
+            val url = URL(getString(R.string.get_symptoms_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
@@ -606,7 +606,7 @@ class MainFragment : Fragment() {
 
     private fun getDrugCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_drug_record_url, getString(R.string.server_url), User.caseNumber))
+            val url = URL(getString(R.string.get_drug_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
@@ -631,7 +631,7 @@ class MainFragment : Fragment() {
 
     private fun getSleepCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber))
+            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
@@ -656,7 +656,7 @@ class MainFragment : Fragment() {
 
     private fun getFoodCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_food_record_url, getString(R.string.server_url), User.caseNumber))
+            val url = URL(getString(R.string.get_food_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
@@ -681,7 +681,7 @@ class MainFragment : Fragment() {
 
     private fun getEventCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_event_record_url, getString(R.string.server_url), User.caseNumber))
+            val url = URL(getString(R.string.get_event_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
             val connection = url.openConnection() as HttpURLConnection
 
             if(connection.responseCode == 200) {
