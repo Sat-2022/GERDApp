@@ -6,4 +6,9 @@ data class EventCurrent(
     val StartDate: String,
     val EndDate: String,
     val ActivityNote: String
-)
+) {
+    fun isEmpty(): Boolean {
+        val time = TimeRecord().stringToTimeRecord(StartDate)
+        return time.isTimeRecordEmpty()
+    }
+}

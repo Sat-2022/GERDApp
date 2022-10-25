@@ -31,7 +31,7 @@ class DrugAdapter(
     override fun onBindViewHolder(holder: DrugViewHolder, position: Int) {
         val current = items[position]
         holder.titleView.text = current.DrugItem
-        holder.timeView.text = TimeRecord().stringToTimeRecord(current.MedicationTime).toString(1)
+        holder.timeView.text = TimeRecord().stringToTimeRecord(current.MedicationTime).toString(2)
 
         holder.itemView.setOnClickListener {
             clickListener(current)

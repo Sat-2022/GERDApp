@@ -6,4 +6,9 @@ data class FoodCurrent(
     val StartDate: String,
     val EndDate: String,
     val FoodNote: String
-)
+) {
+    fun isEmpty(): Boolean {
+        val time = TimeRecord().stringToTimeRecord(StartDate)
+        return time.isTimeRecordEmpty()
+    }
+}

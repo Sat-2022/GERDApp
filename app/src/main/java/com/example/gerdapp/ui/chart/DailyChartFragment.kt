@@ -1,9 +1,7 @@
 package com.example.gerdapp.ui.chart
 
 import android.content.SharedPreferences
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Typeface
+import android.os.Build.VERSION_CODES.P
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,23 +10,19 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
-import com.example.gerdapp.adapter.NotificationCardItemAdapter
 import com.example.gerdapp.data.*
 import com.example.gerdapp.databinding.FragmentDailyChartBinding
-import com.example.gerdapp.ui.main.MainFragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.calendar
+import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.current
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.util.Calendar
+import java.util.*
 
 class DailyChartFragment: Fragment() {
     private var _binding: FragmentDailyChartBinding? = null
@@ -53,8 +47,10 @@ class DailyChartFragment: Fragment() {
         var nickname = ""
     }
 
-    private lateinit var calendar: Calendar
-    private lateinit var current: String
+    object DateRange {
+        lateinit var calendar: Calendar
+        var current = ""
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,14 +61,9 @@ class DailyChartFragment: Fragment() {
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
         calendar = Calendar.getInstance()
-        current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH], calendar[Calendar.DAY_OF_MONTH], )
+        current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
 
-        getSymptomsCurrentApi().start()
-        getDrugCurrentApi().start()
-        getDrugCurrentApi().start()
-        getSleepCurrentApi().start()
-        getFoodCurrentApi().start()
-        getEventCurrentApi().start()
+        callApi()
     }
 
     override fun onResume() {
@@ -94,6 +85,26 @@ class DailyChartFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            selectedDateTv.text = getString(R.string.date_time_format_ch, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+
+            rightArrow.setOnClickListener {
+                calendar.add(Calendar.DAY_OF_YEAR, 1)
+                current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+                selectedDateTv.text = getString(R.string.date_time_format_ch, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+
+                callApi()
+            }
+
+            leftArrow.setOnClickListener {
+                calendar.add(Calendar.DAY_OF_YEAR, -1)
+                current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+                selectedDateTv.text = getString(R.string.date_time_format_ch, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+
+                callApi()
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -130,6 +141,15 @@ class DailyChartFragment: Fragment() {
     private fun updateSymptoms() {
         activity?.runOnUiThread {
             binding.apply {
+                if(symptomList!!.first().isEmpty()) {
+                    symptomsRecyclerView.visibility = View.GONE
+                    symptomsTitle.visibility = View.GONE
+                    return@runOnUiThread
+                } else {
+                    symptomsRecyclerView.visibility = View.VISIBLE
+                    symptomsTitle.visibility = View.VISIBLE
+                }
+
                 val symptomsAdapter = SymptomsAdapter { symptomItem ->
 
                 }
@@ -170,6 +190,15 @@ class DailyChartFragment: Fragment() {
     private fun updateDrug() {
         activity?.runOnUiThread {
             binding.apply {
+                if(drugList!!.first().isEmpty()) {
+                    drugRecyclerView.visibility = View.GONE
+                    drugTitle.visibility = View.GONE
+                    return@runOnUiThread
+                } else {
+                    drugRecyclerView.visibility = View.VISIBLE
+                    drugTitle.visibility = View.VISIBLE
+                }
+
                 val drugAdapter = DrugAdapter { drugItem ->
 
                 }
@@ -210,6 +239,15 @@ class DailyChartFragment: Fragment() {
     private fun updateSleep() {
         activity?.runOnUiThread {
             binding.apply {
+                if(sleepList!!.first().isEmpty()) {
+                    sleepRecyclerView.visibility = View.GONE
+                    sleepTitle.visibility = View.GONE
+                    return@runOnUiThread
+                } else {
+                    sleepRecyclerView.visibility = View.VISIBLE
+                    sleepTitle.visibility = View.VISIBLE
+                }
+
                 val sleepAdapter = SleepAdapter { sleepItem ->
 
                 }
@@ -250,6 +288,15 @@ class DailyChartFragment: Fragment() {
     private fun updateFood() {
         activity?.runOnUiThread {
             binding.apply {
+                if(foodList!!.first().isEmpty()) {
+                    foodRecyclerView.visibility = View.GONE
+                    foodTitle.visibility = View.GONE
+                    return@runOnUiThread
+                } else {
+                    foodRecyclerView.visibility = View.VISIBLE
+                    foodTitle.visibility = View.VISIBLE
+                }
+
                 val foodAdapter = FoodAdapter { foodItem ->
 
                 }
@@ -290,6 +337,16 @@ class DailyChartFragment: Fragment() {
     private fun updateEvent() {
         activity?.runOnUiThread {
             binding.apply {
+                if(eventList!!.first().isEmpty()) {
+                    eventRecyclerView.visibility = View.GONE
+                    eventTitle.visibility = View.GONE
+                    checkNullData()
+                    return@runOnUiThread
+                } else {
+                    eventRecyclerView.visibility = View.VISIBLE
+                    eventTitle.visibility = View.VISIBLE
+                }
+
                 val eventAdapter = EventAdapter { eventItem ->
 
                 }
@@ -297,6 +354,28 @@ class DailyChartFragment: Fragment() {
                 if(eventList != null) { eventAdapter.updateEventList(eventList!!) }
 
                 eventRecyclerView.adapter = eventAdapter
+            }
+        }
+    }
+
+    private fun callApi() {
+        getSymptomsCurrentApi().start()
+        getDrugCurrentApi().start()
+        getDrugCurrentApi().start()
+        getSleepCurrentApi().start()
+        getFoodCurrentApi().start()
+        getEventCurrentApi().start()
+    }
+
+    private fun checkNullData() {
+        binding.apply {
+            if (symptomList!!.first().isEmpty() && drugList!!.first()
+                    .isEmpty() && sleepList!!.first().isEmpty() && foodList!!.first()
+                    .isEmpty() && eventList!!.first().isEmpty()
+            ) {
+                noRecordTv.visibility = View.VISIBLE
+            } else {
+                noRecordTv.visibility = View.GONE
             }
         }
     }

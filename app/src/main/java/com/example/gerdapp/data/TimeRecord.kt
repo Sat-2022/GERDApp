@@ -3,9 +3,9 @@ package com.example.gerdapp.data
 import java.util.*
 
 class TimeRecord {
-    var YEAR = 0
-    var MONTH = 0
-    var DAY = 0
+    var YEAR = 1911
+    var MONTH = 1
+    var DAY = 1
     var HOUR = 0
     var MIN = 0
     var SEC = 0
@@ -21,7 +21,7 @@ class TimeRecord {
     }
 
     fun isTimeRecordEmpty(): Boolean {
-        if(YEAR == 0 && MONTH == 0 && DAY == 0 && HOUR == 0 && MIN == 0 && SEC == 0) return true
+        if(YEAR == 1911 && MONTH == 1 && DAY == 1 && HOUR == 0 && MIN == 0 && SEC == 0) return true
         return false
     }
 
@@ -73,16 +73,17 @@ class TimeRecord {
 
         var string = ""
 
-//        string += this.YEAR.toString() + " 年 "
-        string += this.MONTH.toString() + " 月 "
-        string += this.DAY.toString() + " 日 "
-//        string += this.HOUR.toString() + " 時 "
-//        string += this.MIN.toString() + "分"
-
+        if(flag == 1) {
+            string += this.MONTH.toString() + " 月 "
+            string += this.DAY.toString() + " 日 "
+        } else if(flag == 2) {
+            string += this.HOUR.toString() + " 時 "
+            string += this.MIN.toString() + "分"
+        }
         return string
     }
 
-    fun timeRecordtoFloat(): Float {
+    fun timeRecordToFloat(): Float {
         return (246060 - (this.HOUR*10000 + this.MIN*100 + this.SEC)).toFloat()
     }
 

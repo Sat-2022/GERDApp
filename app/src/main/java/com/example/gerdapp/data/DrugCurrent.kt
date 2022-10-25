@@ -5,4 +5,9 @@ data class DrugCurrent(
     val DrugItem: String,
     val MedicationTime: String,
     val DrugNote: String
-)
+) {
+    fun isEmpty(): Boolean {
+        val time = TimeRecord().stringToTimeRecord(MedicationTime)
+        return time.isTimeRecordEmpty()
+    }
+}

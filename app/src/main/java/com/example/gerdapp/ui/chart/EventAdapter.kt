@@ -29,7 +29,7 @@ class EventAdapter(
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val current = items[position]
         holder.titleView.text = current.ActivityItem
-        holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(1)
+        holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(2)
 
         holder.itemView.setOnClickListener {
             clickListener(current)

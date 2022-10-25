@@ -68,6 +68,7 @@
             android:id="@+id/symptoms_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:text="@string/symptoms"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -82,6 +83,7 @@
             android:id="@+id/drug_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:text="@string/medicine"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -96,6 +98,7 @@
             android:id="@+id/sleep_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:text="@string/sleep"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -110,7 +113,8 @@
             android:id="@+id/food_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/sleep"/>
+            android:layout_marginHorizontal="8dp"
+            android:text="@string/food"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/food_recycler_view"
@@ -124,6 +128,7 @@
             android:id="@+id/event_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
             android:text="@string/event"/>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -134,28 +139,13 @@
             android:nestedScrollingEnabled="false"
             app:layoutManager="LinearLayoutManager"/>
 
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-<!--        <include layout="@layout/list_item_daily_record"/>-->
-
-
-
-        <include layout="@layout/card_divider"/>
-
-
-
-        <include layout="@layout/card_divider"/>
-
-
-
+        <TextView
+            android:id="@+id/no_record_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="今天還沒有記錄喔！"
+            android:visibility="gone"
+            android:gravity="center"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="56dp" />

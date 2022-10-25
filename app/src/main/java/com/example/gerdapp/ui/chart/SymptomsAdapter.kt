@@ -31,8 +31,8 @@ class SymptomsAdapter(
 
     override fun onBindViewHolder(holder: SymptomsViewHolder, position: Int) {
         val current = items[position]
-        holder.titleView.text = current.SymptomItem
-        holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(1)
+        holder.titleView.text = current.symptomToString()
+        holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(2)
 
         holder.itemView.setOnClickListener {
             clickListener(current)

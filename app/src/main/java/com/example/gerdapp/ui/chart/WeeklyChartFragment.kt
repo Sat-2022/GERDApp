@@ -15,7 +15,6 @@ import com.example.gerdapp.R
 import com.example.gerdapp.data.SleepCurrent
 import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
-import com.example.gerdapp.ui.calendar.CalendarFragment
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.calendar
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.endDate
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startDate
@@ -294,8 +293,8 @@ class WeeklyChartFragment: Fragment() {
             entries.add(
                     CandleEntry(
                         i.toFloat(),
-                        startTimeRecord.timeRecordtoFloat(), endTimeRecord.timeRecordtoFloat(),
-                        startTimeRecord.timeRecordtoFloat(), endTimeRecord.timeRecordtoFloat()
+                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
+                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
                     )
                 )
         }
