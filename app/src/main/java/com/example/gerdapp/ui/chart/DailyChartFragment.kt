@@ -68,12 +68,7 @@ class DailyChartFragment: Fragment() {
 
     override fun onResume() {
         super.onResume()
-        getSymptomsCurrentApi().start()
-        getDrugCurrentApi().start()
-        getDrugCurrentApi().start()
-        getSleepCurrentApi().start()
-        getFoodCurrentApi().start()
-        getEventCurrentApi().start()
+        callApi()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

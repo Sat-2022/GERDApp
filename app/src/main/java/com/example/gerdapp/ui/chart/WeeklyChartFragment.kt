@@ -15,9 +15,11 @@ import com.example.gerdapp.R
 import com.example.gerdapp.data.SleepCurrent
 import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
-import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.calendar
-import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.endDate
-import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startDate
+import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.current
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startCalendar
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentEnd
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentStart
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.endCalendar
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
@@ -48,9 +50,10 @@ class WeeklyChartFragment: Fragment() {
     private lateinit var editor: SharedPreferences.Editor
 
     object DateRange {
-        lateinit var calendar: Calendar
-        var startDate = Date()
-        var endDate = Date()
+        lateinit var startCalendar: Calendar
+        lateinit var endCalendar: Calendar
+        var currentStart = ""
+        var currentEnd = ""
     }
 
     object User {
@@ -67,13 +70,13 @@ class WeeklyChartFragment: Fragment() {
 
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
-        calendar = Calendar.getInstance()
-        endDate = calendar.time
+        startCalendar = Calendar.getInstance()
+        endCalendar = Calendar.getInstance()
+        startCalendar.add(Calendar.DAY_OF_YEAR, -6)
 
-        calendar.add(Calendar.DAY_OF_YEAR, -7)
-        startDate = calendar.time
+        updateCurrent()
 
-        getSleepCurrentApi().start()
+        callApi()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -91,6 +94,31 @@ class WeeklyChartFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.apply {
+            selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
+                    " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
+
+            rightArrow.setOnClickListener {
+                startCalendar.add(Calendar.DAY_OF_YEAR, 7)
+                endCalendar.add(Calendar.DAY_OF_YEAR, 7)
+                updateCurrent()
+                selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
+                        " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
+
+                callApi()
+            }
+
+            leftArrow.setOnClickListener {
+                startCalendar.add(Calendar.DAY_OF_YEAR, -7)
+                endCalendar.add(Calendar.DAY_OF_YEAR, -7)
+                updateCurrent()
+                selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
+                        " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
+
+                callApi()
+            }
+        }
     }
 
     private fun initLineChart(){
@@ -257,7 +285,7 @@ class WeeklyChartFragment: Fragment() {
 
         if(!sleepCurrent.isNullOrEmpty()) { initCandleStickChartData() }
 
-        candleStickChart.isHighlightPerDragEnabled = true
+        candleStickChart.isHighlightPerDragEnabled = false
 
         val yAxis = candleStickChart.axisLeft
         val rightAxis = candleStickChart.axisRight
@@ -285,7 +313,7 @@ class WeeklyChartFragment: Fragment() {
     private fun initCandleStickChartData() {
         val entries: ArrayList<CandleEntry> = ArrayList()
 
-        for(i in 1 .. 7) {
+        for(i in 0 until sleepCurrent!!.size) {
             Log.e("Entries", "$i")
             val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].StartDate)
             val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].EndDate)
@@ -357,8 +385,7 @@ class WeeklyChartFragment: Fragment() {
 
     private fun getSleepCurrentApi(): Thread {
         return Thread {
-            val formatDate = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber, formatDate.format(DateRange.startDate), formatDate.format(DateRange.endDate), "ASC"))
+            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber, currentStart, currentEnd, "ASC"))
             val connection = url.openConnection() as HttpURLConnection
 
             Log.e("API Connection", "$url")
@@ -380,5 +407,19 @@ class WeeklyChartFragment: Fragment() {
             } else
                 Log.e("API Connection", "failed")
         }
+    }
+
+    private fun callApi() {
+//        getSymptomsCurrentApi().start()
+//        getDrugCurrentApi().start()
+//        getDrugCurrentApi().start()
+        getSleepCurrentApi().start()
+//        getFoodCurrentApi().start()
+//        getEventCurrentApi().start()
+    }
+
+    private fun updateCurrent() {
+        currentStart = getString(R.string.input_time_format, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH])
+        currentEnd = getString(R.string.input_time_format, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
     }
 }

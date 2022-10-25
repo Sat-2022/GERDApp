@@ -67,7 +67,8 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="12dp"
+            android:visibility="gone">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -119,7 +120,8 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="12dp"
+            android:visibility="gone">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
