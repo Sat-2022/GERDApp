@@ -82,4 +82,8 @@ class TimeRecord {
         return string
     }
 
+    fun timeRecordtoFloat(): Float {
+        return (246060 - (this.HOUR*10000 + this.MIN*100 + this.SEC)).toFloat()
+    }
+
 }

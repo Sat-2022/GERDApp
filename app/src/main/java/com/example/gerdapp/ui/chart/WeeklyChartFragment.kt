@@ -1,15 +1,24 @@
 package com.example.gerdapp.ui.chart
 
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
+import com.example.gerdapp.data.SleepCurrent
+import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
+import com.example.gerdapp.ui.calendar.CalendarFragment
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.calendar
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.endDate
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startDate
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
@@ -17,6 +26,14 @@ import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class WeeklyChartFragment: Fragment() {
     private var _binding: FragmentWeeklyChartBinding? = null
@@ -26,8 +43,38 @@ class WeeklyChartFragment: Fragment() {
     private lateinit var barChart: BarChart
     private lateinit var candleStickChart: CandleStickChart
 
+    private var sleepCurrent: List<SleepCurrent>? = null
+
+    private lateinit var preferences: SharedPreferences
+    private lateinit var editor: SharedPreferences.Editor
+
+    object DateRange {
+        lateinit var calendar: Calendar
+        var startDate = Date()
+        var endDate = Date()
+    }
+
+    object User {
+        var caseNumber = ""
+        var gender = ""
+        var nickname = ""
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        editor = preferences.edit()
+
+        User.caseNumber = preferences.getString("caseNumber", "").toString()
+
+        calendar = Calendar.getInstance()
+        endDate = calendar.time
+
+        calendar.add(Calendar.DAY_OF_YEAR, -7)
+        startDate = calendar.time
+
+        getSleepCurrentApi().start()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -39,7 +86,6 @@ class WeeklyChartFragment: Fragment() {
         candleStickChart = binding.timeRangeChart
         initLineChart()
         initBarChart()
-        initCandleStickChart()
 
         return binding.root
     }
@@ -207,8 +253,10 @@ class WeeklyChartFragment: Fragment() {
     private fun initCandleStickChart() {
         // set data
         // initBarChartData()
+//
+//        randomResult()
 
-        randomResult()
+        if(!sleepCurrent.isNullOrEmpty()) { initCandleStickChartData() }
 
         candleStickChart.isHighlightPerDragEnabled = true
 
@@ -233,6 +281,45 @@ class WeeklyChartFragment: Fragment() {
 
         val l = candleStickChart.legend
         l.isEnabled = false
+    }
+
+    private fun initCandleStickChartData() {
+        val entries: ArrayList<CandleEntry> = ArrayList()
+
+        for(i in 1 .. 7) {
+            Log.e("Entries", "$i")
+            val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].StartDate)
+            val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].EndDate)
+
+            entries.add(
+                    CandleEntry(
+                        i.toFloat(),
+                        startTimeRecord.timeRecordtoFloat(), endTimeRecord.timeRecordtoFloat(),
+                        startTimeRecord.timeRecordtoFloat(), endTimeRecord.timeRecordtoFloat()
+                    )
+                )
+        }
+
+        val candleDataSet = CandleDataSet(entries, "")
+        candleDataSet.color = Color.BLUE
+        candleDataSet.shadowColor = Color.LTGRAY
+        candleDataSet.shadowWidth = 0.8f
+        candleDataSet.decreasingColor = Color.RED
+        candleDataSet.decreasingPaintStyle = Paint.Style.FILL
+        candleDataSet.increasingColor = Color.CYAN
+        candleDataSet.increasingPaintStyle = Paint.Style.FILL
+        candleDataSet.neutralColor = Color.DKGRAY
+
+        val candleData = CandleData(candleDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        candleData.setDrawValues(true)
+
+        candleStickChart.data = candleData
+        candleStickChart.invalidate()
     }
 
     private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
@@ -261,31 +348,38 @@ class WeeklyChartFragment: Fragment() {
         barChart.invalidate()
     }
 
-    private fun randomResult(){
-        val entries: ArrayList<CandleEntry> = ArrayList()
-        entries.add(CandleEntry(0f, 225.0f, 219.84f, 225.0f, 219.84f))
-        entries.add(CandleEntry(1f, 228.35f, 222.57f, 228.35f, 222.57f))
-        entries.add(CandleEntry(2f, 226.84f,  222.52f, 226.84f,  222.52f))
-        entries.add(CandleEntry(3f, 222.95f, 217.27f, 222.95f, 217.27f))
-        val candleDataSet = CandleDataSet(entries, "")
-        candleDataSet.color = Color.BLUE
-        candleDataSet.shadowColor = Color.LTGRAY
-        candleDataSet.shadowWidth = 0.8f
-        candleDataSet.decreasingColor = Color.RED
-        candleDataSet.decreasingPaintStyle = Paint.Style.FILL
-        candleDataSet.increasingColor = Color.CYAN
-        candleDataSet.increasingPaintStyle = Paint.Style.FILL
-        candleDataSet.neutralColor = Color.DKGRAY
+    private fun updateSleepChart() {
+        activity?.runOnUiThread {
+            binding.apply {
+                initCandleStickChart()
+            }
+        }
+    }
 
-        val candleData = CandleData(candleDataSet)
+    private fun getSleepCurrentApi(): Thread {
+        return Thread {
+            val formatDate = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber, formatDate.format(DateRange.startDate), formatDate.format(DateRange.endDate), "ASC"))
+            val connection = url.openConnection() as HttpURLConnection
 
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
+            Log.e("API Connection", "$url")
 
-        candleData.setDrawValues(true)
+            if(connection.responseCode == 200) {
+                val inputSystem = connection.inputStream
+                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
+                sleepCurrent = Gson().fromJson(inputStreamReader, type)
+                try{
+                    updateSleepChart()
+                } catch (e: Exception) {
+                    // TODO: Handle exception
+                }
 
-        candleStickChart.data = candleData
-        candleStickChart.invalidate()
+                inputStreamReader.close()
+                inputSystem.close()
+                Log.e("API Connection", "$sleepCurrent")
+            } else
+                Log.e("API Connection", "failed")
+        }
     }
 }
