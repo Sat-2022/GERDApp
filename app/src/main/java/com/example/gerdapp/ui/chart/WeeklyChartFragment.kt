@@ -45,6 +45,7 @@ class WeeklyChartFragment: Fragment() {
     private lateinit var candleStickChart: CandleStickChart
 
     private var sleepCurrent: List<SleepCurrent>? = null
+    private var sleepChartData: Array<MutableList<SleepCurrent>?> = arrayOfNulls(7)
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -72,7 +73,9 @@ class WeeklyChartFragment: Fragment() {
 
         startCalendar = Calendar.getInstance()
         endCalendar = Calendar.getInstance()
-        startCalendar.add(Calendar.DAY_OF_YEAR, -6)
+
+        startCalendar.set(Calendar.DAY_OF_WEEK, 1)
+        endCalendar.set(Calendar.DAY_OF_WEEK, 7)
 
         updateCurrent()
 
@@ -100,8 +103,9 @@ class WeeklyChartFragment: Fragment() {
                     " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
 
             rightArrow.setOnClickListener {
-                startCalendar.add(Calendar.DAY_OF_YEAR, 7)
-                endCalendar.add(Calendar.DAY_OF_YEAR, 7)
+                startCalendar.roll(Calendar.WEEK_OF_YEAR, true)
+                endCalendar.roll(Calendar.WEEK_OF_YEAR, true)
+
                 updateCurrent()
                 selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
                         " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
@@ -110,8 +114,9 @@ class WeeklyChartFragment: Fragment() {
             }
 
             leftArrow.setOnClickListener {
-                startCalendar.add(Calendar.DAY_OF_YEAR, -7)
-                endCalendar.add(Calendar.DAY_OF_YEAR, -7)
+                startCalendar.roll(Calendar.WEEK_OF_YEAR, false)
+                endCalendar.roll(Calendar.WEEK_OF_YEAR, false)
+
                 updateCurrent()
                 selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
                         " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
@@ -290,6 +295,10 @@ class WeeklyChartFragment: Fragment() {
         val yAxis = candleStickChart.axisLeft
         val rightAxis = candleStickChart.axisRight
         yAxis.setDrawGridLines(false)
+        yAxis.axisMaximum = 246060f
+        yAxis.axisMinimum = 0f
+        rightAxis.axisMaximum = 246060f
+        rightAxis.axisMinimum = 0f
         rightAxis.setDrawGridLines(false)
         candleStickChart.requestDisallowInterceptTouchEvent(true)
 
@@ -313,19 +322,51 @@ class WeeklyChartFragment: Fragment() {
     private fun initCandleStickChartData() {
         val entries: ArrayList<CandleEntry> = ArrayList()
 
-        for(i in 0 until sleepCurrent!!.size) {
-            Log.e("Entries", "$i")
-            val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].StartDate)
-            val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].EndDate)
+        val tempCalendar = startCalendar
+        var tempDayCount = 0
+        for(sleepData in sleepCurrent!!) {
+            if (!sleepData.isEmpty()){
+                while (!sleepData.isEqualDate(tempCalendar) && tempDayCount < 6) {
+                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    tempDayCount += 1
+                    entries.add(CandleEntry(tempDayCount.toFloat(), -1f, -1f, -1f, -1f))
+                }
+                val startTimeRecord = TimeRecord().stringToTimeRecord(sleepData.StartDate)
+                val endTimeRecord = TimeRecord().stringToTimeRecord(sleepData.EndDate)
 
-            entries.add(
-                    CandleEntry(
-                        i.toFloat(),
+                entries.add(
+                    CandleEntry((tempDayCount+1).toFloat(),
                         startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
                         startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
                     )
                 )
+                Log.e("Chart Data", "$tempDayCount: $sleepData")
+            } else {
+                entries.add(CandleEntry((tempDayCount+1).toFloat(), -1f, -1f, -1f, -1f))
+            }
         }
+
+//        for(i in 0 until sleepCurrent!!.size) {
+//            Log.e("Entries", "$i")
+//            val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].StartDate)
+//            val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].EndDate)
+//
+//            entries.add(
+//                    CandleEntry(
+//                        i.toFloat(),
+//                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
+//                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
+//                    )
+//                )
+//        }
+//
+//        entries.add(
+//            CandleEntry(
+//                0f,
+//                105018f, 115018f,
+//                105018f, 115018f
+//            )
+//        )
 
         val candleDataSet = CandleDataSet(entries, "")
         candleDataSet.color = Color.BLUE
