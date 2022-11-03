@@ -139,7 +139,6 @@ class DailyChartFragment: Fragment() {
                 if(symptomList!!.first().isEmpty()) {
                     symptomsRecyclerView.visibility = View.GONE
                     symptomsTitle.visibility = View.GONE
-                    return@runOnUiThread
                 } else {
                     symptomsRecyclerView.visibility = View.VISIBLE
                     symptomsTitle.visibility = View.VISIBLE
