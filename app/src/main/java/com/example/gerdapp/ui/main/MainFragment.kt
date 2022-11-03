@@ -289,21 +289,25 @@ class MainFragment : Fragment() {
     private fun updateNotification() {
         activity?.runOnUiThread {
             binding.apply {
-                val notificationAdapter = NotificationCardItemAdapter { notificationCardItem ->
-                    // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
-                    val dialogBuilder = AlertDialog.Builder(context)
-                    dialogBuilder.setTitle(notificationCardItem.ReturnItem)
-                        .setMessage(notificationCardItem.ReturnDesc)
-                        .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
-                            dialog.dismiss()
-                        }
-                    dialogBuilder.create()
-                    dialogBuilder.show()
-                }
+                if(!notificationList!!.first().isEmpty()) {
+                    tvNoNotification.visibility = View.GONE
+                    val notificationAdapter = NotificationCardItemAdapter { notificationCardItem ->
+                        // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
+                        val dialogBuilder = AlertDialog.Builder(context)
+                        dialogBuilder.setTitle(notificationCardItem.ReturnItem)
+                            .setMessage(notificationCardItem.ReturnDesc)
+                            .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                        dialogBuilder.create()
+                        dialogBuilder.show()
+                    }
 
-                if(notificationList != null) { notificationAdapter.updateNotification(notificationList!!) }
+                    if (notificationList != null) {
+                        notificationAdapter.updateNotification(notificationList!!)
+                    }
 
-                notificationRecyclerView.adapter = notificationAdapter
+                    notificationRecyclerView.adapter = notificationAdapter
 //                val timeRecord = TimeRecord().stringToTimeRecord(notificationCardItem?.ReturnDate!!)
 //
 //                cardItemRecentTime.text = timeRecord.toString()
@@ -337,6 +341,9 @@ class MainFragment : Fragment() {
 //                    dialogBuilder.create()
 //                    dialogBuilder.show()
 //                }
+                } else {
+                    tvNoNotification.visibility = View.VISIBLE
+                }
             }
         }
     }

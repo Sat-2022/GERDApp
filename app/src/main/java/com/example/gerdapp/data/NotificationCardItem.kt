@@ -11,4 +11,9 @@ data class NotificationCardItem(
 //    val CreateDateTime: String,
 //    val LastId: String,
 //    val LastDateTime: String
-)
+) {
+    fun isEmpty(): Boolean {
+        val time = TimeRecord().stringToTimeRecord(ReturnDate)
+        return time.isTimeRecordEmpty()
+    }
+}
