@@ -62,6 +62,7 @@ class MainFragment : Fragment() {
     val STOMACH_GAS = 7
 
     val TOTAL_SYMPTOMS_NUM = 10
+    val MAX_NUM_CHAR = 8
 
     private var symptomCurrent: SymptomCurrent? = null
     private var drugCurrent: DrugCurrent? = null
@@ -98,23 +99,13 @@ class MainFragment : Fragment() {
 
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
-        getNotificationApi().start()
-        getSymptomCurrentApi().start()
-        getDrugCurrentApi().start()
-        getSleepCurrentApi().start()
-        getFoodCurrentApi().start()
-        getEventCurrentApi().start()
+        callApi()
     }
 
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
-        getNotificationApi().start()
-        getSymptomCurrentApi().start()
-        getDrugCurrentApi().start()
-        getSleepCurrentApi().start()
-        getFoodCurrentApi().start()
-        getEventCurrentApi().start()
+        callApi()
     }
 
     override fun onCreateView(
@@ -148,36 +139,36 @@ class MainFragment : Fragment() {
         }) { cardItem ->
             val recentRecord = when (cardItem.stringResourceId) {
                 R.string.symptoms -> {
-                    if(symptomCurrent != null) {
+                    if(!symptomCurrent!!.isEmpty()) {
                         symptomCurrentToString()
-                    } else { "No Data" }
+                    } else { getString(R.string.no_data) }
                 }
 
                 R.string.medicine -> {
-                    if(drugCurrent != null) {
+                    if(!drugCurrent!!.isEmpty()) {
                         drugCurrentToString()
-                    } else { "No Data" }
+                    } else { getString(R.string.no_data) }
                 }
 
                 R.string.sleep -> {
-                    if(sleepCurrent != null) {
+                    if(!sleepCurrent!!.isEmpty()) {
                         sleepCurrentToString()
-                    } else { "No Data" }
+                    } else { getString(R.string.no_data) }
                 }
 
                 R.string.food -> {
-                    if(foodCurrent != null) {
+                    if(!foodCurrent!!.isEmpty()) {
                         foodCurrentToString()
-                    } else { "No Data" }
+                    } else { getString(R.string.no_data) }
                 }
 
                 R.string.event -> {
-                    if(eventCurrent != null) {
+                    if(!eventCurrent!!.isEmpty()) {
                         eventCurrentToString()
-                    } else { "No Data" }
+                    } else { getString(R.string.no_data) }
                 }
 
-                else -> "No Data"
+                else -> getString(R.string.no_data)
             }
             recentRecord
         }
@@ -185,15 +176,17 @@ class MainFragment : Fragment() {
         mainRecyclerView.adapter = adapter
 
         binding.apply {
-            val calendar = Calendar.getInstance()
-            val current = calendar.time
-            val formatDate = SimpleDateFormat(getString(R.string.simple_date_format), Locale.getDefault())
-            testButton.setOnClickListener { view ->
-                Snackbar.make(view, "", Snackbar.LENGTH_LONG).setAction("Action", null).show()
-            }
-
             setSymptomsCard()
         }
+    }
+
+    private fun callApi() {
+        getNotificationApi().start()
+        getSymptomCurrentApi().start()
+        getDrugCurrentApi().start()
+        getSleepCurrentApi().start()
+        getFoodCurrentApi().start()
+        getEventCurrentApi().start()
     }
 
     private fun isRecordEmpty(): Boolean {
@@ -378,48 +371,89 @@ class MainFragment : Fragment() {
 
         val symptomItem = symptomCurrent!!.SymptomItem.split(",").toTypedArray()
         var symptomItemString = ""
-        var itemCount = 0
+        var charCount = 0
         for(i in symptomItem) {
-
-            if(itemCount > 2) {
-                symptomItemString += ", ..."
-                break
-            }
-
-            if(i != symptomItem[0]) symptomItemString += ", "
 
             when (i) {
                 "1" -> {
-                    symptomItemString += getString(R.string.cough)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-2) {
+                        symptomItemString += getString(R.string.cough)
+                        symptomItemString += ", "
+                        charCount += 2
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
                 "2" -> {
-                    symptomItemString += getString(R.string.heart_burn)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-2) {
+                        symptomItemString += getString(R.string.heart_burn)
+                        symptomItemString += ", "
+                        charCount += 2
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
                 "3" -> {
-                    symptomItemString += getString(R.string.acid_reflux)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-5) {
+                        symptomItemString += getString(R.string.acid_reflux)
+                        symptomItemString += ", "
+                        charCount += 4
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
                 "4" -> {
-                    symptomItemString += getString(R.string.chest_pain)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-2) {
+                        symptomItemString += getString(R.string.chest_pain)
+                        symptomItemString += ", "
+                        charCount += 2
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
                 "5" -> {
-                    symptomItemString += getString(R.string.sour_mouth)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-4) {
+                        symptomItemString += getString(R.string.sour_mouth)
+                        symptomItemString += ", "
+                        charCount += 4
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
                 "6" -> {
-                    symptomItemString += getString(R.string.hoarseness)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-4) {
+                        symptomItemString += getString(R.string.hoarseness)
+                        symptomItemString += ", "
+                        charCount += 4
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
                 "7" -> {
-                    symptomItemString += getString(R.string.appetite_loss)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-4) {
+                        symptomItemString += getString(R.string.appetite_loss)
+                        symptomItemString += ", "
+                        charCount += 4
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
                 "8" -> {
-                    symptomItemString += getString(R.string.stomach_gas)
-                    itemCount ++
+                    if(charCount < MAX_NUM_CHAR-2) {
+                        symptomItemString += getString(R.string.stomach_gas)
+                        symptomItemString += ", "
+                        charCount += 2
+                    } else {
+                        symptomItemString += "..."
+                        break
+                    }
                 }
             }
         }

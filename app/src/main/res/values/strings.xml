@@ -110,6 +110,7 @@
     <string name="food">飲食</string>
     <string name="event">其他活動</string>
     <string name="no_notification">沒有通知囉！</string>
+    <string name="no_data">還沒有記錄喔!</string>
 
     <!-- strings for time record -->
     <string name="year">年</string>
