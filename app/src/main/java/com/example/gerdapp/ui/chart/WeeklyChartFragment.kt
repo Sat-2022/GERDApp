@@ -105,6 +105,8 @@ class WeeklyChartFragment: Fragment() {
             rightArrow.setOnClickListener {
                 startCalendar.roll(Calendar.WEEK_OF_YEAR, true)
                 endCalendar.roll(Calendar.WEEK_OF_YEAR, true)
+                startCalendar.set(Calendar.DAY_OF_WEEK, 1)
+                endCalendar.set(Calendar.DAY_OF_WEEK, 7)
 
                 updateCurrent()
                 selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
@@ -116,6 +118,8 @@ class WeeklyChartFragment: Fragment() {
             leftArrow.setOnClickListener {
                 startCalendar.roll(Calendar.WEEK_OF_YEAR, false)
                 endCalendar.roll(Calendar.WEEK_OF_YEAR, false)
+                startCalendar.set(Calendar.DAY_OF_WEEK, 1)
+                endCalendar.set(Calendar.DAY_OF_WEEK, 7)
 
                 updateCurrent()
                 selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +

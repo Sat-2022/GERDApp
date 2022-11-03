@@ -94,7 +94,8 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="12dp">
+            app:cardCornerRadius="12dp"
+            android:visibility="gone">
 
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -114,6 +115,12 @@
             </androidx.cardview.widget.CardView>
 
         </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="施工中~"
+            android:layout_gravity="center"/>
 
         <include layout="@layout/card_divider"/>
 
