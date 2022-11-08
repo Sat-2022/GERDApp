@@ -139,31 +139,31 @@ class MainFragment : Fragment() {
         }) { cardItem ->
             val recentRecord = when (cardItem.stringResourceId) {
                 R.string.symptoms -> {
-                    if(!symptomCurrent!!.isEmpty()) {
+                    if(symptomCurrent != null && !symptomCurrent!!.isEmpty()) {
                         symptomCurrentToString()
                     } else { getString(R.string.no_data) }
                 }
 
                 R.string.medicine -> {
-                    if(!drugCurrent!!.isEmpty()) {
+                    if(drugCurrent != null && !drugCurrent!!.isEmpty()) {
                         drugCurrentToString()
                     } else { getString(R.string.no_data) }
                 }
 
                 R.string.sleep -> {
-                    if(!sleepCurrent!!.isEmpty()) {
+                    if(sleepCurrent != null && !sleepCurrent!!.isEmpty()) {
                         sleepCurrentToString()
                     } else { getString(R.string.no_data) }
                 }
 
                 R.string.food -> {
-                    if(!foodCurrent!!.isEmpty()) {
+                    if(foodCurrent != null && !foodCurrent!!.isEmpty()) {
                         foodCurrentToString()
                     } else { getString(R.string.no_data) }
                 }
 
                 R.string.event -> {
-                    if(!eventCurrent!!.isEmpty()) {
+                    if(eventCurrent != null && !eventCurrent!!.isEmpty()) {
                         eventCurrentToString()
                     } else { getString(R.string.no_data) }
                 }

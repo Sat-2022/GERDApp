@@ -24,6 +24,8 @@ class LoginActivity : AppCompatActivity() {
 
     val MAX_PASSWORD_LENGTH = 12
 
+    private var isMinimized = false
+
     data class LoginResult(
         val ResultContent: String
     )
@@ -51,6 +53,21 @@ class LoginActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        if(isMinimized) {
+            startActivity(Intent(this, SplashActivity::class.java))
+            isMinimized = false
+            finish()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isMinimized = true
+    }
+
 
     private fun performForgotPassword() {
         val intent = Intent(this, ForgotPasswordActivity::class.java)

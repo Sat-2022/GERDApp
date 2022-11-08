@@ -1,9 +1,12 @@
 package com.example.gerdapp
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.adapters.TextViewBindingAdapter.setText
 import androidx.navigation.NavController
@@ -22,6 +25,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
 
     private lateinit var binding: ActivityMainBinding
+
+    private var isMinimized = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -101,13 +106,35 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId) {
+//        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+//        val networkInfo = connectivityManager.activeNetworkInfo
+//
+//        if(networkInfo == null || !networkInfo.isAvailable) {
+//            startActivity(Intent(this, SplashActivity::class.java))
+//            finish()
+//        }
+
+        return when (item.itemId) {
             R.id.menu_settings -> {
                 navController.navigate(R.id.navigation_settings)
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(isMinimized) {
+            startActivity(Intent(this, SplashActivity::class.java))
+            isMinimized = false
+            finish()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isMinimized = true
     }
 
     fun setBottomNavigationVisibility(visibility: Int) {

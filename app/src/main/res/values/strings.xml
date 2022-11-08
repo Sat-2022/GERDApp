@@ -2,6 +2,7 @@
     <string name="app_name_en">GERDApp</string>
     <string name="app_name">逆流日誌</string>
     <string name="version_number">X.X.X</string>
+    <string name="internet_connection_failed">請檢查網路連線</string>
 
     <string name="check_input_valid">[&lt;&gt;.*:^+\=&amp;/]</string>
     <string name="check_alphabetic">[A-Za-z]</string>

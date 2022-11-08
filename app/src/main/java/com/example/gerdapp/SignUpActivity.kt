@@ -21,6 +21,8 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
 
+    private var isMinimized = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,6 +42,20 @@ class SignUpActivity : AppCompatActivity() {
                 performSignUp()
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if(isMinimized) {
+            startActivity(Intent(this, SplashActivity::class.java))
+            isMinimized = false
+            finish()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isMinimized = true
     }
 
 

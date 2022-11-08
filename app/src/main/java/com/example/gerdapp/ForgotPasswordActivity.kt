@@ -12,6 +12,8 @@ class ForgotPasswordActivity : AppCompatActivity() {
 
     private val VERIFICATION_CODE_LENGTH = 6
 
+    private var isMinimized = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -37,6 +39,21 @@ class ForgotPasswordActivity : AppCompatActivity() {
             }
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        if(isMinimized) {
+            startActivity(Intent(this, SplashActivity::class.java))
+            isMinimized = false
+            finish()
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        isMinimized = true
+    }
+
 
     private fun getUserAccount() {
         // TODO:: find user account

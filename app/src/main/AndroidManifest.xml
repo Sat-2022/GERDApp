@@ -4,6 +4,7 @@
     package="com.example.gerdapp">
     <!-- permission for getting internet access -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:name=".BasicApplication"
