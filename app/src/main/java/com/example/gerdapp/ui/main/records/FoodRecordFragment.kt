@@ -187,6 +187,8 @@ class FoodRecordFragment: Fragment() {
             } else {
                 activity?.runOnUiThread {
                     binding.apply {
+                        foodCard.addFood.layout.visibility = View.VISIBLE
+                        foodCard.addFoodButton.visibility = View.GONE
                         foodCard.addFood.userInputText.error = getString(R.string.input_null)
                     }
                 }
@@ -211,12 +213,12 @@ class FoodRecordFragment: Fragment() {
         activity?.runOnUiThread {
             binding.apply {
                 if(line == "\"1\"") {
-                    Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.food_record_added_successfully, Toast.LENGTH_SHORT).show()
                     setRecord()
                     findNavController().navigate(R.id.action_foodFragment_to_mainFragment)
                 }else {
                     setRecord()
-                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.food_record_added_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }

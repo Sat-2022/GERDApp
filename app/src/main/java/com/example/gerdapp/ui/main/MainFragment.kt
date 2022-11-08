@@ -373,95 +373,99 @@ class MainFragment : Fragment() {
     private fun symptomCurrentToString(): String {
         var string = ""
 
-        val symptomItem = symptomCurrent!!.SymptomItem.split(",").toTypedArray()
-        var symptomItemString = ""
-        var charCount = 0
-        for(i in symptomItem) {
+        if(symptomCurrent!!.SymptomItem != ""){
+            val symptomItem = symptomCurrent!!.SymptomItem.split(",").toTypedArray()
+            var symptomItemString = ""
+            var charCount = 0
+            for (i in symptomItem) {
 
-            when (i) {
-                "1" -> {
-                    if(charCount < MAX_NUM_CHAR-2) {
-                        symptomItemString += getString(R.string.cough)
-                        symptomItemString += ", "
-                        charCount += 2
-                    } else {
-                        symptomItemString += "..."
-                        break
+                when (i) {
+                    "1" -> {
+                        if (charCount < MAX_NUM_CHAR - 2) {
+                            symptomItemString += getString(R.string.cough)
+                            symptomItemString += ", "
+                            charCount += 2
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
-                }
-                "2" -> {
-                    if(charCount < MAX_NUM_CHAR-2) {
-                        symptomItemString += getString(R.string.heart_burn)
-                        symptomItemString += ", "
-                        charCount += 2
-                    } else {
-                        symptomItemString += "..."
-                        break
+                    "2" -> {
+                        if (charCount < MAX_NUM_CHAR - 2) {
+                            symptomItemString += getString(R.string.heart_burn)
+                            symptomItemString += ", "
+                            charCount += 2
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
-                }
-                "3" -> {
-                    if(charCount < MAX_NUM_CHAR-5) {
-                        symptomItemString += getString(R.string.acid_reflux)
-                        symptomItemString += ", "
-                        charCount += 4
-                    } else {
-                        symptomItemString += "..."
-                        break
+                    "3" -> {
+                        if (charCount < MAX_NUM_CHAR - 5) {
+                            symptomItemString += getString(R.string.acid_reflux)
+                            symptomItemString += ", "
+                            charCount += 4
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
-                }
-                "4" -> {
-                    if(charCount < MAX_NUM_CHAR-2) {
-                        symptomItemString += getString(R.string.chest_pain)
-                        symptomItemString += ", "
-                        charCount += 2
-                    } else {
-                        symptomItemString += "..."
-                        break
+                    "4" -> {
+                        if (charCount < MAX_NUM_CHAR - 2) {
+                            symptomItemString += getString(R.string.chest_pain)
+                            symptomItemString += ", "
+                            charCount += 2
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
-                }
-                "5" -> {
-                    if(charCount < MAX_NUM_CHAR-4) {
-                        symptomItemString += getString(R.string.sour_mouth)
-                        symptomItemString += ", "
-                        charCount += 4
-                    } else {
-                        symptomItemString += "..."
-                        break
+                    "5" -> {
+                        if (charCount < MAX_NUM_CHAR - 4) {
+                            symptomItemString += getString(R.string.sour_mouth)
+                            symptomItemString += ", "
+                            charCount += 4
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
-                }
-                "6" -> {
-                    if(charCount < MAX_NUM_CHAR-4) {
-                        symptomItemString += getString(R.string.hoarseness)
-                        symptomItemString += ", "
-                        charCount += 4
-                    } else {
-                        symptomItemString += "..."
-                        break
+                    "6" -> {
+                        if (charCount < MAX_NUM_CHAR - 4) {
+                            symptomItemString += getString(R.string.hoarseness)
+                            symptomItemString += ", "
+                            charCount += 4
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
-                }
-                "7" -> {
-                    if(charCount < MAX_NUM_CHAR-4) {
-                        symptomItemString += getString(R.string.appetite_loss)
-                        symptomItemString += ", "
-                        charCount += 4
-                    } else {
-                        symptomItemString += "..."
-                        break
+                    "7" -> {
+                        if (charCount < MAX_NUM_CHAR - 4) {
+                            symptomItemString += getString(R.string.appetite_loss)
+                            symptomItemString += ", "
+                            charCount += 4
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
-                }
-                "8" -> {
-                    if(charCount < MAX_NUM_CHAR-2) {
-                        symptomItemString += getString(R.string.stomach_gas)
-                        symptomItemString += ", "
-                        charCount += 2
-                    } else {
-                        symptomItemString += "..."
-                        break
+                    "8" -> {
+                        if (charCount < MAX_NUM_CHAR - 2) {
+                            symptomItemString += getString(R.string.stomach_gas)
+                            symptomItemString += ", "
+                            charCount += 2
+                        } else {
+                            symptomItemString += "..."
+                            break
+                        }
                     }
                 }
             }
+            string += "$symptomItemString - "
+        } else {
+            string += "${symptomCurrent!!.SymptomOther} - "
         }
-        string += "$symptomItemString - "
 
         val startTimeRecord = TimeRecord().stringToTimeRecord(symptomCurrent!!.StartDate)
         string += "$startTimeRecord"
@@ -486,7 +490,7 @@ class MainFragment : Fragment() {
         val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.StartDate)
         string += "$startTimeRecord 至 "
 
-        val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.StartDate)
+        val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.EndDate)
         string += "$endTimeRecord"
 
         return string

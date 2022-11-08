@@ -189,7 +189,10 @@ class EventRecordFragment: Fragment() {
             } else {
                 activity?.runOnUiThread {
                     binding.apply {
+                        othersCard.addOthers.layout.visibility = View.VISIBLE
+                        othersCard.addOthersButton.visibility = View.GONE
                         othersCard.addOthers.userInputText.error = getString(R.string.input_null)
+
                     }
                 }
             }
@@ -213,12 +216,12 @@ class EventRecordFragment: Fragment() {
         activity?.runOnUiThread {
             binding.apply {
                 if(line == "\"1\"") {
-                    Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.event_record_added_successfully, Toast.LENGTH_SHORT).show()
                     setRecord()
                     findNavController().navigate(R.id.action_eventFragment_to_mainFragment)
                 }else {
                     setRecord()
-                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.event_record_added_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }

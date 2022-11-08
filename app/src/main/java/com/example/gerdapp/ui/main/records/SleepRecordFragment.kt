@@ -127,12 +127,10 @@ class SleepRecordFragment: Fragment() {
         return Thread {
             if(!isRecordEmpty()){
                 try {
-                    val url = URL(
-                        getString(
+                    val url = URL(getString(
                             R.string.post_sleep_record_url,
                             getString(R.string.server_url)
-                        )
-                    )
+                        ))
                     val connection = url.openConnection() as HttpURLConnection
 
                     connection.requestMethod = "POST"
@@ -161,6 +159,8 @@ class SleepRecordFragment: Fragment() {
                     Log.e("API Connection", "Service not found at ${e.message}")
                     Log.e("API Connection", e.toString())
                 }
+            } else {
+                Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -182,11 +182,11 @@ class SleepRecordFragment: Fragment() {
             binding.apply {
                 if(line == "\"1\"") {
                     setRecord()
-                    Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
                 }else {
                     setRecord()
-                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }

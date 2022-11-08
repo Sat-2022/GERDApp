@@ -194,6 +194,8 @@ class DrugRecordFragment: Fragment() {
             } else {
                 activity?.runOnUiThread {
                     binding.apply {
+                        drugCard.addDrug.layout.visibility = View.VISIBLE
+                        drugCard.addDrugButton.visibility = View.GONE
                         drugCard.addDrug.userInputText.error = getString(R.string.input_null)
                     }
                 }
@@ -217,12 +219,12 @@ class DrugRecordFragment: Fragment() {
         activity?.runOnUiThread {
             binding.apply {
                 if(line == "\"1\"") {
-                    Toast.makeText(context, R.string.symptoms_added_successfully, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.drug_record_added_successfully, Toast.LENGTH_SHORT).show()
                     setRecord()
                     findNavController().navigate(R.id.action_drugFragment_to_mainFragment)
                 }else {
                     setRecord()
-                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.drug_record_added_failed, Toast.LENGTH_SHORT).show()
                 }
             }
         }
