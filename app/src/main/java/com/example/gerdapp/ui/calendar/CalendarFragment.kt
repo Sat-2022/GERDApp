@@ -121,28 +121,37 @@ class CalendarFragment: Fragment() {
 
     private fun getQuestionnaireStatus(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_questionnaire_status_url, getString(R.string.server_url), User.caseNumber))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_questionnaire_status_url,
+                        getString(R.string.server_url),
+                        User.caseNumber
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            Log.e("questionnaire status", User.caseNumber)
+                Log.e("questionnaire status", User.caseNumber)
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<QuestionnaireStatus>>() {}.type
-                val list: List<QuestionnaireStatus> = Gson().fromJson(inputStreamReader, type)
-                try{
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<QuestionnaireStatus>>() {}.type
+                    val list: List<QuestionnaireStatus> = Gson().fromJson(inputStreamReader, type)
+
                     currentQuestionnaireStatus = list.first()
                     updateQuestionnaireStatus()
-                } catch (e: Exception) {
-                    // TODO: Handle exception
-                }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$currentQuestionnaireStatus")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch(e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 
@@ -165,26 +174,34 @@ class CalendarFragment: Fragment() {
 
     private fun getQuestionnaireResultApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), User.caseNumber))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(getString(
+                        R.string.get_record_url,
+                        getString(R.string.server_url),
+                        User.caseNumber
+                    ))
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
-                questions = Gson().fromJson(inputStreamReader, type)
-                try{
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<Questions>>() {}.type
+                    questions = Gson().fromJson(inputStreamReader, type)
+
                     currentResult = questions?.first()
                     updateBarChart()
-                } catch (e: Exception) {
-                    // TODO: Handle empty list exception
-                }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$questions")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch(e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 

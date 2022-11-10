@@ -155,9 +155,10 @@ class SleepRecordFragment: Fragment() {
                     postUpdateUi(line)
                     inputStreamReader.close()
                     inputSystem.close()
+
+                    Log.e("API Connection", "Connection success")
                 } catch (e: FileNotFoundException) {
-                    Log.e("API Connection", "Service not found at ${e.message}")
-                    Log.e("API Connection", e.toString())
+                    Log.e("API Connection", "Service not found")
                 }
             } else {
                 Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()

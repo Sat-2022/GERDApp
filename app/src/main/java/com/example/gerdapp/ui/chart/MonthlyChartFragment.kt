@@ -382,27 +382,42 @@ class MonthlyChartFragment: Fragment() {
 
     private fun getSleepCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), caseNumber, currentStart, currentEnd, "ASC"))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_sleep_record_url,
+                        getString(R.string.server_url),
+                        caseNumber,
+                        currentStart,
+                        currentEnd,
+                        "ASC"
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            Log.e("API Connection", "$url")
+                Log.e("API Connection", "$url")
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
-                sleepCurrent = Gson().fromJson(inputStreamReader, type)
-                try{
-                    updateSleepChart()
-                } catch (e: Exception) {
-                    // TODO: Handle exception
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<SleepCurrent>>() {}.type
+                    sleepCurrent = Gson().fromJson(inputStreamReader, type)
+                    try {
+                        updateSleepChart()
+                    } catch (e: Exception) {
+                        // TODO: Handle exception
+                    }
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
                 }
-
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$sleepCurrent")
-            } else
-                Log.e("API Connection", "failed")
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 

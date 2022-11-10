@@ -3,11 +3,8 @@ package com.example.gerdapp
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gerdapp.databinding.ActivitySplashBinding

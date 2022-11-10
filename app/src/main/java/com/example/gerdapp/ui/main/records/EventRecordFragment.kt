@@ -18,7 +18,6 @@ import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentEventRecordBinding
 import java.io.BufferedReader
 import java.io.DataOutputStream
-import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
@@ -180,11 +179,9 @@ class EventRecordFragment: Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                } catch (e: FileNotFoundException) {
-
-                    Log.e("API Connection", "Service not found at ${e.message}")
-                    Log.e("API Connection", e.toString())
-
+                    Log.e("API Connection", "Connection success")
+                } catch (e: Exception) {
+                    Log.e("API Connection", "Service not found")
                 }
             } else {
                 activity?.runOnUiThread {

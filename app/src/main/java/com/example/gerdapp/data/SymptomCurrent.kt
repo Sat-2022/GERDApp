@@ -1,7 +1,5 @@
 package com.example.gerdapp.data
 
-import com.example.gerdapp.R
-
 data class SymptomCurrent(
     val CaseNumber: String,
     val SymptomItem: String,

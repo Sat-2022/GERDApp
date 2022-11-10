@@ -167,11 +167,12 @@ class LoginActivity : AppCompatActivity() {
                     inputStreamReader.close()
                     inputSystem.close()
 
+                    Log.e("API Connection", "Connection success")
                 } else {
-                    Log.e("API Connection", "failed")
+                    Log.e("API Connection", "Connection failed")
                 }
             } catch (e: FileNotFoundException) {
-                Log.e("API Connection", "Service not found at ${e.message}")
+                Log.e("API Connection", "Service not found")
             }
         }
     }
@@ -199,13 +200,12 @@ class LoginActivity : AppCompatActivity() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                    Log.e("API Connection", "$result")
-
+                    Log.e("API Connection", "Connection success")
                 } else {
-                    Log.e("API Connection", "failed")
+                    Log.e("API Connection", "Connection failed")
                 }
             } catch (e: FileNotFoundException) {
-                Log.e("API Connection", "Service not found at ${e.message}")
+                Log.e("API Connection", "Service not found")
             }
         }
     }

@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
-import com.example.gerdapp.adapter.NotificationCardItemAdapter
 import com.example.gerdapp.data.*
 
 class FoodAdapter(

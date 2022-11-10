@@ -19,16 +19,13 @@ import com.example.gerdapp.adapter.NotificationCardItemAdapter
 import com.example.gerdapp.data.*
 import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentMainBinding
-import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.BufferedReader
 import java.io.DataOutputStream
-import java.io.FileNotFoundException
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.SimpleDateFormat
 import java.util.*
 
 class MainFragment : Fragment() {
@@ -62,7 +59,7 @@ class MainFragment : Fragment() {
     val STOMACH_GAS = 7
 
     val TOTAL_SYMPTOMS_NUM = 10
-    val MAX_NUM_CHAR = 8
+    val MAX_NUM_CHAR = 9
 
     private var symptomCurrent: SymptomCurrent? = null
     private var drugCurrent: DrugCurrent? = null
@@ -226,11 +223,9 @@ class MainFragment : Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                } catch (e: FileNotFoundException) {
-
-                    Log.e("API Connection", "Service not found at ${e.message}")
-                    Log.e("API Connection", e.toString())
-
+                    Log.e("API Connection", "Connection success")
+                } catch (e: Exception) {
+                    Log.e("API Connection", "Service not found")
                 }
             } else {
                 activity?.runOnUiThread {
@@ -347,26 +342,38 @@ class MainFragment : Fragment() {
 
     private fun getNotificationApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_notification_url, getString(R.string.server_url), User.caseNumber))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_notification_url,
+                        getString(R.string.server_url),
+                        User.caseNumber
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<NotificationCardItem>>() {}.type
-                notificationList = Gson().fromJson(inputStreamReader, type)
-                try{
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<NotificationCardItem>>() {}.type
+                    notificationList = Gson().fromJson(inputStreamReader, type)
+                    try {
 //                    notificationCardItem = notificationList?.first()
-                    updateNotification()
-                } catch (e: Exception) {
-                    // TODO: Handle exception
-                }
+                        updateNotification()
+                    } catch (e: Exception) {
+                        // TODO: Handle exception
+                    }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$notificationList")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 
@@ -617,126 +624,185 @@ class MainFragment : Fragment() {
 
     private fun getSymptomCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_symptoms_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_symptoms_record_url,
+                        getString(R.string.server_url),
+                        User.caseNumber,
+                        "19110101",
+                        "19110101",
+                        "DESC"
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<SymptomCurrent>>() {}.type
-                val symptomData: List<SymptomCurrent> = Gson().fromJson(inputStreamReader, type)
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<SymptomCurrent>>() {}.type
+                    val symptomData: List<SymptomCurrent> = Gson().fromJson(inputStreamReader, type)
 
-                try {
-                    symptomCurrent = symptomData.first()
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
+                    try {
+                        symptomCurrent = symptomData.first()
+                    } catch (e: Exception) {
+                        // TODO: Catch exception when no data
+                    }
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
                 }
-
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$symptomCurrent")
-            } else
-                Log.e("API Connection", "failed")
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 
     private fun getDrugCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_drug_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_drug_record_url,
+                        getString(R.string.server_url),
+                        User.caseNumber,
+                        "19110101",
+                        "19110101",
+                        "DESC"
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<DrugCurrent>>() {}.type
-                val drugData: List<DrugCurrent> = Gson().fromJson(inputStreamReader, type)
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<DrugCurrent>>() {}.type
+                    val drugData: List<DrugCurrent> = Gson().fromJson(inputStreamReader, type)
 
-                try {
                     drugCurrent = drugData.first()
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
-                }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$drugCurrent")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 
     private fun getSleepCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_sleep_record_url,
+                        getString(R.string.server_url),
+                        User.caseNumber,
+                        "19110101",
+                        "19110101",
+                        "DESC"
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
-                val sleepData: List<SleepCurrent> = Gson().fromJson(inputStreamReader, type)
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<SleepCurrent>>() {}.type
+                    val sleepData: List<SleepCurrent> = Gson().fromJson(inputStreamReader, type)
 
-                try {
                     sleepCurrent = sleepData.first()
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
-                }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$sleepCurrent")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+
+                    Log.e("API Connection", "Connection success")
+                } else
+                    Log.e("API Connection", "Connection failed")
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 
     private fun getFoodCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_food_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_food_record_url,
+                        getString(R.string.server_url),
+                        User.caseNumber,
+                        "19110101",
+                        "19110101",
+                        "DESC"
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<FoodCurrent>>() {}.type
-                val foodData: List<FoodCurrent> = Gson().fromJson(inputStreamReader, type)
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<FoodCurrent>>() {}.type
+                    val foodData: List<FoodCurrent> = Gson().fromJson(inputStreamReader, type)
 
-                try {
                     foodCurrent = foodData.first()
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
-                }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$foodCurrent")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 
     private fun getEventCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_event_record_url, getString(R.string.server_url), User.caseNumber, "19110101", "19110101", "DESC"))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_event_record_url,
+                        getString(R.string.server_url),
+                        User.caseNumber,
+                        "19110101",
+                        "19110101",
+                        "DESC"
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<EventCurrent>>() {}.type
-                val eventData: List<EventCurrent> = Gson().fromJson(inputStreamReader, type)
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<EventCurrent>>() {}.type
+                    val eventData: List<EventCurrent> = Gson().fromJson(inputStreamReader, type)
 
-                try {
                     eventCurrent = eventData.first()
-                } catch (e: Exception) {
-                    // TODO: Catch exception when no data
-                }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$eventCurrent")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 }

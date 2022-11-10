@@ -196,11 +196,9 @@ class SymptomsRecordFragment: Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
+                    Log.e("API Connection", "Connection success")
                 } catch (e: FileNotFoundException) {
-
-                    Log.e("API Connection", "Service not found at ${e.message}")
-                    Log.e("API Connection", e.toString())
-
+                    Log.e("API Connection", "Service not found")
                 }
             } else {
                 activity?.runOnUiThread {

@@ -15,7 +15,6 @@ import com.example.gerdapp.R
 import com.example.gerdapp.data.SleepCurrent
 import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
-import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.current
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startCalendar
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentEnd
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentStart
@@ -32,7 +31,6 @@ import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
-import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -430,27 +428,39 @@ class WeeklyChartFragment: Fragment() {
 
     private fun getSleepCurrentApi(): Thread {
         return Thread {
-            val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url), User.caseNumber, currentStart, currentEnd, "ASC"))
-            val connection = url.openConnection() as HttpURLConnection
+            try {
+                val url = URL(
+                    getString(
+                        R.string.get_sleep_record_url,
+                        getString(R.string.server_url),
+                        User.caseNumber,
+                        currentStart,
+                        currentEnd,
+                        "ASC"
+                    )
+                )
+                val connection = url.openConnection() as HttpURLConnection
 
-            Log.e("API Connection", "$url")
+                Log.e("API Connection", "$url")
 
-            if(connection.responseCode == 200) {
-                val inputSystem = connection.inputStream
-                val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
-                sleepCurrent = Gson().fromJson(inputStreamReader, type)
-                try{
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<SleepCurrent>>() {}.type
+                    sleepCurrent = Gson().fromJson(inputStreamReader, type)
+
                     updateSleepChart()
-                } catch (e: Exception) {
-                    // TODO: Handle exception
-                }
 
-                inputStreamReader.close()
-                inputSystem.close()
-                Log.e("API Connection", "$sleepCurrent")
-            } else
-                Log.e("API Connection", "failed")
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
         }
     }
 

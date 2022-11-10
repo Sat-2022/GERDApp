@@ -4,13 +4,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
 import com.example.gerdapp.data.NotificationCardItem
 import com.example.gerdapp.data.TimeRecord
-import com.example.gerdapp.databinding.ListItemNotificationBinding
 
 class NotificationCardItemAdapter(
     private val clickListener: (NotificationCardItem) -> Unit
