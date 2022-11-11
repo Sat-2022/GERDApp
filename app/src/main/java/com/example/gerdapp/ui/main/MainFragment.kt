@@ -640,15 +640,10 @@ class MainFragment : Fragment() {
                 if (connection.responseCode == 200) {
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                    val type: java.lang.reflect.Type? =
-                        object : TypeToken<List<SymptomCurrent>>() {}.type
+                    val type: java.lang.reflect.Type? = object : TypeToken<List<SymptomCurrent>>() {}.type
                     val symptomData: List<SymptomCurrent> = Gson().fromJson(inputStreamReader, type)
 
-                    try {
-                        symptomCurrent = symptomData.first()
-                    } catch (e: Exception) {
-                        // TODO: Catch exception when no data
-                    }
+                    symptomCurrent = symptomData.first()
 
                     inputStreamReader.close()
                     inputSystem.close()

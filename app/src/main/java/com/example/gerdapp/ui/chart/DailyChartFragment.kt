@@ -125,15 +125,10 @@ class DailyChartFragment: Fragment() {
 
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                    val type: java.lang.reflect.Type? =
-                        object : TypeToken<List<SymptomCurrent>>() {}.type
+                    val type: java.lang.reflect.Type? = object : TypeToken<List<SymptomCurrent>>() {}.type
                     symptomList = Gson().fromJson(inputStreamReader, type)
 
-                    try {
-                        updateSymptoms()
-                    } catch (e: Exception) {
-                        // TODO: Catch exception when no data
-                    }
+                    updateSymptoms()
 
                     inputStreamReader.close()
                     inputSystem.close()
@@ -150,19 +145,21 @@ class DailyChartFragment: Fragment() {
     private fun updateSymptoms() {
         activity?.runOnUiThread {
             binding.apply {
-                if(symptomList!!.first().isEmpty()) {
-                    symptomsRecyclerView.visibility = View.GONE
-                    symptomsTitle.visibility = View.GONE
-                } else {
-                    symptomsRecyclerView.visibility = View.VISIBLE
-                    symptomsTitle.visibility = View.VISIBLE
+                val symptomsAdapter = SymptomsAdapter { symptomItem -> }
+
+                if(symptomList != null) {
+
+                    symptomsAdapter.updateSymptomList(symptomList!!)
+
+                    if(symptomList!!.first().isEmpty()) {
+                        symptomsRecyclerView.visibility = View.GONE
+                        symptomsTitle.visibility = View.GONE
+                        checkNullData()
+                    } else {
+                        symptomsRecyclerView.visibility = View.VISIBLE
+                        symptomsTitle.visibility = View.VISIBLE
+                    }
                 }
-
-                val symptomsAdapter = SymptomsAdapter { symptomItem ->
-
-                }
-
-                if(symptomList != null) { symptomsAdapter.updateSymptomList(symptomList!!) }
 
                 symptomsRecyclerView.adapter = symptomsAdapter
             }
@@ -188,8 +185,7 @@ class DailyChartFragment: Fragment() {
 
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                    val type: java.lang.reflect.Type? =
-                        object : TypeToken<List<DrugCurrent>>() {}.type
+                    val type: java.lang.reflect.Type? = object : TypeToken<List<DrugCurrent>>() {}.type
                     drugList = Gson().fromJson(inputStreamReader, type)
 
                     updateDrug()
@@ -209,20 +205,20 @@ class DailyChartFragment: Fragment() {
     private fun updateDrug() {
         activity?.runOnUiThread {
             binding.apply {
-                if(drugList!!.first().isEmpty()) {
-                    drugRecyclerView.visibility = View.GONE
-                    drugTitle.visibility = View.GONE
-                    return@runOnUiThread
-                } else {
-                    drugRecyclerView.visibility = View.VISIBLE
-                    drugTitle.visibility = View.VISIBLE
+                val drugAdapter = DrugAdapter { drugItem -> }
+
+                if(drugList != null) {
+                    drugAdapter.updateDrugList(drugList!!)
+
+                    if(drugList!!.first().isEmpty()) {
+                        drugRecyclerView.visibility = View.GONE
+                        drugTitle.visibility = View.GONE
+                        checkNullData()
+                    } else {
+                        drugRecyclerView.visibility = View.VISIBLE
+                        drugTitle.visibility = View.VISIBLE
+                    }
                 }
-
-                val drugAdapter = DrugAdapter { drugItem ->
-
-                }
-
-                if(drugList != null) { drugAdapter.updateDrugList(drugList!!) }
 
                 drugRecyclerView.adapter = drugAdapter
             }
@@ -248,15 +244,11 @@ class DailyChartFragment: Fragment() {
 
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                    val type: java.lang.reflect.Type? =
-                        object : TypeToken<List<SleepCurrent>>() {}.type
+                    val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
+
                     sleepList = Gson().fromJson(inputStreamReader, type)
 
-                    try {
-                        updateSleep()
-                    } catch (e: Exception) {
-                        // TODO: Catch exception when no data
-                    }
+                    updateSleep()
 
                     inputStreamReader.close()
                     inputSystem.close()
@@ -273,20 +265,20 @@ class DailyChartFragment: Fragment() {
     private fun updateSleep() {
         activity?.runOnUiThread {
             binding.apply {
-                if(sleepList!!.first().isEmpty()) {
-                    sleepRecyclerView.visibility = View.GONE
-                    sleepTitle.visibility = View.GONE
-                    return@runOnUiThread
-                } else {
-                    sleepRecyclerView.visibility = View.VISIBLE
-                    sleepTitle.visibility = View.VISIBLE
+                val sleepAdapter = SleepAdapter { sleepItem -> }
+
+                if(sleepList != null) {
+                    sleepAdapter.updateSleepList(sleepList!!)
+
+                    if(sleepList!!.first().isEmpty()) {
+                        sleepRecyclerView.visibility = View.GONE
+                        sleepTitle.visibility = View.GONE
+                        checkNullData()
+                    } else {
+                        sleepRecyclerView.visibility = View.VISIBLE
+                        sleepTitle.visibility = View.VISIBLE
+                    }
                 }
-
-                val sleepAdapter = SleepAdapter { sleepItem ->
-
-                }
-
-                if(sleepList != null) { sleepAdapter.updateSleepList(sleepList!!) }
 
                 sleepRecyclerView.adapter = sleepAdapter
             }
@@ -312,8 +304,7 @@ class DailyChartFragment: Fragment() {
 
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                    val type: java.lang.reflect.Type? =
-                        object : TypeToken<List<FoodCurrent>>() {}.type
+                    val type: java.lang.reflect.Type? = object : TypeToken<List<FoodCurrent>>() {}.type
                     foodList = Gson().fromJson(inputStreamReader, type)
 
                     updateFood()
@@ -333,20 +324,20 @@ class DailyChartFragment: Fragment() {
     private fun updateFood() {
         activity?.runOnUiThread {
             binding.apply {
-                if(foodList!!.first().isEmpty()) {
-                    foodRecyclerView.visibility = View.GONE
-                    foodTitle.visibility = View.GONE
-                    return@runOnUiThread
-                } else {
-                    foodRecyclerView.visibility = View.VISIBLE
-                    foodTitle.visibility = View.VISIBLE
+                val foodAdapter = FoodAdapter { foodItem -> }
+
+                if(foodList != null) {
+                    foodAdapter.updateFoodList(foodList!!)
+
+                    if(foodList!!.first().isEmpty()) {
+                        foodRecyclerView.visibility = View.GONE
+                        foodTitle.visibility = View.GONE
+                        checkNullData()
+                    } else {
+                        foodRecyclerView.visibility = View.VISIBLE
+                        foodTitle.visibility = View.VISIBLE
+                    }
                 }
-
-                val foodAdapter = FoodAdapter { foodItem ->
-
-                }
-
-                if(foodList != null) { foodAdapter.updateFoodList(foodList!!) }
 
                 foodRecyclerView.adapter = foodAdapter
             }
@@ -372,8 +363,7 @@ class DailyChartFragment: Fragment() {
 
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                    val type: java.lang.reflect.Type? =
-                        object : TypeToken<List<EventCurrent>>() {}.type
+                    val type: java.lang.reflect.Type? = object : TypeToken<List<EventCurrent>>() {}.type
                     eventList = Gson().fromJson(inputStreamReader, type)
 
                     updateEvent()
@@ -392,21 +382,20 @@ class DailyChartFragment: Fragment() {
     private fun updateEvent() {
         activity?.runOnUiThread {
             binding.apply {
-                if(eventList!!.first().isEmpty()) {
-                    eventRecyclerView.visibility = View.GONE
-                    eventTitle.visibility = View.GONE
-                    checkNullData()
-                    return@runOnUiThread
-                } else {
-                    eventRecyclerView.visibility = View.VISIBLE
-                    eventTitle.visibility = View.VISIBLE
+                val eventAdapter = EventAdapter { eventItem -> }
+
+                if(eventList != null) {
+                    eventAdapter.updateEventList(eventList!!)
+
+                    if(eventList!!.first().isEmpty()) {
+                        eventRecyclerView.visibility = View.GONE
+                        eventTitle.visibility = View.GONE
+                        checkNullData()
+                    } else {
+                        eventRecyclerView.visibility = View.VISIBLE
+                        eventTitle.visibility = View.VISIBLE
+                    }
                 }
-
-                val eventAdapter = EventAdapter { eventItem ->
-
-                }
-
-                if(eventList != null) { eventAdapter.updateEventList(eventList!!) }
 
                 eventRecyclerView.adapter = eventAdapter
             }
@@ -424,9 +413,8 @@ class DailyChartFragment: Fragment() {
 
     private fun checkNullData() {
         binding.apply {
-            if (symptomList!!.first().isEmpty() && drugList!!.first()
-                    .isEmpty() && sleepList!!.first().isEmpty() && foodList!!.first()
-                    .isEmpty() && eventList!!.first().isEmpty()
+            if (symptomList!!.first().isEmpty() && drugList!!.first().isEmpty() &&
+                sleepList!!.first().isEmpty() && foodList!!.first().isEmpty() && eventList!!.first().isEmpty()
             ) {
                 noRecordTv.visibility = View.VISIBLE
             } else {
