@@ -8,96 +8,109 @@
     android:background="@color/light_grey"
     tools:context=".ui.main.MainFragment">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
+            android:id="@+id/refresh_complete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/white"
-            android:padding="8dp">
+            android:visibility="gone">
 
-            <include
-                android:id="@+id/symptoms_buttons"
-                layout="@layout/card_symptoms_buttons" />
-
-            <Button
-                android:id="@+id/add_symptoms"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/green"
-                android:text="@string/complete"
-                android:textAppearance="@style/ButtonText"/>
+                android:orientation="vertical"
+                android:background="@color/white"
+                android:padding="8dp">
+
+                <include
+                    android:id="@+id/symptoms_buttons"
+                    layout="@layout/card_symptoms_buttons" />
+
+                <Button
+                    android:id="@+id/add_symptoms"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/green"
+                    android:text="@string/complete"
+                    android:textAppearance="@style/ButtonText"/>
+
+            </LinearLayout>
+
+            <include layout="@layout/card_divider"/>
+
+            <FrameLayout
+                android:id="@+id/notification_headline"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="通知"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TitleText"
+                    android:textColor="@color/grey" />
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_no_notification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/no_notification"
+                android:gravity="center"
+                android:visibility="gone"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/notification_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="LinearLayoutManager" />
+
+            <include layout="@layout/card_divider"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="8dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="紀錄"
+                    android:textStyle="bold"
+                    android:textAppearance="@style/TitleText"
+                    android:textColor="@color/grey"/>
+
+            </FrameLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/main_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="false"
+                app:layoutManager="LinearLayoutManager" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="60dp"/>
 
         </LinearLayout>
 
-        <include layout="@layout/card_divider"/>
-
-        <FrameLayout
-            android:id="@+id/notification_headline"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginHorizontal="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="通知"
-                android:textStyle="bold"
-                android:textAppearance="@style/TitleText"
-                android:textColor="@color/grey" />
-        </FrameLayout>
-
         <TextView
-            android:id="@+id/tv_no_notification"
+            android:id="@+id/tv_refreshing"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/no_notification"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:visibility="gone"/>
+            android:text="頁面刷新中~"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/notification_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clipToPadding="false"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="LinearLayoutManager" />
-
-        <include layout="@layout/card_divider"/>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginHorizontal="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="紀錄"
-                android:textStyle="bold"
-                android:textAppearance="@style/TitleText"
-                android:textColor="@color/grey"/>
-
-        </FrameLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/main_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
-            app:layoutManager="LinearLayoutManager" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="60dp"/>
-
-
-
-    </LinearLayout>
+    </FrameLayout>
 </androidx.core.widget.NestedScrollView>

@@ -57,11 +57,13 @@ class FoodRecordFragment: Fragment() {
         setHasOptionsMenu(false)
         setBottomNavigationVisibility()
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        setRecord()
     }
 
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
+//        setRecord()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

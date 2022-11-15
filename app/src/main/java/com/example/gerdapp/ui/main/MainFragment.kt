@@ -27,6 +27,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import kotlin.concurrent.thread
 
 class MainFragment : Fragment() {
 
@@ -37,6 +38,8 @@ class MainFragment : Fragment() {
     private var actionbarTitleEnable = true
 
     private lateinit var mainRecyclerView: RecyclerView
+
+    private var refreshComplete = false
 
     private var notificationList: List<NotificationCardItem>? = null
 
@@ -96,12 +99,17 @@ class MainFragment : Fragment() {
 
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
+        setRecord()
+
+        refreshComplete = false
+
         callApi()
     }
 
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
+//        setRecord()
         callApi()
     }
 
@@ -120,6 +128,13 @@ class MainFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if(refreshComplete) {
+            binding.apply {
+                tvRefreshing.visibility = View.GONE
+                refreshComplete.visibility = View.VISIBLE
+            }
+        }
 
         mainRecyclerView = binding.mainRecyclerView
 
@@ -178,12 +193,31 @@ class MainFragment : Fragment() {
     }
 
     private fun callApi() {
-        getNotificationApi().start()
-        getSymptomCurrentApi().start()
-        getDrugCurrentApi().start()
-        getSleepCurrentApi().start()
-        getFoodCurrentApi().start()
-        getEventCurrentApi().start()
+        val threadNotification = getNotificationApi()
+        val threadSymptomCurrent = getSymptomCurrentApi()
+        val threadDrugCurrent = getDrugCurrentApi()
+        val threadSleepCurrent = getSleepCurrentApi()
+        val threadFoodCurrent = getFoodCurrentApi()
+        val threadEventCurrent = getEventCurrentApi()
+
+        threadNotification.start()
+        threadSymptomCurrent.start()
+        threadDrugCurrent.start()
+        threadSleepCurrent.start()
+        threadFoodCurrent.start()
+        threadEventCurrent.start()
+
+        try {
+            threadNotification.join()
+            threadSymptomCurrent.join()
+            threadDrugCurrent.join()
+            threadSleepCurrent.join()
+            threadFoodCurrent.join()
+            threadEventCurrent.join()
+            refreshComplete = true
+        } catch (_: InterruptedException) {
+
+        }
     }
 
     private fun isRecordEmpty(): Boolean {

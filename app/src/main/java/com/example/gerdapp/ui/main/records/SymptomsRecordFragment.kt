@@ -58,6 +58,7 @@ class SymptomsRecordFragment: Fragment() {
         SymptomsRecord.note = null
         SymptomsRecord.startTime = TimeRecord()
         SymptomsRecord.endTime = TimeRecord()
+        SymptomsRecord.note = null
     }
 
     private fun setBottomNavigationVisibility() {
@@ -72,11 +73,13 @@ class SymptomsRecordFragment: Fragment() {
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        setRecord()
     }
 
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
+//        setRecord()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

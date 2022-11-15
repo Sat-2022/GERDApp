@@ -57,7 +57,7 @@ class SleepRecordFragment: Fragment() {
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
-//        setRecord()
+        setRecord()
     }
 
     override fun onResume() {
@@ -183,8 +183,8 @@ class SleepRecordFragment: Fragment() {
             binding.apply {
                 if(line == "\"1\"") {
                     setRecord()
-                    Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
                     findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
+                    Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
                 }else {
                     setRecord()
                     Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()

@@ -59,12 +59,13 @@ class EventRecordFragment: Fragment() {
         setHasOptionsMenu(true)
         setBottomNavigationVisibility()
         preferences = requireActivity().getSharedPreferences("config", AppCompatActivity.MODE_PRIVATE)
+        setRecord()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         menu.findItem(R.id.menu_settings).isVisible = false
-//        menu.setGroupVisible(R.id.menu_group, false)
+//        setRecord()
     }
 
 
