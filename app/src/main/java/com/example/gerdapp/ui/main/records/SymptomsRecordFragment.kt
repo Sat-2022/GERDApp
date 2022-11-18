@@ -55,7 +55,7 @@ class SymptomsRecordFragment: Fragment() {
 
     private fun setRecord() {
         SymptomsRecord.symptoms = intArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
-        SymptomsRecord.note = null
+        SymptomsRecord.othersSymptoms = null
         SymptomsRecord.startTime = TimeRecord()
         SymptomsRecord.endTime = TimeRecord()
         SymptomsRecord.note = null
