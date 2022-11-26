@@ -118,7 +118,7 @@ class QuestionnaireFragment: Fragment() {
 
     private fun isWebViewFinished(url: String?): Boolean {
         if(url != null) {
-            val urlTag = url[34]
+            val urlTag = url[35]
             if (urlTag == 'R') {
                 return true
             }
