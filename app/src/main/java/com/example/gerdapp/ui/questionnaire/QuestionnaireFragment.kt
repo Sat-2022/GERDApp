@@ -18,7 +18,6 @@ import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentQuestionnaireBinding
 import com.google.android.material.snackbar.Snackbar
 
-
 class QuestionnaireFragment: Fragment() {
 
     private var _binding: FragmentQuestionnaireBinding? = null
@@ -29,7 +28,6 @@ class QuestionnaireFragment: Fragment() {
     private lateinit var webView: WebView
     private lateinit var webViewClient: WebViewClient
     private lateinit var webSettings: WebSettings
-    private lateinit var cookieManager: CookieManager
 
     private lateinit var preferences: SharedPreferences
 
