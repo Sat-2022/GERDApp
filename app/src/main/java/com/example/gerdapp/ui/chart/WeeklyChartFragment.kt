@@ -12,9 +12,11 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
+import com.example.gerdapp.data.Questions
 import com.example.gerdapp.data.SleepCurrent
 import com.example.gerdapp.data.TimeRecord
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
+import com.example.gerdapp.ui.calendar.CalendarFragment
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startCalendar
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentEnd
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentStart
@@ -41,6 +43,8 @@ class WeeklyChartFragment: Fragment() {
     private lateinit var lineChart: LineChart
     private lateinit var barChart: BarChart
     private lateinit var candleStickChart: CandleStickChart
+
+    private lateinit var questionnaireResult: List<Questions>
 
     private var sleepCurrent: List<SleepCurrent>? = null
     private var sleepChartData: Array<MutableList<SleepCurrent>?> = arrayOfNulls(7)
@@ -70,7 +74,7 @@ class WeeklyChartFragment: Fragment() {
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
         startCalendar = Calendar.getInstance()
-        endCalendar = Calendar.getInstance()
+        endCalendar = startCalendar.clone() as Calendar
 
         startCalendar.set(Calendar.DAY_OF_WEEK, 1)
         endCalendar.set(Calendar.DAY_OF_WEEK, 7)
@@ -102,7 +106,7 @@ class WeeklyChartFragment: Fragment() {
 
             rightArrow.setOnClickListener {
                 startCalendar.roll(Calendar.WEEK_OF_YEAR, true)
-                endCalendar.roll(Calendar.WEEK_OF_YEAR, true)
+                endCalendar = startCalendar.clone() as Calendar
                 startCalendar.set(Calendar.DAY_OF_WEEK, 1)
                 endCalendar.set(Calendar.DAY_OF_WEEK, 7)
 
@@ -293,29 +297,46 @@ class WeeklyChartFragment: Fragment() {
         if(!sleepCurrent.isNullOrEmpty()) { initCandleStickChartData() }
 
         candleStickChart.isHighlightPerDragEnabled = false
+        candleStickChart.description.isEnabled = false
 
         val yAxis = candleStickChart.axisLeft
         val rightAxis = candleStickChart.axisRight
-        yAxis.setDrawGridLines(false)
-        yAxis.axisMaximum = 246060f
+
+//        yAxis.labelCount = 6
+        yAxis.axisMaximum = 240000f
         yAxis.axisMinimum = 0f
-        rightAxis.axisMaximum = 246060f
+        yAxis.setDrawLabels(false)
+        yAxis.setDrawGridLines(false)
+        rightAxis.axisMaximum = 240000f
         rightAxis.axisMinimum = 0f
-        rightAxis.setDrawGridLines(false)
+        rightAxis.labelCount = 6
+        rightAxis.setDrawLabels(true)
         candleStickChart.requestDisallowInterceptTouchEvent(true)
 
+//        val rightActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
+//        val rightFormatter = IAxisValueFormatter{ value, axis ->
+//            rightActivities[value.toInt() % rightActivities.size]
+//        }
+//
+//        rightAxis.valueFormatter = rightFormatter
+
 //        candleStickChart.animateY(1400)
+
 
         val xAxis = candleStickChart.xAxis
 
         xAxis.setDrawGridLines(false) // disable x axis grid lines
-
-        xAxis.setDrawLabels(false)
-        rightAxis.textColor = Color.WHITE
-        yAxis.setDrawLabels(false)
-        xAxis.granularity = 1f
-        xAxis.isGranularityEnabled = true
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+//        xAxis.granularity = 1f
+//        xAxis.isGranularityEnabled = true
         xAxis.setAvoidFirstLastClipping(true)
+
+        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+        val xFormatter = IAxisValueFormatter{ value, axis ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = xFormatter
 
         val l = candleStickChart.legend
         l.isEnabled = false
@@ -326,26 +347,32 @@ class WeeklyChartFragment: Fragment() {
 
         val tempCalendar = startCalendar
         var tempDayCount = 0
-        for(sleepData in sleepCurrent!!) {
-            if (!sleepData.isEmpty()){
+        if(!sleepCurrent!!.first().isEmpty()) {
+            for(sleepData in sleepCurrent!!) {
                 while (!sleepData.isEqualDate(tempCalendar) && tempDayCount < 6) {
                     tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
                     tempDayCount += 1
-                    entries.add(CandleEntry(tempDayCount.toFloat(), -1f, -1f, -1f, -1f))
+                    entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
                 }
+
                 val startTimeRecord = TimeRecord().stringToTimeRecord(sleepData.StartDate)
                 val endTimeRecord = TimeRecord().stringToTimeRecord(sleepData.EndDate)
 
                 entries.add(
-                    CandleEntry((tempDayCount+1).toFloat(),
+                    CandleEntry(
+                        tempDayCount.toFloat(),
                         startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
                         startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
                     )
                 )
+
                 Log.e("Chart Data", "$tempDayCount: $sleepData")
-            } else {
-                entries.add(CandleEntry((tempDayCount+1).toFloat(), -1f, -1f, -1f, -1f))
             }
+        }
+
+        while (tempDayCount < 7) {
+            tempDayCount += 1
+            entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
         }
 
 //        for(i in 0 until sleepCurrent!!.size) {
@@ -386,7 +413,7 @@ class WeeklyChartFragment: Fragment() {
         mv.chartView = lineChart
         lineChart.marker = mv*/
 
-        candleData.setDrawValues(true)
+        candleData.setDrawValues(false)
 
         candleStickChart.data = candleData
         candleStickChart.invalidate()
@@ -426,22 +453,20 @@ class WeeklyChartFragment: Fragment() {
         }
     }
 
+    private fun updateQuestionnaireChart() {
+        activity?.runOnUiThread {
+            binding.apply {
+                initLineChart()
+            }
+        }
+    }
+
     private fun getSleepCurrentApi(): Thread {
         return Thread {
             try {
-                val url = URL(
-                    getString(
-                        R.string.get_sleep_record_url,
-                        getString(R.string.server_url),
-                        User.caseNumber,
-                        currentStart,
-                        currentEnd,
-                        "ASC"
-                    )
-                )
+                val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url),
+                        User.caseNumber, currentStart, currentEnd, "ASC"))
                 val connection = url.openConnection() as HttpURLConnection
-
-                Log.e("API Connection", "$url")
 
                 if (connection.responseCode == 200) {
                     val inputSystem = connection.inputStream
@@ -459,6 +484,33 @@ class WeeklyChartFragment: Fragment() {
                     Log.e("API Connection", "Connection failed")
                 }
             } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
+        }
+    }
+
+    private fun getQuestionnaireResultApi(): Thread {
+        return Thread {
+            try {
+                val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), CalendarFragment.User.caseNumber))
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
+                    questionnaireResult = Gson().fromJson(inputStreamReader, type)
+
+                    updateQuestionnaireChart()
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+
+                    Log.e("API Connection", "Connection success")
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch(e: Exception) {
                 Log.e("API Connection", "Service not found")
             }
         }
