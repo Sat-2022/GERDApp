@@ -345,7 +345,7 @@ class WeeklyChartFragment: Fragment() {
     private fun initCandleStickChartData() {
         val entries: ArrayList<CandleEntry> = ArrayList()
 
-        val tempCalendar = startCalendar
+        val tempCalendar = startCalendar.clone() as Calendar
         var tempDayCount = 0
         if(!sleepCurrent!!.first().isEmpty()) {
             for(sleepData in sleepCurrent!!) {
@@ -374,28 +374,6 @@ class WeeklyChartFragment: Fragment() {
             tempDayCount += 1
             entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
         }
-
-//        for(i in 0 until sleepCurrent!!.size) {
-//            Log.e("Entries", "$i")
-//            val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].StartDate)
-//            val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].EndDate)
-//
-//            entries.add(
-//                    CandleEntry(
-//                        i.toFloat(),
-//                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
-//                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
-//                    )
-//                )
-//        }
-//
-//        entries.add(
-//            CandleEntry(
-//                0f,
-//                105018f, 115018f,
-//                105018f, 115018f
-//            )
-//        )
 
         val candleDataSet = CandleDataSet(entries, "")
         candleDataSet.color = Color.BLUE

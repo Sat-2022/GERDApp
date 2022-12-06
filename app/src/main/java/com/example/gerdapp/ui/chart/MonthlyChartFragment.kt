@@ -277,18 +277,34 @@ class MonthlyChartFragment: Fragment() {
     private fun initCandleStickChartData() {
         val entries: ArrayList<CandleEntry> = ArrayList()
 
-        for(i in 0 until sleepCurrent!!.size) {
-            Log.e("Entries", "$i")
-            val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].StartDate)
-            val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!![i].EndDate)
+        val tempCalendar = startCalendar.clone() as Calendar
+        var tempDayCount = 0
+        if(!sleepCurrent!!.first().isEmpty()) {
+            for(sleepData in sleepCurrent!!) {
+                while (!sleepData.isEqualDate(tempCalendar) && tempDayCount < 29) {
+                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    tempDayCount += 1
+                    entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
+                }
 
-            entries.add(
-                CandleEntry(
-                    i.toFloat(),
-                    startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
-                    startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
+                val startTimeRecord = TimeRecord().stringToTimeRecord(sleepData.StartDate)
+                val endTimeRecord = TimeRecord().stringToTimeRecord(sleepData.EndDate)
+
+                entries.add(
+                    CandleEntry(
+                        tempDayCount.toFloat(),
+                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
+                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
+                    )
                 )
-            )
+
+                Log.e("Chart Data", "$tempDayCount: $sleepData")
+            }
+        }
+
+        while (tempDayCount < 30) {
+            tempDayCount += 1
+            entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
         }
 
         val candleDataSet = CandleDataSet(entries, "")
@@ -307,7 +323,7 @@ class MonthlyChartFragment: Fragment() {
         mv.chartView = lineChart
         lineChart.marker = mv*/
 
-        candleData.setDrawValues(true)
+        candleData.setDrawValues(false)
 
         candleStickChart.data = candleData
         candleStickChart.invalidate()
@@ -316,31 +332,52 @@ class MonthlyChartFragment: Fragment() {
     private fun initCandleStickChart() {
         // set data
         // initBarChartData()
-
+//
 //        randomResult()
 
         if(!sleepCurrent.isNullOrEmpty()) { initCandleStickChartData() }
 
         candleStickChart.isHighlightPerDragEnabled = false
+        candleStickChart.description.isEnabled = false
 
         val yAxis = candleStickChart.axisLeft
         val rightAxis = candleStickChart.axisRight
+
+//        yAxis.labelCount = 6
+        yAxis.axisMaximum = 240000f
+        yAxis.axisMinimum = 0f
+        yAxis.setDrawLabels(false)
         yAxis.setDrawGridLines(false)
-        rightAxis.setDrawGridLines(false)
+        rightAxis.axisMaximum = 240000f
+        rightAxis.axisMinimum = 0f
+        rightAxis.labelCount = 6
+        rightAxis.setDrawLabels(true)
         candleStickChart.requestDisallowInterceptTouchEvent(true)
 
+//        val rightActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
+//        val rightFormatter = IAxisValueFormatter{ value, axis ->
+//            rightActivities[value.toInt() % rightActivities.size]
+//        }
+//
+//        rightAxis.valueFormatter = rightFormatter
+
 //        candleStickChart.animateY(1400)
+
 
         val xAxis = candleStickChart.xAxis
 
         xAxis.setDrawGridLines(false) // disable x axis grid lines
-
-        xAxis.setDrawLabels(false)
-        rightAxis.textColor = Color.WHITE
-        yAxis.setDrawLabels(false)
-        xAxis.granularity = 1f
-        xAxis.isGranularityEnabled = true
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+//        xAxis.granularity = 1f
+//        xAxis.isGranularityEnabled = true
         xAxis.setAvoidFirstLastClipping(true)
+
+        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+        val xFormatter = IAxisValueFormatter{ value, axis ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = xFormatter
 
         val l = candleStickChart.legend
         l.isEnabled = false
@@ -394,8 +431,6 @@ class MonthlyChartFragment: Fragment() {
                     )
                 )
                 val connection = url.openConnection() as HttpURLConnection
-
-                Log.e("API Connection", "$url")
 
                 if (connection.responseCode == 200) {
                     val inputSystem = connection.inputStream
