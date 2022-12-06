@@ -270,14 +270,12 @@ class MainFragment : Fragment() {
     }
 
     private fun recordToJson(): ByteArray {
-        var recordString = "{"
-        recordString += "\"CaseNumber\": \"${User.caseNumber}\", "
-        recordString += "\"SymptomItem\": \"" + symptomsToString() + "\","
-        recordString += "\"SymptomOther\": \"\","
-        recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC) + "\", "
-        recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.endTime.YEAR, SymptomsRecord.endTime.MONTH+1, SymptomsRecord.endTime.DAY, SymptomsRecord.endTime.HOUR, SymptomsRecord.endTime.MIN, SymptomsRecord.endTime.SEC) + "\", "
-        recordString += "\"SymptomNote\": \"\""
-        recordString += "}"
+        var recordString = getString(R.string.post_symptoms_json,
+            User.caseNumber, symptomsToString(), "",
+            getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC),
+            getString(R.string.date_time_format, SymptomsRecord.endTime.YEAR, SymptomsRecord.endTime.MONTH+1, SymptomsRecord.endTime.DAY, SymptomsRecord.endTime.HOUR, SymptomsRecord.endTime.MIN, SymptomsRecord.endTime.SEC),
+            ""
+        )
 
         return recordString.encodeToByteArray()
     }
@@ -377,13 +375,7 @@ class MainFragment : Fragment() {
     private fun getNotificationApi(): Thread {
         return Thread {
             try {
-                val url = URL(
-                    getString(
-                        R.string.get_notification_url,
-                        getString(R.string.server_url),
-                        User.caseNumber
-                    )
-                )
+                val url = URL(getString(R.string.get_notification_url, getString(R.string.server_url), User.caseNumber))
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
@@ -515,48 +507,28 @@ class MainFragment : Fragment() {
     }
 
     private fun drugCurrentToString(): String {
-        var string = ""
-
-        string += drugCurrent!!.DrugItem + " - "
-
         val timeRecord = TimeRecord().stringToTimeRecord(drugCurrent!!.MedicationTime)
-        string += "$timeRecord"
 
-        return string
+        return getString(R.string.data_format1, drugCurrent!!.DrugItem, timeRecord)
     }
 
     private fun sleepCurrentToString(): String {
-        var string = ""
-
         val startTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.StartDate)
-        string += "$startTimeRecord 至 "
-
         val endTimeRecord = TimeRecord().stringToTimeRecord(sleepCurrent!!.EndDate)
-        string += "$endTimeRecord"
 
-        return string
+        return getString(R.string.data_format2, startTimeRecord, endTimeRecord)
     }
 
     private fun foodCurrentToString(): String {
-        var string = ""
-
-        string += foodCurrent!!.FoodItem + " - "
-
         val startTimeRecord = TimeRecord().stringToTimeRecord(foodCurrent!!.StartDate)
-        string += "$startTimeRecord"
 
-        return string
+        return return getString(R.string.data_format1, foodCurrent!!.FoodItem, startTimeRecord)
     }
 
     private fun eventCurrentToString(): String {
-        var string = ""
-
-        string += eventCurrent!!.ActivityItem + " - "
-
         val startTimeRecord = TimeRecord().stringToTimeRecord(eventCurrent!!.StartDate)
-        string += "$startTimeRecord"
 
-        return string
+        return return getString(R.string.data_format1, eventCurrent!!.ActivityItem, startTimeRecord)
     }
 
     private fun setSymptomsCard() {
@@ -659,16 +631,8 @@ class MainFragment : Fragment() {
     private fun getSymptomCurrentApi(): Thread {
         return Thread {
             try {
-                val url = URL(
-                    getString(
-                        R.string.get_symptoms_record_url,
-                        getString(R.string.server_url),
-                        User.caseNumber,
-                        "19110101",
-                        "19110101",
-                        "DESC"
-                    )
-                )
+                val url = URL(getString(R.string.get_symptoms_record_url, getString(R.string.server_url),
+                        User.caseNumber, "19110101", "19110101", "DESC"))
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
@@ -694,16 +658,8 @@ class MainFragment : Fragment() {
     private fun getDrugCurrentApi(): Thread {
         return Thread {
             try {
-                val url = URL(
-                    getString(
-                        R.string.get_drug_record_url,
-                        getString(R.string.server_url),
-                        User.caseNumber,
-                        "19110101",
-                        "19110101",
-                        "DESC"
-                    )
-                )
+                val url = URL(getString(R.string.get_drug_record_url, getString(R.string.server_url),
+                        User.caseNumber, "19110101", "19110101", "DESC"))
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
@@ -730,16 +686,8 @@ class MainFragment : Fragment() {
     private fun getSleepCurrentApi(): Thread {
         return Thread {
             try {
-                val url = URL(
-                    getString(
-                        R.string.get_sleep_record_url,
-                        getString(R.string.server_url),
-                        User.caseNumber,
-                        "19110101",
-                        "19110101",
-                        "DESC"
-                    )
-                )
+                val url = URL(getString(R.string.get_sleep_record_url, getString(R.string.server_url),
+                        User.caseNumber, "19110101", "19110101", "DESC"))
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
@@ -766,16 +714,8 @@ class MainFragment : Fragment() {
     private fun getFoodCurrentApi(): Thread {
         return Thread {
             try {
-                val url = URL(
-                    getString(
-                        R.string.get_food_record_url,
-                        getString(R.string.server_url),
-                        User.caseNumber,
-                        "19110101",
-                        "19110101",
-                        "DESC"
-                    )
-                )
+                val url = URL(getString(R.string.get_food_record_url, getString(R.string.server_url),
+                        User.caseNumber, "19110101", "19110101", "DESC"))
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
@@ -802,16 +742,8 @@ class MainFragment : Fragment() {
     private fun getEventCurrentApi(): Thread {
         return Thread {
             try {
-                val url = URL(
-                    getString(
-                        R.string.get_event_record_url,
-                        getString(R.string.server_url),
-                        User.caseNumber,
-                        "19110101",
-                        "19110101",
-                        "DESC"
-                    )
-                )
+                val url = URL(getString(R.string.get_event_record_url, getString(R.string.server_url),
+                        User.caseNumber, "19110101", "19110101", "DESC"))
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {

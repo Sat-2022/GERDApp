@@ -213,14 +213,12 @@ class SymptomsRecordFragment: Fragment() {
 
     private fun recordToJson(): ByteArray {
         val caseNumber = preferences.getString("caseNumber", "")
-        var recordString = "{"
-        recordString += "\"CaseNumber\": \"$caseNumber\", "
-        recordString += "\"SymptomItem\": \"" + symptomsToString() + "\","
-        recordString += "\"SymptomOther\": \"${SymptomsRecord.othersSymptoms}\","
-        recordString += "\"StartDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC) + "\", "
-        recordString += "\"EndDate\": \"" + getString(R.string.date_time_format, SymptomsRecord.endTime.YEAR, SymptomsRecord.endTime.MONTH+1, SymptomsRecord.endTime.DAY, SymptomsRecord.endTime.HOUR, SymptomsRecord.endTime.MIN, SymptomsRecord.endTime.SEC) + "\", "
-        recordString += "\"SymptomNote\": \"${SymptomsRecord.note}\""
-        recordString += "}"
+        var recordString = getString(R.string.post_symptoms_json,
+                caseNumber, symptomsToString(), SymptomsRecord.othersSymptoms,
+                getString(R.string.date_time_format, SymptomsRecord.startTime.YEAR, SymptomsRecord.startTime.MONTH+1, SymptomsRecord.startTime.DAY, SymptomsRecord.startTime.HOUR, SymptomsRecord.startTime.MIN, SymptomsRecord.startTime.SEC),
+                getString(R.string.date_time_format, SymptomsRecord.endTime.YEAR, SymptomsRecord.endTime.MONTH+1, SymptomsRecord.endTime.DAY, SymptomsRecord.endTime.HOUR, SymptomsRecord.endTime.MIN, SymptomsRecord.endTime.SEC),
+                SymptomsRecord.note
+        )
 
         return recordString.encodeToByteArray()
     }

@@ -33,6 +33,8 @@
     <string name="post_drug_record_url">http://%s/GERD_API/api/DrugRecord/</string>
     <string name="post_symptoms_record_url">http://%s/GERD_API/api/SymptomRecord/</string>
 
+    <string name="post_symptoms_json">{\"CaseNumber\": \"%s\", \"SymptomItem\": \"%s\", \"SymptomOther\": \"%s\", \"StartDate\": \"%s"\", \"EndDate\": \"%s\", \"SymptomNote\": \"%s\"}</string>
+
     <!-- strings for login -->
     <string name="login_headline">已經有帳號嗎？</string>
     <string name="login_title">登入</string>
@@ -112,6 +114,9 @@
     <string name="event">其他活動</string>
     <string name="no_notification">沒有通知囉！</string>
     <string name="no_data">還沒有記錄喔!</string>
+    <string name="data_format1">%s - %s</string>
+    <string name="data_format2">%s 至 %s</string>
+
 
     <!-- strings for time record -->
     <string name="year">年</string>
