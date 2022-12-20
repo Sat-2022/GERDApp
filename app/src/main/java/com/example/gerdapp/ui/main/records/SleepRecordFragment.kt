@@ -98,6 +98,7 @@ class SleepRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
+                saveRecord()
                 postRecordApi().start()
             }
 
@@ -162,6 +163,14 @@ class SleepRecordFragment: Fragment() {
                 }
             } else {
                 Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private fun saveRecord() {
+        binding.apply {
+            if (validateInputText(noteCard.addNote.userInputText)) {
+                SleepRecord.note = noteCard.addNote.userInputText.text.toString()
             }
         }
     }

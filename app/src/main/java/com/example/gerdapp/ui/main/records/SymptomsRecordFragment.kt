@@ -127,6 +127,7 @@ class SymptomsRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
+                saveRecord()
                 postRecordApi().start()
             }
 
@@ -207,6 +208,18 @@ class SymptomsRecordFragment: Fragment() {
                 activity?.runOnUiThread {
                     Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
                 }
+            }
+        }
+    }
+
+    private fun saveRecord() {
+        binding.apply {
+            if (validateInputText(symptomsCard.addOtherSymptoms.userInputText)) {
+                SymptomsRecord.othersSymptoms = symptomsCard.addOtherSymptoms.userInputText.text.toString()
+            }
+
+            if (validateInputText(noteCard.addNote.userInputText)) {
+                SymptomsRecord.note = noteCard.addNote.userInputText.text.toString()
             }
         }
     }

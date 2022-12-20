@@ -114,6 +114,7 @@ class DrugRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
+                saveRecord()
                 postRecordApi().start()
             }
 
@@ -198,6 +199,18 @@ class DrugRecordFragment: Fragment() {
                         drugCard.addDrug.userInputText.error = getString(R.string.input_null)
                     }
                 }
+            }
+        }
+    }
+
+    private fun saveRecord() {
+        binding.apply {
+            if (validateInputText(drugCard.addDrug.userInputText)) {
+                DrugRecord.drug = drugCard.addDrug.userInputText.text.toString()
+            }
+
+            if (validateInputText(noteCard.addNote.userInputText)) {
+                DrugRecord.note = noteCard.addNote.userInputText.text.toString()
             }
         }
     }

@@ -112,6 +112,7 @@ class EventRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
+                saveRecord()
                 postRecordApi().start()
             }
 
@@ -193,6 +194,18 @@ class EventRecordFragment: Fragment() {
 
                     }
                 }
+            }
+        }
+    }
+
+    private fun saveRecord() {
+        binding.apply {
+            if (validateInputText(othersCard.addOthers.userInputText)) {
+                EventRecord.event = othersCard.addOthers.userInputText.text.toString()
+            }
+
+            if (validateInputText(noteCard.addNote.userInputText)) {
+                EventRecord.note = noteCard.addNote.userInputText.text.toString()
             }
         }
     }

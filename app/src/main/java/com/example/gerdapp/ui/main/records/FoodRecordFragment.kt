@@ -111,6 +111,7 @@ class FoodRecordFragment: Fragment() {
             }
 
             completeButton.setOnClickListener {
+                saveRecord()
                 postRecordApi().start()
             }
 
@@ -191,6 +192,18 @@ class FoodRecordFragment: Fragment() {
                         foodCard.addFood.userInputText.error = getString(R.string.input_null)
                     }
                 }
+            }
+        }
+    }
+
+    private fun saveRecord() {
+        binding.apply {
+            if (validateInputText(foodCard.addFood.userInputText)) {
+                FoodRecord.food = foodCard.addFood.userInputText.text.toString()
+            }
+
+            if (validateInputText(noteCard.addNote.userInputText)) {
+                FoodRecord.note = noteCard.addNote.userInputText.text.toString()
             }
         }
     }
