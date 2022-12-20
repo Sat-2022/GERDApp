@@ -13,8 +13,15 @@ data class SleepCurrent(
         return time.isTimeRecordEmpty()
     }
 
-    fun isEqualDate(calendar: Calendar): Boolean {
-        val time = TimeRecord().stringToTimeRecord(StartDate)
-        return time.isEqualDate(calendar)
+    fun isSameDate(calendar: Calendar, tag: Int = 0): Boolean {
+        var cal = calendar.clone() as Calendar
+        val time = when(tag) {
+            1 -> {
+                cal.add(Calendar.DAY_OF_YEAR, 1)
+                TimeRecord().stringToTimeRecord(EndDate)
+            }
+            else -> TimeRecord().stringToTimeRecord(StartDate)
+        }
+        return time.isSameDate(cal)
     }
 }

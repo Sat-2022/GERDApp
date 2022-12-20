@@ -51,7 +51,7 @@ class TimeRecord {
         return true
     }
 
-    fun isEqualDate(calendar: Calendar): Boolean {
+    fun isSameDate(calendar: Calendar): Boolean {
         if(this.YEAR != calendar[Calendar.YEAR]) return false
         if(this.MONTH != calendar[Calendar.MONTH]+1) return false
         if(this.DAY != calendar[Calendar.DAY_OF_MONTH]) return false

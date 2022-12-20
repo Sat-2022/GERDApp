@@ -12,14 +12,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
-import com.example.gerdapp.data.SleepCurrent
-import com.example.gerdapp.data.TimeRecord
+import com.example.gerdapp.data.*
 import com.example.gerdapp.databinding.FragmentMonthlyChartBinding
 import com.example.gerdapp.ui.chart.MonthlyChartFragment.DateRange.endCalendar
 import com.example.gerdapp.ui.chart.MonthlyChartFragment.DateRange.startCalendar
 import com.example.gerdapp.ui.chart.MonthlyChartFragment.User.caseNumber
 import com.example.gerdapp.ui.chart.MonthlyChartFragment.DateRange.currentEnd
 import com.example.gerdapp.ui.chart.MonthlyChartFragment.DateRange.currentStart
+import com.example.gerdapp.ui.chart.MonthlyChartFragment.DateRange.maxDate
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
@@ -35,6 +35,7 @@ import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
+
 class MonthlyChartFragment: Fragment() {
     private var _binding: FragmentMonthlyChartBinding? = null
     private val binding get() = _binding!!
@@ -43,7 +44,10 @@ class MonthlyChartFragment: Fragment() {
     private lateinit var barChart: BarChart
     private lateinit var candleStickChart: CandleStickChart
 
+    private var symptomCurrent: List<SymptomCurrent>? = null
     private var sleepCurrent: List<SleepCurrent>? = null
+    private var foodCurrent: List<FoodCurrent>? = null
+    private var eventCurrent: List<EventCurrent>? = null
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -51,6 +55,7 @@ class MonthlyChartFragment: Fragment() {
     object DateRange {
         lateinit var startCalendar: Calendar
         lateinit var endCalendar: Calendar
+        var maxDate = 0
         var currentStart = ""
         var currentEnd = ""
     }
@@ -71,7 +76,7 @@ class MonthlyChartFragment: Fragment() {
 
         startCalendar = Calendar.getInstance()
         endCalendar = Calendar.getInstance()
-        updateCalendar()
+
         updateCurrent()
 
         callApi()
@@ -94,25 +99,17 @@ class MonthlyChartFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            selectedDateTv.text = (startCalendar[Calendar.MONTH]+1).toString() + " 月"
+            selectedDateTv.text = getString(R.string.monthly_chart_date_title, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1)
 
             rightArrow.setOnClickListener {
-                startCalendar.add(Calendar.MONTH, 1)
-                endCalendar.add(Calendar.MONTH, 1)
-                updateCalendar()
-                updateCurrent()
-                selectedDateTv.text = (startCalendar[Calendar.MONTH]+1).toString() + " 月"
-
+                updateCurrent(1)
+                selectedDateTv.text = getString(R.string.monthly_chart_date_title, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1)
                 callApi()
             }
 
             leftArrow.setOnClickListener {
-                startCalendar.add(Calendar.MONTH, -1)
-                endCalendar.add(Calendar.MONTH, -1)
-                updateCalendar()
-                updateCurrent()
-                selectedDateTv.text = (startCalendar[Calendar.MONTH]+1).toString() + " 月"
-
+                updateCurrent(-1)
+                selectedDateTv.text = getString(R.string.monthly_chart_date_title, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1)
                 callApi()
             }
         }
@@ -281,7 +278,7 @@ class MonthlyChartFragment: Fragment() {
         var tempDayCount = 0
         if(!sleepCurrent!!.first().isEmpty()) {
             for(sleepData in sleepCurrent!!) {
-                while (!sleepData.isEqualDate(tempCalendar) && tempDayCount < 29) {
+                while (!sleepData.isSameDate(tempCalendar) && tempDayCount < maxDate - 1) {
                     tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
                     tempDayCount += 1
                     entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
@@ -297,26 +294,23 @@ class MonthlyChartFragment: Fragment() {
                         startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
                     )
                 )
-
-                Log.e("Chart Data", "$tempDayCount: $sleepData")
             }
         }
 
-        while (tempDayCount < 30) {
+        while (tempDayCount < maxDate) {
             tempDayCount += 1
             entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
         }
 
         val candleDataSet = CandleDataSet(entries, "")
-        candleDataSet.color = Color.BLUE
+        candleDataSet.color = Color.rgb(147, 208, 109)
         candleDataSet.shadowColor = Color.LTGRAY
         candleDataSet.shadowWidth = 0.8f
-        candleDataSet.decreasingColor = Color.RED
+        candleDataSet.decreasingColor = Color.rgb(147, 208, 109)
         candleDataSet.decreasingPaintStyle = Paint.Style.FILL
-        candleDataSet.increasingColor = Color.CYAN
+        candleDataSet.increasingColor = Color.rgb(147, 208, 109)
         candleDataSet.increasingPaintStyle = Paint.Style.FILL
-        candleDataSet.neutralColor = Color.DKGRAY
-
+        candleDataSet.neutralColor = Color.TRANSPARENT
         val candleData = CandleData(candleDataSet)
 
         /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
@@ -373,9 +367,14 @@ class MonthlyChartFragment: Fragment() {
 //        xAxis.isGranularityEnabled = true
         xAxis.setAvoidFirstLastClipping(true)
 
-        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+//        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+//        val xFormatter = IAxisValueFormatter{ value, axis ->
+//            mActivities[value.toInt() % mActivities.size]
+//        }
+//        xAxis.valueFormatter = xFormatter
+
         val xFormatter = IAxisValueFormatter{ value, axis ->
-            mActivities[value.toInt() % mActivities.size]
+            (value + 1).toInt().toString()
         }
         xAxis.valueFormatter = xFormatter
 
@@ -465,15 +464,16 @@ class MonthlyChartFragment: Fragment() {
 //        getEventCurrentApi().start()
     }
 
-    private fun updateCalendar() {
+    private fun updateCurrent(inc: Int = 0) {
+        if(inc != 0) {
+            startCalendar.add(Calendar.MONTH, inc)
+            endCalendar = startCalendar.clone() as Calendar
+        }
+
+        maxDate = startCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         startCalendar.set(Calendar.DAY_OF_MONTH, 1)
-        val maxDate = startCalendar.getActualMaximum(Calendar.DAY_OF_MONTH)
         endCalendar.set(Calendar.DAY_OF_MONTH, maxDate)
 
-        Log.e("Date", "${startCalendar.time} ~ ${endCalendar.time}")
-    }
-
-    private fun updateCurrent() {
         currentStart = getString(R.string.input_time_format, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH])
         currentEnd = getString(R.string.input_time_format, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
     }

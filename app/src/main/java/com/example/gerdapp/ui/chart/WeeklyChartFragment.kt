@@ -12,15 +12,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
-import com.example.gerdapp.data.Questions
-import com.example.gerdapp.data.SleepCurrent
-import com.example.gerdapp.data.TimeRecord
+import com.example.gerdapp.data.*
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
 import com.example.gerdapp.ui.calendar.CalendarFragment
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startCalendar
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentEnd
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentStart
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.endCalendar
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.maxDate
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
@@ -46,8 +45,11 @@ class WeeklyChartFragment: Fragment() {
 
     private lateinit var questionnaireResult: List<Questions>
 
+    private var symptomCurrent: List<SymptomCurrent>? = null
     private var sleepCurrent: List<SleepCurrent>? = null
-    private var sleepChartData: Array<MutableList<SleepCurrent>?> = arrayOfNulls(7)
+    private var foodCurrent: List<FoodCurrent>? = null
+    private var eventCurrent: List<EventCurrent>? = null
+
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -55,6 +57,7 @@ class WeeklyChartFragment: Fragment() {
     object DateRange {
         lateinit var startCalendar: Calendar
         lateinit var endCalendar: Calendar
+        var maxDate = 7
         var currentStart = ""
         var currentEnd = ""
     }
@@ -75,9 +78,6 @@ class WeeklyChartFragment: Fragment() {
 
         startCalendar = Calendar.getInstance()
         endCalendar = startCalendar.clone() as Calendar
-
-        startCalendar.set(Calendar.DAY_OF_WEEK, 1)
-        endCalendar.set(Calendar.DAY_OF_WEEK, 7)
 
         updateCurrent()
 
@@ -101,31 +101,26 @@ class WeeklyChartFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
-                    " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
+            selectedDateTv.text = getString(R.string.weekly_chart_date_title,
+                startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH],
+                endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH]
+            )
 
             rightArrow.setOnClickListener {
-                startCalendar.roll(Calendar.WEEK_OF_YEAR, true)
-                endCalendar = startCalendar.clone() as Calendar
-                startCalendar.set(Calendar.DAY_OF_WEEK, 1)
-                endCalendar.set(Calendar.DAY_OF_WEEK, 7)
-
-                updateCurrent()
-                selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
-                        " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
-
+                updateCurrent(1)
+                selectedDateTv.text = getString(R.string.weekly_chart_date_title,
+                    startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH],
+                    endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH]
+                )
                 callApi()
             }
 
             leftArrow.setOnClickListener {
-                startCalendar.roll(Calendar.WEEK_OF_YEAR, false)
-                endCalendar.roll(Calendar.WEEK_OF_YEAR, false)
-                startCalendar.set(Calendar.DAY_OF_WEEK, 1)
-                endCalendar.set(Calendar.DAY_OF_WEEK, 7)
-
-                updateCurrent()
-                selectedDateTv.text = getString(R.string.date_time_format_ch, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH]) +
-                        " ~ " + getString(R.string.date_time_format_ch, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
+                updateCurrent(-1)
+                selectedDateTv.text = getString(R.string.weekly_chart_date_title,
+                    startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH],
+                    endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH]
+                )
 
                 callApi()
             }
@@ -349,41 +344,60 @@ class WeeklyChartFragment: Fragment() {
         var tempDayCount = 0
         if(!sleepCurrent!!.first().isEmpty()) {
             for(sleepData in sleepCurrent!!) {
-                while (!sleepData.isEqualDate(tempCalendar) && tempDayCount < 6) {
+                if(!sleepData.isSameDate(tempCalendar) && sleepData.isSameDate(tempCalendar, 1)) continue
+                while (!sleepData.isSameDate(tempCalendar) && tempDayCount < maxDate) {
+                    entries.add(CandleEntry(tempDayCount.toFloat(), -1f, -1f, -1f, -1f))
                     tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
                     tempDayCount += 1
-                    entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
                 }
 
                 val startTimeRecord = TimeRecord().stringToTimeRecord(sleepData.StartDate)
                 val endTimeRecord = TimeRecord().stringToTimeRecord(sleepData.EndDate)
 
-                entries.add(
-                    CandleEntry(
-                        tempDayCount.toFloat(),
-                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
-                        startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
+                if(sleepData.isSameDate(tempCalendar, 1)) { // Crossing date
+                    entries.add(
+                        CandleEntry(
+                            tempDayCount.toFloat(),
+                            startTimeRecord.timeRecordToFloat(), 240000f,
+                            startTimeRecord.timeRecordToFloat(), 240000f
+                        )
                     )
-                )
+                    if(tempDayCount < maxDate) {
+                        entries.add(
+                            CandleEntry(
+                                tempDayCount.toFloat() + 1,
+                                0f, endTimeRecord.timeRecordToFloat(),
+                                0f, endTimeRecord.timeRecordToFloat()
+                            )
+                        )
+                    }
 
-                Log.e("Chart Data", "$tempDayCount: $sleepData")
+                } else {
+                    entries.add(
+                        CandleEntry(
+                            tempDayCount.toFloat(),
+                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
+                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
+                        )
+                    )
+                }
             }
         }
 
-        while (tempDayCount < 7) {
+        while (tempDayCount < maxDate) {
             tempDayCount += 1
             entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
         }
 
         val candleDataSet = CandleDataSet(entries, "")
-        candleDataSet.color = Color.BLUE
+        candleDataSet.color = Color.rgb(147, 208, 109)
         candleDataSet.shadowColor = Color.LTGRAY
         candleDataSet.shadowWidth = 0.8f
-        candleDataSet.decreasingColor = Color.RED
+        candleDataSet.decreasingColor = Color.rgb(147, 208, 109)
         candleDataSet.decreasingPaintStyle = Paint.Style.FILL
-        candleDataSet.increasingColor = Color.CYAN
+        candleDataSet.increasingColor = Color.rgb(147, 208, 109)
         candleDataSet.increasingPaintStyle = Paint.Style.FILL
-        candleDataSet.neutralColor = Color.DKGRAY
+        candleDataSet.neutralColor = Color.TRANSPARENT
 
         val candleData = CandleData(candleDataSet)
 
@@ -458,6 +472,7 @@ class WeeklyChartFragment: Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
                     Log.e("API Connection", "Connection success")
+                    Log.e("API Connection", sleepCurrent.toString())
                 } else {
                     Log.e("API Connection", "Connection failed")
                 }
@@ -503,7 +518,16 @@ class WeeklyChartFragment: Fragment() {
 //        getEventCurrentApi().start()
     }
 
-    private fun updateCurrent() {
+    private fun updateCurrent(inc: Int = 0) {
+        if(inc != 0) {
+            startCalendar.add(Calendar.WEEK_OF_YEAR, inc)
+            endCalendar = startCalendar.clone() as Calendar
+        }
+
+        startCalendar.set(Calendar.DAY_OF_WEEK, 1)
+        endCalendar.set(Calendar.DAY_OF_WEEK, 7)
+
+
         currentStart = getString(R.string.input_time_format, startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH])
         currentEnd = getString(R.string.input_time_format, endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH])
     }

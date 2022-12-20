@@ -60,7 +60,7 @@ class DailyChartFragment: Fragment() {
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
         calendar = Calendar.getInstance()
-        current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+        updateCurrent()
 
         callApi()
     }
@@ -81,20 +81,17 @@ class DailyChartFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            selectedDateTv.text = getString(R.string.date_time_format_ch, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+            selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
 
             rightArrow.setOnClickListener {
-                calendar.add(Calendar.DAY_OF_YEAR, 1)
-                current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
-                selectedDateTv.text = getString(R.string.date_time_format_ch, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
-
+                updateCurrent(1)
+                selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
                 callApi()
             }
 
             leftArrow.setOnClickListener {
-                calendar.add(Calendar.DAY_OF_YEAR, -1)
-                current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
-                selectedDateTv.text = getString(R.string.date_time_format_ch, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+                updateCurrent(-1)
+                selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
 
                 callApi()
             }
@@ -421,5 +418,13 @@ class DailyChartFragment: Fragment() {
                 noRecordTv.visibility = View.GONE
             }
         }
+    }
+
+    private fun updateCurrent(inc: Int = 0) {
+        if(inc != 0) {
+            calendar.add(Calendar.DAY_OF_YEAR, inc)
+        }
+
+        current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
     }
 }

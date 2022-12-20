@@ -248,7 +248,7 @@ class CalendarFragment: Fragment() {
 
 
         // add animation
-        barChart.animateY(1400)
+//        barChart.animateY(1400)
 
 //        val l: Legend = chart.legend
 //        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP

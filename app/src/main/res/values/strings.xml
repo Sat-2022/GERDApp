@@ -176,6 +176,11 @@
     <string name="note">備註</string>
     <string name="add_note">新增備註</string>
 
+    <!-- string for chart -->
+    <string name="daily_chart_date_title">%d 年 %d 月 %d 日</string>
+    <string name="weekly_chart_date_title">%d 年 %d 月 %d 日 ~ %d 年 %d 月 %d 日</string>
+    <string name="monthly_chart_date_title">%d 年 %d 月</string>
+
     <!-- string for questionnaire -->
     <string name="weekly_questionnaire">每週問卷</string>
     <string name="daily_questionnaire">每日問卷</string>
