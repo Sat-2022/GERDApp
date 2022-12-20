@@ -30,7 +30,7 @@ class SplashActivity: AppCompatActivity() {
             if(networkInfo == null || !networkInfo!!.isAvailable) {
                 binding.apply {
                     internetConnectFailed.visibility = View.VISIBLE
-                    tvSplash.visibility = View.GONE
+                    splash.visibility = View.GONE
                     refreshIcon.setOnClickListener {
                         networkInfo = connectivityManager.activeNetworkInfo
                         if(networkInfo == null || !networkInfo!!.isAvailable) {
@@ -49,7 +49,7 @@ class SplashActivity: AppCompatActivity() {
     private fun completeSplash() {
         binding.apply {
             internetConnectFailed.visibility = View.GONE
-            tvSplash.visibility = View.VISIBLE
+            splash.visibility = View.VISIBLE
         }
 
         var startActivity: Intent
