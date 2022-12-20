@@ -26,6 +26,14 @@
             android:layout_height="56dp"
             android:src="@drawable/acid_reflux"/>
 
+        <include layout="@layout/card_divider"/>
+
+        <ProgressBar
+            android:id="@+id/progres_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleHorizontal"/>
+
     </LinearLayout>
 
     <LinearLayout

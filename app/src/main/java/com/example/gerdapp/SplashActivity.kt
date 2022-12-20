@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Message
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gerdapp.databinding.ActivitySplashBinding
@@ -12,6 +13,7 @@ import com.example.gerdapp.databinding.ActivitySplashBinding
 class SplashActivity: AppCompatActivity() {
 
     private val SPLASH_TIME_OUT: Long = 3000 // 1 sec
+    private var progressVal = 0
 
     private lateinit var binding: ActivitySplashBinding
 
@@ -25,6 +27,8 @@ class SplashActivity: AppCompatActivity() {
 
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         var networkInfo = connectivityManager.activeNetworkInfo
+
+
 
         Handler().postDelayed({
             if(networkInfo == null || !networkInfo!!.isAvailable) {
@@ -55,6 +59,8 @@ class SplashActivity: AppCompatActivity() {
         var startActivity: Intent
         val preferences: SharedPreferences = getSharedPreferences("config", 0)
 
+        progressThread().start()
+
         Handler().postDelayed({
             startActivity = if (preferences.getBoolean("loggedIn", false)) {
                 Intent(this, MainActivity::class.java)
@@ -64,5 +70,33 @@ class SplashActivity: AppCompatActivity() {
             startActivity(startActivity)
             finish()
         }, SPLASH_TIME_OUT)
+    }
+
+    private fun progressThread(): Thread {
+        return Thread {
+            while(true) {
+                try {
+                    Thread.sleep(30) // 暫停 0.15 秒
+                } catch (e: InterruptedException) {
+
+                }
+
+                if (progressVal >= 100) {  //若超過 100 時，離開程式
+                    progressVal = 0
+                    break
+                }
+
+                setProgress()
+                progressVal++
+            }
+        }
+    }
+
+    private fun setProgress() {
+        runOnUiThread {
+            binding.apply {
+                progresBar.progress = progressVal
+            }
+        }
     }
 }
