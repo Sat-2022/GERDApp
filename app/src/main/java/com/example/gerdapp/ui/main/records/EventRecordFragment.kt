@@ -289,7 +289,7 @@ class EventRecordFragment: Fragment() {
     }
 
     private fun setTimePicker(textView: TextView, timeRecord: TimeRecord, tag: Int = 0): TimePickerDialog {
-        val timePicker = TimePickerDialog(requireContext(), { _, hour, min ->
+        val timePicker = TimePickerDialog(requireContext(), TimePickerDialog.THEME_HOLO_LIGHT, { _, hour, min ->
             run {
                 textView.text = getString(R.string.time_format, hour, min)
                 timeRecord.HOUR = hour
