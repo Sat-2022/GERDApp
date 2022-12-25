@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.chart
+package com.example.gerdapp.ui.chart.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -6,28 +6,29 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
-import com.example.gerdapp.data.*
+import com.example.gerdapp.data.SymptomCurrent
+import com.example.gerdapp.data.TimeRecord
 
-class FoodAdapter(
-    private val clickListener: (FoodCurrent) -> Unit
-): RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
-    private val items: ArrayList<FoodCurrent> = ArrayList()
+class SymptomsAdapter(
+    private val clickListener: (SymptomCurrent) -> Unit
+): RecyclerView.Adapter<SymptomsAdapter.SymptomsViewHolder>() {
+    private val items: ArrayList<SymptomCurrent> = ArrayList()
 
-    class FoodViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class SymptomsViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val titleView: TextView = itemView.findViewById(R.id.record_title)
         val timeView: TextView = itemView.findViewById(R.id.record_time)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SymptomsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_daily_record, parent, false)
-        val viewHolder = FoodViewHolder(view)
+        val viewHolder = SymptomsViewHolder(view)
 
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: SymptomsViewHolder, position: Int) {
         val current = items[position]
-        holder.titleView.text = current.FoodItem
+        holder.titleView.text = current.symptomToString()
         holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(2)
 
         holder.itemView.setOnClickListener {
@@ -39,8 +40,8 @@ class FoodAdapter(
         return items.size
     }
 
-    fun updateFoodList(foodList: List<FoodCurrent>) {
+    fun updateSymptomList(symptomList: List<SymptomCurrent>) {
         items.clear()
-        items.addAll(foodList)
+        items.addAll(symptomList)
     }
 }

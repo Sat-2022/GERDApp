@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.databinding.FragmentChartBinding
+import com.example.gerdapp.ui.chart.adapter.ChartAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
 class ChartFragment: Fragment() {

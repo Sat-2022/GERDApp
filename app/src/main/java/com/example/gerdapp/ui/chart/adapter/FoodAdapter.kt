@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.chart
+package com.example.gerdapp.ui.chart.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,26 +8,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
 import com.example.gerdapp.data.*
 
-class EventAdapter(
-    private val clickListener: (EventCurrent) -> Unit
-): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
-    private val items: ArrayList<EventCurrent> = ArrayList()
+class FoodAdapter(
+    private val clickListener: (FoodCurrent) -> Unit
+): RecyclerView.Adapter<FoodAdapter.FoodViewHolder>() {
+    private val items: ArrayList<FoodCurrent> = ArrayList()
 
-    class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class FoodViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val titleView: TextView = itemView.findViewById(R.id.record_title)
         val timeView: TextView = itemView.findViewById(R.id.record_time)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FoodViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_daily_record, parent, false)
-        val viewHolder = EventViewHolder(view)
+        val viewHolder = FoodViewHolder(view)
 
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: FoodViewHolder, position: Int) {
         val current = items[position]
-        holder.titleView.text = current.ActivityItem
+        holder.titleView.text = current.FoodItem
         holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(2)
 
         holder.itemView.setOnClickListener {
@@ -39,8 +39,8 @@ class EventAdapter(
         return items.size
     }
 
-    fun updateEventList(eventList: List<EventCurrent>) {
+    fun updateFoodList(foodList: List<FoodCurrent>) {
         items.clear()
-        items.addAll(eventList)
+        items.addAll(foodList)
     }
 }

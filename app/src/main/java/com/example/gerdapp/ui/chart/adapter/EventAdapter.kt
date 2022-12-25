@@ -1,4 +1,4 @@
-package com.example.gerdapp.ui.chart
+package com.example.gerdapp.ui.chart.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,26 +8,26 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.gerdapp.R
 import com.example.gerdapp.data.*
 
-class SleepAdapter(
-    private val clickListener: (SleepCurrent) -> Unit
-): RecyclerView.Adapter<SleepAdapter.SleepViewHolder>() {
-    private val items: ArrayList<SleepCurrent> = ArrayList()
+class EventAdapter(
+    private val clickListener: (EventCurrent) -> Unit
+): RecyclerView.Adapter<EventAdapter.EventViewHolder>() {
+    private val items: ArrayList<EventCurrent> = ArrayList()
 
-    class SleepViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+    class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
         val titleView: TextView = itemView.findViewById(R.id.record_title)
         val timeView: TextView = itemView.findViewById(R.id.record_time)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SleepViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_daily_record, parent, false)
-        val viewHolder = SleepViewHolder(view)
+        val viewHolder = EventViewHolder(view)
 
         return viewHolder
     }
 
-    override fun onBindViewHolder(holder: SleepViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
         val current = items[position]
-        holder.titleView.text = "sleep"
+        holder.titleView.text = current.ActivityItem
         holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(2)
 
         holder.itemView.setOnClickListener {
@@ -39,8 +39,8 @@ class SleepAdapter(
         return items.size
     }
 
-    fun updateSleepList(sleepList: List<SleepCurrent>) {
+    fun updateEventList(eventList: List<EventCurrent>) {
         items.clear()
-        items.addAll(sleepList)
+        items.addAll(eventList)
     }
 }
