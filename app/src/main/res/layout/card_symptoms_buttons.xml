@@ -139,8 +139,9 @@
 
                 <ImageView
                     android:id="@+id/symptoms_sour_mouth"
-                    android:layout_width="72dp"
-                    android:layout_height="72dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
                     app:srcCompat="@drawable/sour_mouth" />
 
                 <View
@@ -195,7 +196,7 @@
                     android:id="@+id/symptoms_appetite_loss"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/appetite_lose" />
+                    app:srcCompat="@drawable/appetite_loss_1" />
 
                 <View
                     android:layout_width="1dp"
