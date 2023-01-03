@@ -64,6 +64,32 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="12dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardCornerRadius="12dp">
+
+                <com.github.mikephil.charting.charts.ScatterChart
+                    android:id="@+id/scatter_chart"
+                    android:layout_width="360dp"
+                    android:layout_height="240dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:layout_gravity="center_horizontal"/>
+
+            </androidx.cardview.widget.CardView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <include layout="@layout/card_divider"/>
+
         <TextView
             android:id="@+id/symptoms_title"
             android:layout_width="match_parent"

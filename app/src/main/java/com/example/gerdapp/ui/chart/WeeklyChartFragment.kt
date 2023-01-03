@@ -15,17 +15,19 @@ import com.example.gerdapp.R
 import com.example.gerdapp.data.*
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
 import com.example.gerdapp.ui.calendar.CalendarFragment
-import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startCalendar
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentEnd
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentStart
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.endCalendar
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.maxDate
+import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startCalendar
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.charts.ScatterChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.formatter.IValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -33,7 +35,7 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
-import kotlin.collections.ArrayList
+
 
 class WeeklyChartFragment: Fragment() {
     private var _binding: FragmentWeeklyChartBinding? = null
@@ -42,6 +44,7 @@ class WeeklyChartFragment: Fragment() {
     private lateinit var lineChart: LineChart
     private lateinit var barChart: BarChart
     private lateinit var candleStickChart: CandleStickChart
+    private lateinit var scatterChart: ScatterChart
 
     private lateinit var questionnaireResult: List<Questions>
 
@@ -91,6 +94,7 @@ class WeeklyChartFragment: Fragment() {
         lineChart = binding.lineChart
         barChart = binding.barChart
         candleStickChart = binding.timeRangeChart
+        scatterChart = binding.scatterChart
         initLineChart()
         initBarChart()
 
@@ -309,11 +313,13 @@ class WeeklyChartFragment: Fragment() {
         candleStickChart.requestDisallowInterceptTouchEvent(true)
 
 //        val rightActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
-//        val rightFormatter = IAxisValueFormatter{ value, axis ->
-//            rightActivities[value.toInt() % rightActivities.size]
-//        }
-//
-//        rightAxis.valueFormatter = rightFormatter
+        val rightFormatter = IAxisValueFormatter{ value, axis ->
+            val h = (value / 10000).toInt()
+            val m = ((value % 10000) / 100).toInt()
+            getString(R.string.time_format, h, m)
+        }
+
+        rightAxis.valueFormatter = rightFormatter
 
 //        candleStickChart.animateY(1400)
 
@@ -411,6 +417,108 @@ class WeeklyChartFragment: Fragment() {
         candleStickChart.invalidate()
     }
 
+    private fun initScatterChart() {
+        // set data
+        // initBarChartData()
+//
+//        randomResult()
+
+        if(!foodCurrent.isNullOrEmpty()) { initScatterChartData() }
+
+        scatterChart.isHighlightPerDragEnabled = false
+        scatterChart.description.isEnabled = false
+
+        val yAxis = scatterChart.axisLeft
+        val rightAxis = scatterChart.axisRight
+
+//        yAxis.labelCount = 6
+        yAxis.axisMaximum = 240000f
+        yAxis.axisMinimum = 0f
+        yAxis.setDrawLabels(false)
+        yAxis.setDrawGridLines(false)
+        rightAxis.axisMaximum = 240000f
+        rightAxis.axisMinimum = 0f
+        rightAxis.labelCount = 6
+        rightAxis.setDrawLabels(true)
+        scatterChart.requestDisallowInterceptTouchEvent(true)
+
+//        val rightActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
+//        val rightFormatter = IAxisValueFormatter{ value, axis ->
+//            rightActivities[value.toInt() % rightActivities.size]
+//        }
+//
+//        rightAxis.valueFormatter = rightFormatter
+
+//        candleStickChart.animateY(1400)
+
+
+        val xAxis = scatterChart.xAxis
+
+        xAxis.setDrawGridLines(false) // disable x axis grid lines
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+//        xAxis.granularity = 1f
+//        xAxis.isGranularityEnabled = true
+        xAxis.setAvoidFirstLastClipping(true)
+
+        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+        val xFormatter = IAxisValueFormatter{ value, axis ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = xFormatter
+
+        val l = scatterChart.legend
+        l.isEnabled = false
+    }
+
+    private fun initScatterChartData() {
+        val entries: ArrayList<BarEntry> = ArrayList()
+        val tempCalendar = startCalendar.clone() as Calendar
+        var tempDayCount = 0
+        if(!foodCurrent!!.first().isEmpty()) {
+            for(foodData in foodCurrent!!) {
+                if(!foodData.isSameDate(tempCalendar) && foodData.isSameDate(tempCalendar, 1)) continue
+                while (!foodData.isSameDate(tempCalendar) && tempDayCount < maxDate) {
+                    entries.add(BarEntry(tempDayCount.toFloat(), -1f))
+                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    tempDayCount += 1
+                }
+
+                val startTimeRecord = TimeRecord().stringToTimeRecord(foodData.StartDate)
+                val endTimeRecord = TimeRecord().stringToTimeRecord(foodData.EndDate)
+
+                if(foodData.isSameDate(tempCalendar, 1)) { // Crossing date
+                    entries.add(BarEntry(tempDayCount.toFloat(), startTimeRecord.timeRecordToFloat()))
+                    if(tempDayCount < maxDate) {
+                        entries.add(BarEntry(tempDayCount.toFloat() + 1, 0f))
+                    }
+
+                } else {
+                    entries.add(BarEntry(tempDayCount.toFloat(), startTimeRecord.timeRecordToFloat()))
+                }
+            }
+        }
+
+        while (tempDayCount < maxDate) {
+            tempDayCount += 1
+            entries.add(BarEntry(tempDayCount.toFloat() - 1, -1f))
+        }
+
+        val barDataSet = ScatterDataSet(entries as List<Entry>?, "")
+        barDataSet.color = Color.rgb(147, 208, 109)
+
+        val barData = ScatterData(barDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        barData.setDrawValues(false)
+
+        scatterChart.data = barData
+        scatterChart.invalidate()
+    }
+
     private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
         if (data == null) entries.add(BarEntry(index.toFloat(), 0f))
         else entries.add(BarEntry(index.toFloat(), data.toFloat()))
@@ -435,6 +543,14 @@ class WeeklyChartFragment: Fragment() {
 
         barChart.data = barData
         barChart.invalidate()
+    }
+
+    private fun updateScatterChart() {
+        activity?.runOnUiThread {
+            binding.apply {
+                initScatterChart()
+            }
+        }
     }
 
     private fun updateSleepChart() {
@@ -482,6 +598,36 @@ class WeeklyChartFragment: Fragment() {
         }
     }
 
+    private fun getFoodCurrentApi(): Thread {
+        return Thread {
+            try {
+                val url = URL(getString(R.string.get_food_record_url, getString(R.string.server_url),
+                    User.caseNumber, currentStart, currentEnd, "ASC"))
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<FoodCurrent>>() {}.type
+                    foodCurrent = Gson().fromJson(inputStreamReader, type)
+
+//                    updateFoChart()
+                    updateScatterChart()
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Connection success")
+                    Log.e("API Connection", foodCurrent.toString())
+                } else {
+                    Log.e("API Connection", "Connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Service not found")
+            }
+        }
+    }
+
     private fun getQuestionnaireResultApi(): Thread {
         return Thread {
             try {
@@ -510,12 +656,31 @@ class WeeklyChartFragment: Fragment() {
     }
 
     private fun callApi() {
-//        getSymptomsCurrentApi().start()
-//        getDrugCurrentApi().start()
-//        getDrugCurrentApi().start()
-        getSleepCurrentApi().start()
-//        getFoodCurrentApi().start()
-//        getEventCurrentApi().start()
+//        val threadNotification = getNotificationApi()
+//        val threadSymptomCurrent = getSymptomCurrentApi()
+//        val threadDrugCurrent = getDrugCurrentApi()
+        val threadSleepCurrent = getSleepCurrentApi()
+        val threadFoodCurrent = getFoodCurrentApi()
+//        val threadEventCurrent = getEventCurrentApi()
+
+//        threadNotification.start()
+//        threadSymptomCurrent.start()
+//        threadDrugCurrent.start()
+        threadSleepCurrent.start()
+        threadFoodCurrent.start()
+//        threadEventCurrent.start()
+
+        try {
+//            threadNotification.join()
+//            threadSymptomCurrent.join()
+//            threadDrugCurrent.join()
+            threadSleepCurrent.join()
+            threadFoodCurrent.join()
+//            threadEventCurrent.join()
+//            refreshComplete = true
+        } catch (_: InterruptedException) {
+
+        }
     }
 
     private fun updateCurrent(inc: Int = 0) {

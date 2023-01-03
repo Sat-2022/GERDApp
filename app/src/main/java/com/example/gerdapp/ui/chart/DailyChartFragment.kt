@@ -1,6 +1,7 @@
 package com.example.gerdapp.ui.chart
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,26 +12,32 @@ import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
 import com.example.gerdapp.data.*
 import com.example.gerdapp.databinding.FragmentDailyChartBinding
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.CandleStickChart
-import com.github.mikephil.charting.charts.LineChart
 import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.calendar
 import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.current
 import com.example.gerdapp.ui.chart.adapter.*
+import com.github.mikephil.charting.charts.ScatterChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.ScatterData
+import com.github.mikephil.charting.data.ScatterDataSet
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.IScatterDataSet
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
+import kotlin.collections.ArrayList
 
 class DailyChartFragment: Fragment() {
     private var _binding: FragmentDailyChartBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var lineChart: LineChart
-    private lateinit var barChart: BarChart
-    private lateinit var candleStickChart: CandleStickChart
+    private lateinit var scatterChart: ScatterChart
+
+    private var scatterChartDataList = ArrayList<ScatterDataSet>()
 
     private var symptomList: List<SymptomCurrent>? = null
     private var drugList: List<DrugCurrent>? = null
@@ -75,6 +82,9 @@ class DailyChartFragment: Fragment() {
                               savedInstanceState: Bundle?): View {
         _binding = FragmentDailyChartBinding.inflate(inflater, container, false)
 
+        scatterChart = binding.scatterChart
+//        initScatterChart()
+
         return binding.root
     }
 
@@ -93,7 +103,6 @@ class DailyChartFragment: Fragment() {
             leftArrow.setOnClickListener {
                 updateCurrent(-1)
                 selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
-
                 callApi()
             }
         }
@@ -102,6 +111,124 @@ class DailyChartFragment: Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    private fun updateScatterChart() {
+        activity?.runOnUiThread {
+            initScatterChart()
+        }
+    }
+
+    private fun initScatterChart() {
+        initScatterChartData()
+
+        scatterChart.isHighlightPerDragEnabled = false
+        scatterChart.description.isEnabled = false
+
+        val yAxis = scatterChart.axisLeft
+        val rightAxis = scatterChart.axisRight
+
+        rightAxis.setDrawLabels(false)
+
+//        yAxis.labelCount = 6
+        yAxis.axisMaximum = 5f
+        yAxis.axisMinimum = 0f
+        yAxis.setDrawLabels(false)
+        yAxis.setDrawGridLines(false)
+        scatterChart.requestDisallowInterceptTouchEvent(true)
+
+
+        val xAxis = scatterChart.xAxis
+
+        xAxis.setDrawGridLines(false) // disable x axis grid lines
+        xAxis.setDrawLabels(true)
+        xAxis.labelCount = 6
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setAvoidFirstLastClipping(true)
+
+        xAxis.axisMaximum = 240000f
+        xAxis.axisMinimum = 0f
+
+//        val mActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
+        val xFormatter = IAxisValueFormatter{ value, _ ->
+//            Log.e("", (value.toInt() / (240000 / mActivities.size)).toString())
+//            mActivities[value.toInt() / (240000 / mActivities.size)]
+            val h = (value / 10000).toInt()
+            val m = ((value % 10000) / 100).toInt()
+            getString(R.string.time_format, h, m)
+        }
+        xAxis.valueFormatter = xFormatter
+
+        val l = scatterChart.legend
+        l.isEnabled = false
+    }
+
+    private fun initScatterChartData() {
+
+        if(!symptomList!!.first().isEmpty()){
+            val symptomsEntries: ArrayList<BarEntry> = ArrayList()
+            for (d in symptomList!!) {
+                symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+            }
+            val symptomsDataSet = ScatterDataSet(symptomsEntries as List<Entry>?, "")
+            symptomsDataSet.color = Color.rgb(147, 208, 109)
+            scatterChartDataList.add(symptomsDataSet)
+        }
+
+
+        if(!drugList!!.first().isEmpty()){
+            val drugEntries: ArrayList<BarEntry> = ArrayList()
+            for (d in drugList!!) {
+                drugEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
+            }
+            val drugDataSet = ScatterDataSet(drugEntries as List<Entry>?, "")
+            drugDataSet.color = Color.rgb(147, 208, 109)
+            scatterChartDataList.add(drugDataSet)
+        }
+
+        if(!foodList!!.first().isEmpty()){
+            val foodEntries: ArrayList<BarEntry> = ArrayList()
+            for (d in foodList!!) {
+                foodEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+            }
+            val foodDataSet = ScatterDataSet(foodEntries as List<Entry>?, "")
+            foodDataSet.color = Color.rgb(147, 208, 109)
+            Log.e("", "$foodDataSet")
+            scatterChartDataList.add(foodDataSet)
+        }
+
+        if(!sleepList!!.first().isEmpty()){
+            val sleepEntries: ArrayList<BarEntry> = ArrayList()
+            for (d in sleepList!!) {
+                sleepEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+            }
+            val sleepDataSet = ScatterDataSet(sleepEntries as List<Entry>?, "")
+            sleepDataSet.color = Color.rgb(147, 208, 109)
+            scatterChartDataList.add(sleepDataSet)
+        }
+
+        if(!eventList!!.first().isEmpty()){
+            val eventEntries: ArrayList<BarEntry> = ArrayList()
+            for (d in eventList!!) {
+                eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+            }
+            val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
+            eventDataSet.color = Color.rgb(147, 208, 109)
+            scatterChartDataList.add(eventDataSet)
+        }
+
+        if(scatterChartDataList.isNotEmpty()) {
+            val barData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
+
+            /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+            mv.chartView = lineChart
+            lineChart.marker = mv*/
+
+            barData.setDrawValues(false)
+
+            scatterChart.data = barData
+            scatterChart.invalidate()
+        }
     }
 
     private fun getSymptomsCurrentApi(): Thread {
@@ -247,15 +374,16 @@ class DailyChartFragment: Fragment() {
                     sleepList = Gson().fromJson(inputStreamReader, type)
 
                     updateSleep()
+                    updateScatterChart()
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+                    Log.e("API Connection", "Sleep API: Connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+                    Log.e("API Connection", "Sleep API: Connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+                Log.e("API Connection", "Sleep API: Service not found")
             }
         }
     }
@@ -309,12 +437,12 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+                    Log.e("API Connection", "Food API: Connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+                    Log.e("API Connection", "Food API: Connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+                Log.e("API Connection", "Food API: Service not found $e")
             }
         }
     }
@@ -401,12 +529,27 @@ class DailyChartFragment: Fragment() {
     }
 
     private fun callApi() {
-        getSymptomsCurrentApi().start()
-        getDrugCurrentApi().start()
-        getDrugCurrentApi().start()
-        getSleepCurrentApi().start()
-        getFoodCurrentApi().start()
-        getEventCurrentApi().start()
+        val threadSymptomCurrent = getSymptomsCurrentApi()
+        val threadDrugCurrent = getDrugCurrentApi()
+        val threadSleepCurrent = getSleepCurrentApi()
+        val threadFoodCurrent = getFoodCurrentApi()
+        val threadEventCurrent = getEventCurrentApi()
+
+        threadSymptomCurrent.start()
+        threadDrugCurrent.start()
+        threadSleepCurrent.start()
+        threadFoodCurrent.start()
+        threadEventCurrent.start()
+
+        try {
+            threadSymptomCurrent.join()
+            threadDrugCurrent.join()
+            threadSleepCurrent.join()
+            threadFoodCurrent.join()
+            threadEventCurrent.join()
+        } catch (_: InterruptedException) {
+
+        }
     }
 
     private fun checkNullData() {

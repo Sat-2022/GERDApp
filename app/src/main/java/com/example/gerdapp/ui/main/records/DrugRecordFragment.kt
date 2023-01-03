@@ -270,11 +270,11 @@ class DrugRecordFragment: Fragment() {
             }
 
             timeCard.startTime.setOnClickListener {
-                setTimePicker(timeCard.startDate, DrugRecord.startTime, 0).show()
+                setTimePicker(timeCard.startTime, DrugRecord.startTime, 0).show()
             }
 
             timeCard.endTime.setOnClickListener {
-                setTimePicker(timeCard.startDate, DrugRecord.endTime, 0).show()
+                setTimePicker(timeCard.startTime, DrugRecord.endTime, 0).show()
             }
         }
     }
