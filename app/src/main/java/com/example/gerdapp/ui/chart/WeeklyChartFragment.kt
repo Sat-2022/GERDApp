@@ -3,7 +3,6 @@ package com.example.gerdapp.ui.chart
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,21 +13,16 @@ import androidx.fragment.app.Fragment
 import com.example.gerdapp.R
 import com.example.gerdapp.data.*
 import com.example.gerdapp.databinding.FragmentWeeklyChartBinding
-import com.example.gerdapp.ui.calendar.CalendarFragment
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentEnd
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.currentStart
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.endCalendar
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.maxDate
 import com.example.gerdapp.ui.chart.WeeklyChartFragment.DateRange.startCalendar
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.CandleStickChart
-import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.charts.ScatterChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
-import com.github.mikephil.charting.formatter.IValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.InputStreamReader
@@ -36,23 +30,23 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
-
 class WeeklyChartFragment: Fragment() {
     private var _binding: FragmentWeeklyChartBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var lineChart: LineChart
-    private lateinit var barChart: BarChart
-    private lateinit var candleStickChart: CandleStickChart
-    private lateinit var scatterChart: ScatterChart
+    private lateinit var sleepChart: CandleStickChart
+    private lateinit var foodChart: CandleStickChart
+    private lateinit var symptomsChart: ScatterChart
+    private lateinit var drugChart: ScatterChart
+    private lateinit var eventChart: ScatterChart
 
-    private lateinit var questionnaireResult: List<Questions>
+//    private lateinit var questionnaireResult: List<Questions>
 
     private var symptomCurrent: List<SymptomCurrent>? = null
+    private var drugCurrent: List<DrugCurrent>? = null
     private var sleepCurrent: List<SleepCurrent>? = null
     private var foodCurrent: List<FoodCurrent>? = null
     private var eventCurrent: List<EventCurrent>? = null
-
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -91,12 +85,11 @@ class WeeklyChartFragment: Fragment() {
                               savedInstanceState: Bundle?): View {
         _binding = FragmentWeeklyChartBinding.inflate(inflater, container, false)
 
-        lineChart = binding.lineChart
-        barChart = binding.barChart
-        candleStickChart = binding.timeRangeChart
-        scatterChart = binding.scatterChart
-        initLineChart()
-        initBarChart()
+        sleepChart = binding.weeklySleepChart
+        foodChart = binding.weeklyFoodChart
+        symptomsChart = binding.weeklySymptomChart
+        drugChart = binding.weeklyDrugChart
+        eventChart = binding.weeklyEventChart
 
         return binding.root
     }
@@ -105,25 +98,40 @@ class WeeklyChartFragment: Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.apply {
-            selectedDateTv.text = getString(R.string.weekly_chart_date_title,
-                startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH],
-                endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH]
+            selectedDateTv.text = getString(
+                R.string.weekly_chart_date_title,
+                startCalendar[Calendar.YEAR],
+                startCalendar[Calendar.MONTH] + 1,
+                startCalendar[Calendar.DAY_OF_MONTH],
+                endCalendar[Calendar.YEAR],
+                endCalendar[Calendar.MONTH] + 1,
+                endCalendar[Calendar.DAY_OF_MONTH]
             )
 
             rightArrow.setOnClickListener {
                 updateCurrent(1)
-                selectedDateTv.text = getString(R.string.weekly_chart_date_title,
-                    startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH],
-                    endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH]
+                selectedDateTv.text = getString(
+                    R.string.weekly_chart_date_title,
+                    startCalendar[Calendar.YEAR],
+                    startCalendar[Calendar.MONTH] + 1,
+                    startCalendar[Calendar.DAY_OF_MONTH],
+                    endCalendar[Calendar.YEAR],
+                    endCalendar[Calendar.MONTH] + 1,
+                    endCalendar[Calendar.DAY_OF_MONTH]
                 )
                 callApi()
             }
 
             leftArrow.setOnClickListener {
                 updateCurrent(-1)
-                selectedDateTv.text = getString(R.string.weekly_chart_date_title,
-                    startCalendar[Calendar.YEAR], startCalendar[Calendar.MONTH]+1, startCalendar[Calendar.DAY_OF_MONTH],
-                    endCalendar[Calendar.YEAR], endCalendar[Calendar.MONTH]+1, endCalendar[Calendar.DAY_OF_MONTH]
+                selectedDateTv.text = getString(
+                    R.string.weekly_chart_date_title,
+                    startCalendar[Calendar.YEAR],
+                    startCalendar[Calendar.MONTH] + 1,
+                    startCalendar[Calendar.DAY_OF_MONTH],
+                    endCalendar[Calendar.YEAR],
+                    endCalendar[Calendar.MONTH] + 1,
+                    endCalendar[Calendar.DAY_OF_MONTH]
                 )
 
                 callApi()
@@ -131,177 +139,17 @@ class WeeklyChartFragment: Fragment() {
         }
     }
 
-    private fun initLineChart(){
-        // set data
-        setLineChartData()
+    private fun initSymptomsChart() {
+        initSymptomsChartData()
 
-        lineChart.setBackgroundColor(Color.WHITE)
-        lineChart.description.isEnabled = false
-//        chart.setTouchEnabled(false)
-//        chart.isDragEnabled = false
+        symptomsChart.isHighlightPerDragEnabled = false
+        symptomsChart.description.isEnabled = false
 
+        val yAxis = symptomsChart.axisLeft
+        val rightAxis = symptomsChart.axisRight
 
-        // add animation
-        lineChart.animateY(1400)
+        rightAxis.setDrawLabels(false)
 
-//        val l: Legend = chart.legend
-//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-//        l.orientation = Legend.LegendOrientation.HORIZONTAL
-//        l.setDrawInside(false)
-//        l.typeface = Typeface.DEFAULT //
-//        l.xEntrySpace = 7f
-//        l.yEntrySpace = 5f
-//        //l.form = Legend.LegendForm.LINE
-//        l.textColor = Color.BLACK
-        // remove legend
-        lineChart.legend.isEnabled = false
-
-        val xAxis: XAxis = lineChart.xAxis
-        xAxis.typeface = Typeface.DEFAULT
-        xAxis.textSize = 12f
-        xAxis.yOffset = 0f
-        xAxis.xOffset = 0f
-        xAxis.setDrawGridLines(false)
-//        xAxis.textColor = Color.BLACK
-//        xAxis.setDrawGridLines(true)
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.setLabelCount(5, true)
-
-        val mActivities = arrayOf("一", "二", "三", "四", "五", "六", "日")
-        val formatter = IAxisValueFormatter{ value, axis ->
-            mActivities[value.toInt() % mActivities.size]
-        }
-        xAxis.valueFormatter = formatter
-
-        val yAxis = lineChart.axisLeft
-        yAxis.axisMaximum = 5f
-        yAxis.axisMinimum = 0f
-        yAxis.setLabelCount(4, false)
-        yAxis.setDrawAxisLine(false)
-        //yAxis.setDrawLabels(false)
-        lineChart.axisRight.isEnabled = false
-    }
-
-    private fun setLineChartData() {
-        val entries1: MutableList<Entry> = ArrayList()
-        val entries2: MutableList<Entry> = ArrayList()
-        for (i in 0..6) entries1.add(Entry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
-        for (i in 0..6) entries2.add(Entry(i.toFloat(), (Math.random()*5f).toInt().toFloat()))
-
-        val data1 = LineDataSet(entries1, "Label")
-        data1.setCircleColor(Color.BLUE)
-        data1.setColor(Color.BLUE)
-//        set2.setAxisDependency(YAxis.AxisDependency.RIGHT);
-//        set2.setColor(Color.RED);
-//        set2.setCircleColor(Color.WHITE);
-//        set2.setLineWidth(2f);
-//        set2.setCircleRadius(3f);
-//        set2.setFillAlpha(65);
-//        set2.setFillColor(Color.RED);
-//        set2.setDrawCircleHole(false);
-//        set2.setHighLightColor(Color.rgb(244, 117, 117));
-
-        val data2 = LineDataSet(entries2, "Label")
-        data2.setCircleColor(Color.RED)
-        data2.setColor(Color.RED)
-
-        val dataset = ArrayList<ILineDataSet>()
-        dataset.add(data1)
-        dataset.add(data2)
-
-        val data = LineData(dataset)
-
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
-
-        data.setDrawValues(true)
-
-        lineChart.data = data
-        lineChart.invalidate()
-    }
-
-    private fun initBarChart() {
-        // set data
-        // initBarChartData()
-
-        setRandomResult()
-
-        barChart.setBackgroundColor(Color.WHITE)
-        barChart.description.isEnabled = false
-//        chart.setTouchEnabled(false)
-//        chart.isDragEnabled = false
-
-
-        // add animation
-        barChart.animateY(1400)
-
-//        val l: Legend = chart.legend
-//        l.verticalAlignment = Legend.LegendVerticalAlignment.TOP
-//        l.horizontalAlignment = Legend.LegendHorizontalAlignment.CENTER
-//        l.orientation = Legend.LegendOrientation.HORIZONTAL
-//        l.setDrawInside(false)
-//        l.typeface = Typeface.DEFAULT //
-//        l.xEntrySpace = 7f
-//        l.yEntrySpace = 5f
-//        //l.form = Legend.LegendForm.LINE
-//        l.textColor = Color.BLACK
-        // remove legend
-        barChart.legend.isEnabled = false
-
-        val xAxis: XAxis = barChart.xAxis
-        xAxis.typeface = Typeface.DEFAULT
-        xAxis.textSize = 12f
-        xAxis.yOffset = 0f
-        xAxis.xOffset = 0f
-        xAxis.setDrawGridLines(false)
-//        xAxis.textColor = Color.BLACK
-//        xAxis.setDrawGridLines(true)
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.setLabelCount(5, true)
-
-        val mActivities = arrayOf(
-            getString(R.string.cough),
-            getString(R.string.heart_burn),
-            getString(R.string.acid_reflux),
-            getString(R.string.chest_pain),
-            getString(R.string.sour_mouth),
-            getString(R.string.hoarseness),
-            getString(R.string.appetite_loss),
-            getString(R.string.stomach_gas),
-            getString(R.string.cough_night),
-            getString(R.string.acid_reflux_night)
-        )
-        val formatter = IAxisValueFormatter { value, axis ->
-            mActivities[value.toInt() % mActivities.size]
-        }
-        xAxis.valueFormatter = formatter
-
-        val yAxis = barChart.axisLeft
-        yAxis.axisMaximum = 5f
-        yAxis.axisMinimum = 0f
-        yAxis.setLabelCount(4, false)
-        yAxis.setDrawAxisLine(false)
-        //yAxis.setDrawLabels(false)
-        barChart.axisRight.isEnabled = false
-    }
-
-    private fun initCandleStickChart() {
-        // set data
-        // initBarChartData()
-//
-//        randomResult()
-
-        if(!sleepCurrent.isNullOrEmpty()) { initCandleStickChartData() }
-
-        candleStickChart.isHighlightPerDragEnabled = false
-        candleStickChart.description.isEnabled = false
-
-        val yAxis = candleStickChart.axisLeft
-        val rightAxis = candleStickChart.axisRight
-
-//        yAxis.labelCount = 6
         yAxis.axisMaximum = 240000f
         yAxis.axisMinimum = 0f
         yAxis.setDrawLabels(false)
@@ -310,10 +158,9 @@ class WeeklyChartFragment: Fragment() {
         rightAxis.axisMinimum = 0f
         rightAxis.labelCount = 6
         rightAxis.setDrawLabels(true)
-        candleStickChart.requestDisallowInterceptTouchEvent(true)
+        symptomsChart.requestDisallowInterceptTouchEvent(true)
 
-//        val rightActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
-        val rightFormatter = IAxisValueFormatter{ value, axis ->
+        val rightFormatter = IAxisValueFormatter { value, _ ->
             val h = (value / 10000).toInt()
             val m = ((value % 10000) / 100).toInt()
             getString(R.string.time_format, h, m)
@@ -321,187 +168,48 @@ class WeeklyChartFragment: Fragment() {
 
         rightAxis.valueFormatter = rightFormatter
 
-//        candleStickChart.animateY(1400)
-
-
-        val xAxis = candleStickChart.xAxis
+        val xAxis = symptomsChart.xAxis
 
         xAxis.setDrawGridLines(false) // disable x axis grid lines
         xAxis.setDrawLabels(true)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.granularity = 1f
-//        xAxis.isGranularityEnabled = true
         xAxis.setAvoidFirstLastClipping(true)
 
         val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
-        val xFormatter = IAxisValueFormatter{ value, axis ->
+        val xFormatter = IAxisValueFormatter{ value, _ ->
             mActivities[value.toInt() % mActivities.size]
         }
         xAxis.valueFormatter = xFormatter
 
-        val l = candleStickChart.legend
+        val l = symptomsChart.legend
         l.isEnabled = false
     }
 
-    private fun initCandleStickChartData() {
-        val entries: ArrayList<CandleEntry> = ArrayList()
+    private fun initSymptomsChartData() {
+        val entries: ArrayList<BarEntry> = ArrayList()
 
         val tempCalendar = startCalendar.clone() as Calendar
-        var tempDayCount = 0
+        var dayOfWeek = 1
+
         if(!sleepCurrent!!.first().isEmpty()) {
             for(sleepData in sleepCurrent!!) {
-                if(!sleepData.isSameDate(tempCalendar) && sleepData.isSameDate(tempCalendar, 1)) continue
-                while (!sleepData.isSameDate(tempCalendar) && tempDayCount < maxDate) {
-                    entries.add(CandleEntry(tempDayCount.toFloat(), -1f, -1f, -1f, -1f))
+                while (!sleepData.isSameDate(tempCalendar)) {
+                    entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
                     tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
-                    tempDayCount += 1
+                    dayOfWeek += 1
                 }
 
                 val startTimeRecord = TimeRecord().stringToTimeRecord(sleepData.StartDate)
-                val endTimeRecord = TimeRecord().stringToTimeRecord(sleepData.EndDate)
-
-                if(sleepData.isSameDate(tempCalendar, 1)) { // Crossing date
-                    entries.add(
-                        CandleEntry(
-                            tempDayCount.toFloat(),
-                            startTimeRecord.timeRecordToFloat(), 240000f,
-                            startTimeRecord.timeRecordToFloat(), 240000f
-                        )
-                    )
-                    if(tempDayCount < maxDate) {
-                        entries.add(
-                            CandleEntry(
-                                tempDayCount.toFloat() + 1,
-                                0f, endTimeRecord.timeRecordToFloat(),
-                                0f, endTimeRecord.timeRecordToFloat()
-                            )
-                        )
-                    }
-
-                } else {
-                    entries.add(
-                        CandleEntry(
-                            tempDayCount.toFloat(),
-                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
-                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
-                        )
-                    )
-                }
+                entries.add(BarEntry(dayOfWeek.toFloat() - 1, startTimeRecord.timeRecordToFloat()))
             }
+        } else {
+            entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
+            dayOfWeek += 1
         }
 
-        while (tempDayCount < maxDate) {
-            tempDayCount += 1
-            entries.add(CandleEntry(tempDayCount.toFloat() - 1, -1f, -1f, -1f, -1f))
-        }
-
-        val candleDataSet = CandleDataSet(entries, "")
-        candleDataSet.color = Color.rgb(147, 208, 109)
-        candleDataSet.shadowColor = Color.LTGRAY
-        candleDataSet.shadowWidth = 0.8f
-        candleDataSet.decreasingColor = Color.rgb(147, 208, 109)
-        candleDataSet.decreasingPaintStyle = Paint.Style.FILL
-        candleDataSet.increasingColor = Color.rgb(147, 208, 109)
-        candleDataSet.increasingPaintStyle = Paint.Style.FILL
-        candleDataSet.neutralColor = Color.TRANSPARENT
-
-        val candleData = CandleData(candleDataSet)
-
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
-
-        candleData.setDrawValues(false)
-
-        candleStickChart.data = candleData
-        candleStickChart.invalidate()
-    }
-
-    private fun initScatterChart() {
-        // set data
-        // initBarChartData()
-//
-//        randomResult()
-
-        if(!foodCurrent.isNullOrEmpty()) { initScatterChartData() }
-
-        scatterChart.isHighlightPerDragEnabled = false
-        scatterChart.description.isEnabled = false
-
-        val yAxis = scatterChart.axisLeft
-        val rightAxis = scatterChart.axisRight
-
-//        yAxis.labelCount = 6
-        yAxis.axisMaximum = 240000f
-        yAxis.axisMinimum = 0f
-        yAxis.setDrawLabels(false)
-        yAxis.setDrawGridLines(false)
-        rightAxis.axisMaximum = 240000f
-        rightAxis.axisMinimum = 0f
-        rightAxis.labelCount = 6
-        rightAxis.setDrawLabels(true)
-        scatterChart.requestDisallowInterceptTouchEvent(true)
-
-//        val rightActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
-//        val rightFormatter = IAxisValueFormatter{ value, axis ->
-//            rightActivities[value.toInt() % rightActivities.size]
-//        }
-//
-//        rightAxis.valueFormatter = rightFormatter
-
-//        candleStickChart.animateY(1400)
-
-
-        val xAxis = scatterChart.xAxis
-
-        xAxis.setDrawGridLines(false) // disable x axis grid lines
-        xAxis.setDrawLabels(true)
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//        xAxis.granularity = 1f
-//        xAxis.isGranularityEnabled = true
-        xAxis.setAvoidFirstLastClipping(true)
-
-        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
-        val xFormatter = IAxisValueFormatter{ value, axis ->
-            mActivities[value.toInt() % mActivities.size]
-        }
-        xAxis.valueFormatter = xFormatter
-
-        val l = scatterChart.legend
-        l.isEnabled = false
-    }
-
-    private fun initScatterChartData() {
-        val entries: ArrayList<BarEntry> = ArrayList()
-        val tempCalendar = startCalendar.clone() as Calendar
-        var tempDayCount = 0
-        if(!foodCurrent!!.first().isEmpty()) {
-            for(foodData in foodCurrent!!) {
-                if(!foodData.isSameDate(tempCalendar) && foodData.isSameDate(tempCalendar, 1)) continue
-                while (!foodData.isSameDate(tempCalendar) && tempDayCount < maxDate) {
-                    entries.add(BarEntry(tempDayCount.toFloat(), -1f))
-                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
-                    tempDayCount += 1
-                }
-
-                val startTimeRecord = TimeRecord().stringToTimeRecord(foodData.StartDate)
-                val endTimeRecord = TimeRecord().stringToTimeRecord(foodData.EndDate)
-
-                if(foodData.isSameDate(tempCalendar, 1)) { // Crossing date
-                    entries.add(BarEntry(tempDayCount.toFloat(), startTimeRecord.timeRecordToFloat()))
-                    if(tempDayCount < maxDate) {
-                        entries.add(BarEntry(tempDayCount.toFloat() + 1, 0f))
-                    }
-
-                } else {
-                    entries.add(BarEntry(tempDayCount.toFloat(), startTimeRecord.timeRecordToFloat()))
-                }
-            }
-        }
-
-        while (tempDayCount < maxDate) {
-            tempDayCount += 1
-            entries.add(BarEntry(tempDayCount.toFloat() - 1, -1f))
+        while (dayOfWeek < maxDate) {
+            dayOfWeek += 1
+            entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
         }
 
         val barDataSet = ScatterDataSet(entries as List<Entry>?, "")
@@ -515,40 +223,450 @@ class WeeklyChartFragment: Fragment() {
 
         barData.setDrawValues(false)
 
-        scatterChart.data = barData
-        scatterChart.invalidate()
+        symptomsChart.data = barData
+        symptomsChart.invalidate()
     }
 
-    private fun addBarEntry(entries: ArrayList<BarEntry>, index: Int, data: Int?) {
-        if (data == null) entries.add(BarEntry(index.toFloat(), 0f))
-        else entries.add(BarEntry(index.toFloat(), data.toFloat()))
-    }
+    private fun initDrugChart() {
+        initDrugChartData()
 
-    private fun setRandomResult() {
-        val entries: ArrayList<BarEntry> = ArrayList()
-        for(i in 0 until 10) {
-            addBarEntry(entries, i, (0..5).random())
+        drugChart.isHighlightPerDragEnabled = false
+        drugChart.description.isEnabled = false
+
+        val yAxis = drugChart.axisLeft
+        val rightAxis = drugChart.axisRight
+
+        rightAxis.setDrawLabels(false)
+
+        yAxis.axisMaximum = 240000f
+        yAxis.axisMinimum = 0f
+        yAxis.setDrawLabels(false)
+        yAxis.setDrawGridLines(false)
+        rightAxis.axisMaximum = 240000f
+        rightAxis.axisMinimum = 0f
+        rightAxis.labelCount = 6
+        rightAxis.setDrawLabels(true)
+        drugChart.requestDisallowInterceptTouchEvent(true)
+
+        val rightFormatter = IAxisValueFormatter { value, _ ->
+            val h = (value / 10000).toInt()
+            val m = ((value % 10000) / 100).toInt()
+            getString(R.string.time_format, h, m)
         }
 
-        val barDataSet = BarDataSet(entries, "")
-        barDataSet.color = Color.BLUE
+        rightAxis.valueFormatter = rightFormatter
 
-        val barData = BarData(barDataSet)
+        val xAxis = drugChart.xAxis
+
+        xAxis.setDrawGridLines(false) // disable x axis grid lines
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setAvoidFirstLastClipping(true)
+
+        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+        val xFormatter = IAxisValueFormatter{ value, _ ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = xFormatter
+
+        val l = drugChart.legend
+        l.isEnabled = false
+    }
+
+    private fun initDrugChartData() {
+        val entries: ArrayList<BarEntry> = ArrayList()
+
+        val tempCalendar = startCalendar.clone() as Calendar
+        var dayOfWeek = 1
+
+        if(!drugCurrent!!.first().isEmpty()) {
+            for(drugData in drugCurrent!!) {
+                while (!drugData.isSameDate(tempCalendar)) {
+                    entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
+                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    dayOfWeek += 1
+                }
+
+                val startTimeRecord = TimeRecord().stringToTimeRecord(drugData.MedicationTime)
+                entries.add(BarEntry(dayOfWeek.toFloat() - 1, startTimeRecord.timeRecordToFloat()))
+            }
+        } else {
+            entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
+            dayOfWeek += 1
+        }
+
+        while (dayOfWeek < maxDate) {
+            dayOfWeek += 1
+            entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
+        }
+
+        val barDataSet = ScatterDataSet(entries as List<Entry>?, "")
+        barDataSet.color = Color.rgb(241, 43, 43)
+
+        val barData = ScatterData(barDataSet)
 
         /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
         mv.chartView = lineChart
         lineChart.marker = mv*/
 
-        barDataSet.setDrawValues(false)
+        barData.setDrawValues(false)
 
-        barChart.data = barData
-        barChart.invalidate()
+        drugChart.data = barData
+        drugChart.invalidate()
     }
 
-    private fun updateScatterChart() {
+    private fun initEventChart() {
+        initEventChartData()
+
+        eventChart.isHighlightPerDragEnabled = false
+        eventChart.description.isEnabled = false
+
+        val yAxis = eventChart.axisLeft
+        val rightAxis = eventChart.axisRight
+
+        rightAxis.setDrawLabels(false)
+
+        yAxis.axisMaximum = 240000f
+        yAxis.axisMinimum = 0f
+        yAxis.setDrawLabels(false)
+        yAxis.setDrawGridLines(false)
+        rightAxis.axisMaximum = 240000f
+        rightAxis.axisMinimum = 0f
+        rightAxis.labelCount = 6
+        rightAxis.setDrawLabels(true)
+        eventChart.requestDisallowInterceptTouchEvent(true)
+
+        val rightFormatter = IAxisValueFormatter { value, _ ->
+            val h = (value / 10000).toInt()
+            val m = ((value % 10000) / 100).toInt()
+            getString(R.string.time_format, h, m)
+        }
+
+        rightAxis.valueFormatter = rightFormatter
+
+        val xAxis = eventChart.xAxis
+
+        xAxis.setDrawGridLines(false) // disable x axis grid lines
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setAvoidFirstLastClipping(true)
+
+        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+        val xFormatter = IAxisValueFormatter{ value, _ ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = xFormatter
+
+        val l = eventChart.legend
+        l.isEnabled = false
+    }
+
+    private fun initEventChartData() {
+        val entries: ArrayList<BarEntry> = ArrayList()
+
+        val tempCalendar = startCalendar.clone() as Calendar
+        var dayOfWeek = 1
+
+        if(!eventCurrent!!.first().isEmpty()) {
+            for(eventData in eventCurrent!!) {
+                while (!eventData.isSameDate(tempCalendar)) {
+                    entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
+                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    dayOfWeek += 1
+                }
+
+                val startTimeRecord = TimeRecord().stringToTimeRecord(eventData.StartDate)
+                entries.add(BarEntry(dayOfWeek.toFloat() - 1, startTimeRecord.timeRecordToFloat()))
+            }
+        } else {
+            entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
+            dayOfWeek += 1
+        }
+
+        while (dayOfWeek < maxDate) {
+            dayOfWeek += 1
+            entries.add(BarEntry(dayOfWeek.toFloat() - 1, -5f))
+        }
+
+        val barDataSet = ScatterDataSet(entries as List<Entry>?, "")
+        barDataSet.color = Color.rgb(245, 166, 29)
+
+        val barData = ScatterData(barDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        barData.setDrawValues(false)
+
+        eventChart.data = barData
+        eventChart.invalidate()
+    }
+
+    private fun initSleepChart() {
+        if(!sleepCurrent.isNullOrEmpty()) { initSleepChartData() }
+
+        sleepChart.isHighlightPerDragEnabled = false
+        sleepChart.description.isEnabled = false
+
+        val yAxis = sleepChart.axisLeft
+        val rightAxis = sleepChart.axisRight
+
+//        yAxis.labelCount = 6
+        yAxis.axisMaximum = 240000f
+        yAxis.axisMinimum = 0f
+        yAxis.setDrawLabels(false)
+        yAxis.setDrawGridLines(false)
+        rightAxis.axisMaximum = 240000f
+        rightAxis.axisMinimum = 0f
+        rightAxis.labelCount = 6
+        rightAxis.setDrawLabels(true)
+        sleepChart.requestDisallowInterceptTouchEvent(true)
+
+        val rightFormatter = IAxisValueFormatter{ value, _ ->
+            val h = (value / 10000).toInt()
+            val m = ((value % 10000) / 100).toInt()
+            getString(R.string.time_format, h, m)
+        }
+
+        rightAxis.valueFormatter = rightFormatter
+
+        val xAxis = sleepChart.xAxis
+
+        xAxis.setDrawGridLines(false) // disable x axis grid lines
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+
+        xAxis.setAvoidFirstLastClipping(true)
+
+        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+        val xFormatter = IAxisValueFormatter{ value, _ ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = xFormatter
+
+        val l = sleepChart.legend
+        l.isEnabled = false
+    }
+
+    private fun initSleepChartData() {
+        val entries: ArrayList<CandleEntry> = ArrayList()
+
+        val tempCalendar = startCalendar.clone() as Calendar
+        var dayOfWeek = 1
+
+        if(!sleepCurrent!!.first().isEmpty()) {
+            for(sleepData in sleepCurrent!!) {
+                while (!sleepData.isSameDate(tempCalendar)) {
+                    entries.add(CandleEntry(dayOfWeek.toFloat() - 1, -1f, -1f, -1f, -1f))
+                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    dayOfWeek += 1
+                }
+
+                val startTimeRecord = TimeRecord().stringToTimeRecord(sleepData.StartDate)
+                val endTimeRecord = TimeRecord().stringToTimeRecord(sleepData.EndDate)
+
+//                Log.e("", "$dayOfWeek")
+
+                if(sleepData.isSameDate(tempCalendar, 1)) { // Crossing date
+                    Log.e("", "1_$dayOfWeek: $sleepData")
+                    entries.add(
+                        CandleEntry(
+                            dayOfWeek.toFloat() - 1,
+                            startTimeRecord.timeRecordToFloat(), 240000f,
+                            startTimeRecord.timeRecordToFloat(), 240000f
+                        )
+                    )
+                    if(dayOfWeek < maxDate) {
+                        entries.add(
+                            CandleEntry(
+                                dayOfWeek.toFloat(),
+                                0f, endTimeRecord.timeRecordToFloat(),
+                                0f, endTimeRecord.timeRecordToFloat()
+                            )
+                        )
+                    }
+                } else {
+                    Log.e("", "2_$dayOfWeek: $sleepData")
+                    entries.add(
+                        CandleEntry(
+                            dayOfWeek.toFloat() - 1,
+                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
+                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
+                        )
+                    )
+                }
+            }
+        } else {
+            entries.add(CandleEntry(dayOfWeek.toFloat() - 1, -1f, -1f, -1f, -1f))
+            dayOfWeek += 1
+        }
+
+        while (dayOfWeek < maxDate) {
+            dayOfWeek += 1
+            entries.add(CandleEntry(dayOfWeek.toFloat() - 1, -1f, -1f, -1f, -1f))
+        }
+
+        val candleDataSet = CandleDataSet(entries, "")
+        candleDataSet.color = Color.rgb(8, 66, 160)
+        candleDataSet.shadowColor = Color.LTGRAY
+        candleDataSet.shadowWidth = 0.8f
+        candleDataSet.decreasingColor = Color.rgb(8, 66, 160)
+        candleDataSet.decreasingPaintStyle = Paint.Style.FILL
+        candleDataSet.increasingColor = Color.rgb(8, 66, 160)
+        candleDataSet.increasingPaintStyle = Paint.Style.FILL
+        candleDataSet.neutralColor = Color.TRANSPARENT
+
+        val candleData = CandleData(candleDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        candleData.setDrawValues(false)
+
+        sleepChart.data = candleData
+        sleepChart.invalidate()
+    }
+
+    private fun initFoodChart() {
+        if(!foodCurrent.isNullOrEmpty()) { initFoodChartData() }
+
+        foodChart.isHighlightPerDragEnabled = false
+        foodChart.description.isEnabled = false
+
+        val yAxis = foodChart.axisLeft
+        val rightAxis = foodChart.axisRight
+
+//        yAxis.labelCount = 6
+        yAxis.axisMaximum = 240000f
+        yAxis.axisMinimum = 0f
+        yAxis.setDrawLabels(false)
+        yAxis.setDrawGridLines(false)
+        rightAxis.axisMaximum = 240000f
+        rightAxis.axisMinimum = 0f
+        rightAxis.labelCount = 6
+        rightAxis.setDrawLabels(true)
+        foodChart.requestDisallowInterceptTouchEvent(true)
+
+        val rightFormatter = IAxisValueFormatter{ value, _ ->
+            val h = (value / 10000).toInt()
+            val m = ((value % 10000) / 100).toInt()
+            getString(R.string.time_format, h, m)
+        }
+
+        rightAxis.valueFormatter = rightFormatter
+
+        val xAxis = foodChart.xAxis
+
+        xAxis.setDrawGridLines(false) // disable x axis grid lines
+        xAxis.setDrawLabels(true)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+
+        xAxis.setAvoidFirstLastClipping(true)
+
+        val mActivities = arrayOf("日", "一", "二", "三", "四", "五", "六")
+        val xFormatter = IAxisValueFormatter{ value, _ ->
+            mActivities[value.toInt() % mActivities.size]
+        }
+        xAxis.valueFormatter = xFormatter
+
+        val l = foodChart.legend
+        l.isEnabled = false
+    }
+
+    private fun initFoodChartData() {
+        val entries: ArrayList<CandleEntry> = ArrayList()
+
+        val tempCalendar = startCalendar.clone() as Calendar
+        var dayOfWeek = 1
+
+        if(!foodCurrent!!.first().isEmpty()) {
+            for(foodData in foodCurrent!!) {
+                while (!foodData.isSameDate(tempCalendar)) {
+                    entries.add(CandleEntry(dayOfWeek.toFloat() - 1, -1f, -1f, -1f, -1f))
+                    tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+                    dayOfWeek += 1
+                }
+
+                val startTimeRecord = TimeRecord().stringToTimeRecord(foodData.StartDate)
+                val endTimeRecord = TimeRecord().stringToTimeRecord(foodData.EndDate)
+
+//                Log.e("", "$dayOfWeek")
+
+                if(foodData.isSameDate(tempCalendar, 1)) { // Crossing date
+//                    Log.e("", "1_$dayOfWeek: $foodData")
+                    entries.add(
+                        CandleEntry(
+                            dayOfWeek.toFloat() - 1,
+                            startTimeRecord.timeRecordToFloat(), 240000f,
+                            startTimeRecord.timeRecordToFloat(), 240000f
+                        )
+                    )
+                    if(dayOfWeek < maxDate) {
+                        entries.add(
+                            CandleEntry(
+                                dayOfWeek.toFloat(),
+                                0f, endTimeRecord.timeRecordToFloat(),
+                                0f, endTimeRecord.timeRecordToFloat()
+                            )
+                        )
+                    }
+                } else {
+//                    Log.e("", "2_$dayOfWeek: $foodData")
+                    entries.add(
+                        CandleEntry(
+                            dayOfWeek.toFloat() - 1,
+                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat(),
+                            startTimeRecord.timeRecordToFloat(), endTimeRecord.timeRecordToFloat()
+                        )
+                    )
+                }
+            }
+        } else {
+            entries.add(CandleEntry(dayOfWeek.toFloat() - 1, -1f, -1f, -1f, -1f))
+            dayOfWeek += 1
+        }
+
+        while (dayOfWeek < maxDate) {
+            dayOfWeek += 1
+            entries.add(CandleEntry(dayOfWeek.toFloat() - 1, -1f, -1f, -1f, -1f))
+        }
+
+        val candleDataSet = CandleDataSet(entries, "")
+        candleDataSet.color = Color.rgb(9, 173, 234)
+        candleDataSet.shadowColor = Color.LTGRAY
+        candleDataSet.shadowWidth = 0.8f
+        candleDataSet.decreasingColor = Color.rgb(9, 173, 234)
+        candleDataSet.decreasingPaintStyle = Paint.Style.FILL
+        candleDataSet.increasingColor = Color.rgb(9, 173, 234)
+        candleDataSet.increasingPaintStyle = Paint.Style.FILL
+        candleDataSet.neutralColor = Color.TRANSPARENT
+
+        val candleData = CandleData(candleDataSet)
+
+        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
+        mv.chartView = lineChart
+        lineChart.marker = mv*/
+
+        candleData.setDrawValues(false)
+
+        foodChart.data = candleData
+        foodChart.invalidate()
+    }
+
+    private fun updateSymptomsChart() {
         activity?.runOnUiThread {
             binding.apply {
-                initScatterChart()
+                initSymptomsChart()
+            }
+        }
+    }
+
+    private fun updateDrugChart() {
+        activity?.runOnUiThread {
+            binding.apply {
+                initDrugChart()
             }
         }
     }
@@ -556,15 +674,110 @@ class WeeklyChartFragment: Fragment() {
     private fun updateSleepChart() {
         activity?.runOnUiThread {
             binding.apply {
-                initCandleStickChart()
+                initSleepChart()
             }
         }
     }
 
-    private fun updateQuestionnaireChart() {
+    private fun updateFoodChart() {
         activity?.runOnUiThread {
             binding.apply {
-                initLineChart()
+                initFoodChart()
+            }
+        }
+    }
+
+    private fun updateEventChart() {
+        activity?.runOnUiThread {
+            binding.apply {
+                initEventChart()
+            }
+        }
+    }
+
+    private fun getSymptomCurrentApi(): Thread {
+        return Thread {
+            try {
+                val url = URL(getString(R.string.get_symptoms_record_url, getString(R.string.server_url),
+                    User.caseNumber, currentStart, currentEnd, "ASC"))
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<SymptomCurrent>>() {}.type
+                    symptomCurrent = Gson().fromJson(inputStreamReader, type)
+
+                    updateSymptomsChart()
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Symptoms API connection success")
+//                    Log.e("API Connection", foodCurrent.toString())
+                } else {
+                    Log.e("API Connection", "Symptom API connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Symptom API not found")
+            }
+        }
+    }
+
+    private fun getDrugCurrentApi(): Thread {
+        return Thread {
+            try {
+                val url = URL(getString(R.string.get_drug_record_url, getString(R.string.server_url),
+                    User.caseNumber, currentStart, currentEnd, "ASC"))
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<DrugCurrent>>() {}.type
+                    drugCurrent = Gson().fromJson(inputStreamReader, type)
+
+                    updateDrugChart()
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Drug API connection success")
+//                    Log.e("API Connection", foodCurrent.toString())
+                } else {
+                    Log.e("API Connection", "Drug API connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Drug API not found")
+            }
+        }
+    }
+
+    private fun getEventCurrentApi(): Thread {
+        return Thread {
+            try {
+                val url = URL(getString(R.string.get_event_record_url, getString(R.string.server_url),
+                    User.caseNumber, currentStart, currentEnd, "ASC"))
+                val connection = url.openConnection() as HttpURLConnection
+
+                if (connection.responseCode == 200) {
+                    val inputSystem = connection.inputStream
+                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
+                    val type: java.lang.reflect.Type? =
+                        object : TypeToken<List<EventCurrent>>() {}.type
+                    eventCurrent = Gson().fromJson(inputStreamReader, type)
+
+                    updateEventChart()
+
+                    inputStreamReader.close()
+                    inputSystem.close()
+                    Log.e("API Connection", "Event API connection success")
+//                    Log.e("API Connection", foodCurrent.toString())
+                } else {
+                    Log.e("API Connection", "Event API connection failed")
+                }
+            } catch (e: Exception) {
+                Log.e("API Connection", "Event API not found")
             }
         }
     }
@@ -587,13 +800,13 @@ class WeeklyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
-                    Log.e("API Connection", sleepCurrent.toString())
+                    Log.e("API Connection", "Sleep API connection success")
+//                    Log.e("API Connection", sleepCurrent.toString())
                 } else {
-                    Log.e("API Connection", "Connection failed")
+                    Log.e("API Connection", "Sleep API connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+                Log.e("API Connection", "Sleep API not found")
             }
         }
     }
@@ -612,72 +825,43 @@ class WeeklyChartFragment: Fragment() {
                         object : TypeToken<List<FoodCurrent>>() {}.type
                     foodCurrent = Gson().fromJson(inputStreamReader, type)
 
-//                    updateFoChart()
-                    updateScatterChart()
+                    updateFoodChart()
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
-                    Log.e("API Connection", foodCurrent.toString())
+                    Log.e("API Connection", "Food API connection success")
+//                    Log.e("API Connection", foodCurrent.toString())
                 } else {
-                    Log.e("API Connection", "Connection failed")
+                    Log.e("API Connection", "Food API connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
-            }
-        }
-    }
-
-    private fun getQuestionnaireResultApi(): Thread {
-        return Thread {
-            try {
-                val url = URL(getString(R.string.get_record_url, getString(R.string.server_url), CalendarFragment.User.caseNumber))
-                val connection = url.openConnection() as HttpURLConnection
-
-                if (connection.responseCode == 200) {
-                    val inputSystem = connection.inputStream
-                    val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
-                    val type: java.lang.reflect.Type? = object : TypeToken<List<Questions>>() {}.type
-                    questionnaireResult = Gson().fromJson(inputStreamReader, type)
-
-                    updateQuestionnaireChart()
-
-                    inputStreamReader.close()
-                    inputSystem.close()
-
-                    Log.e("API Connection", "Connection success")
-                } else {
-                    Log.e("API Connection", "Connection failed")
-                }
-            } catch(e: Exception) {
-                Log.e("API Connection", "Service not found")
+                Log.e("API Connection", "Food API not found")
             }
         }
     }
 
     private fun callApi() {
 //        val threadNotification = getNotificationApi()
-//        val threadSymptomCurrent = getSymptomCurrentApi()
-//        val threadDrugCurrent = getDrugCurrentApi()
+        val threadSymptomCurrent = getSymptomCurrentApi()
+        val threadDrugCurrent = getDrugCurrentApi()
         val threadSleepCurrent = getSleepCurrentApi()
         val threadFoodCurrent = getFoodCurrentApi()
-//        val threadEventCurrent = getEventCurrentApi()
+        val threadEventCurrent = getEventCurrentApi()
 
 //        threadNotification.start()
-//        threadSymptomCurrent.start()
-//        threadDrugCurrent.start()
+        threadSymptomCurrent.start()
+        threadDrugCurrent.start()
         threadSleepCurrent.start()
         threadFoodCurrent.start()
-//        threadEventCurrent.start()
+        threadEventCurrent.start()
 
         try {
 //            threadNotification.join()
-//            threadSymptomCurrent.join()
-//            threadDrugCurrent.join()
+            threadSymptomCurrent.join()
+            threadDrugCurrent.join()
             threadSleepCurrent.join()
             threadFoodCurrent.join()
-//            threadEventCurrent.join()
-//            refreshComplete = true
+            threadEventCurrent.join()
         } catch (_: InterruptedException) {
 
         }

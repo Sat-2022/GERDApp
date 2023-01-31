@@ -3,7 +3,6 @@ package com.example.gerdapp.ui.chart
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.calendar
 import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.current
 import com.example.gerdapp.ui.chart.adapter.*
 import com.github.mikephil.charting.charts.ScatterChart
+import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
@@ -37,13 +37,13 @@ class DailyChartFragment: Fragment() {
 
     private lateinit var scatterChart: ScatterChart
 
-    private var scatterChartDataList = ArrayList<ScatterDataSet>()
-
     private var symptomList: List<SymptomCurrent>? = null
     private var drugList: List<DrugCurrent>? = null
     private var sleepList: List<SleepCurrent>? = null
     private var foodList: List<FoodCurrent>? = null
     private var eventList: List<EventCurrent>? = null
+
+    private var setDone = false
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -93,17 +93,27 @@ class DailyChartFragment: Fragment() {
 
         binding.apply {
             selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+//            progressBar.visibility = View.VISIBLE
+//            chartLayout.visibility = View.GONE
 
             rightArrow.setOnClickListener {
+//                progressBar.visibility = View.VISIBLE
+//                chartLayout.visibility = View.GONE
                 updateCurrent(1)
                 selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
                 callApi()
+//                progressBar.visibility = View.GONE
+//                chartLayout.visibility = View.VISIBLE
             }
 
             leftArrow.setOnClickListener {
+//                progressBar.visibility = View.VISIBLE
+//                chartLayout.visibility = View.GONE
                 updateCurrent(-1)
                 selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
                 callApi()
+//                progressBar.visibility = View.GONE
+//                chartLayout.visibility = View.VISIBLE
             }
         }
     }
@@ -130,7 +140,6 @@ class DailyChartFragment: Fragment() {
 
         rightAxis.setDrawLabels(false)
 
-//        yAxis.labelCount = 6
         yAxis.axisMaximum = 5f
         yAxis.axisMinimum = 0f
         yAxis.setDrawLabels(false)
@@ -149,10 +158,7 @@ class DailyChartFragment: Fragment() {
         xAxis.axisMaximum = 240000f
         xAxis.axisMinimum = 0f
 
-//        val mActivities = arrayOf("00:00", "06:00", "12:00", "18:00", "24:00")
         val xFormatter = IAxisValueFormatter{ value, _ ->
-//            Log.e("", (value.toInt() / (240000 / mActivities.size)).toString())
-//            mActivities[value.toInt() / (240000 / mActivities.size)]
             val h = (value / 10000).toInt()
             val m = ((value % 10000) / 100).toInt()
             getString(R.string.time_format, h, m)
@@ -164,11 +170,12 @@ class DailyChartFragment: Fragment() {
     }
 
     private fun initScatterChartData() {
+        val scatterChartDataList = ArrayList<ScatterDataSet>()
 
         if(!symptomList!!.first().isEmpty()){
             val symptomsEntries: ArrayList<BarEntry> = ArrayList()
             for (d in symptomList!!) {
-                symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+                symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 3f))
             }
             val symptomsDataSet = ScatterDataSet(symptomsEntries as List<Entry>?, "")
             symptomsDataSet.color = Color.rgb(147, 208, 109)
@@ -182,28 +189,44 @@ class DailyChartFragment: Fragment() {
                 drugEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
             }
             val drugDataSet = ScatterDataSet(drugEntries as List<Entry>?, "")
-            drugDataSet.color = Color.rgb(147, 208, 109)
+            drugDataSet.color = Color.rgb(241, 43, 43)
             scatterChartDataList.add(drugDataSet)
         }
 
         if(!foodList!!.first().isEmpty()){
             val foodEntries: ArrayList<BarEntry> = ArrayList()
             for (d in foodList!!) {
-                foodEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+                if(d.isSameDate(calendar, 1)) {
+                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                    val end = 240000
+                    for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
+                } else {
+                    val start =
+                        TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                    for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 2f))
+                }
             }
             val foodDataSet = ScatterDataSet(foodEntries as List<Entry>?, "")
-            foodDataSet.color = Color.rgb(147, 208, 109)
-            Log.e("", "$foodDataSet")
+            foodDataSet.color = Color.rgb(9, 173, 234)
             scatterChartDataList.add(foodDataSet)
         }
 
         if(!sleepList!!.first().isEmpty()){
             val sleepEntries: ArrayList<BarEntry> = ArrayList()
             for (d in sleepList!!) {
-                sleepEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+                if(d.isSameDate(calendar, 1)) {
+                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                    val end = 240000
+                    for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+                } else {
+                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                    for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+                }
             }
             val sleepDataSet = ScatterDataSet(sleepEntries as List<Entry>?, "")
-            sleepDataSet.color = Color.rgb(147, 208, 109)
+            sleepDataSet.color = Color.rgb(8, 66, 160)
             scatterChartDataList.add(sleepDataSet)
         }
 
@@ -213,7 +236,7 @@ class DailyChartFragment: Fragment() {
                 eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
             }
             val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
-            eventDataSet.color = Color.rgb(147, 208, 109)
+            eventDataSet.color = Color.rgb(245, 166, 29)
             scatterChartDataList.add(eventDataSet)
         }
 
@@ -223,10 +246,29 @@ class DailyChartFragment: Fragment() {
             /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
             mv.chartView = lineChart
             lineChart.marker = mv*/
+            val mv = MarkerView(context, R.layout.markerview_daily_chart)
+            mv.chartView = scatterChart
+            scatterChart.marker = mv
 
             barData.setDrawValues(false)
+            barData.notifyDataChanged()
 
             scatterChart.data = barData
+            scatterChart.notifyDataSetChanged()
+            scatterChart.invalidate()
+        } else {
+            val eventEntries: ArrayList<BarEntry> = ArrayList()
+            eventEntries.add(BarEntry(0f, 0f))
+            val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
+            eventDataSet.color = Color.TRANSPARENT
+            scatterChartDataList.add(eventDataSet)
+
+            val barData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
+            barData.setDrawValues(false)
+            barData.notifyDataChanged()
+
+            scatterChart.data = barData
+            scatterChart.notifyDataSetChanged()
             scatterChart.invalidate()
         }
     }
@@ -257,12 +299,12 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Symptom API connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Symptom API connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Symptom API not found")
             }
         }
     }
@@ -285,7 +327,6 @@ class DailyChartFragment: Fragment() {
                         symptomsTitle.visibility = View.VISIBLE
                     }
                 }
-
                 symptomsRecyclerView.adapter = symptomsAdapter
             }
         }
@@ -317,12 +358,12 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Drug API connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Drug API connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Drug API not found")
             }
         }
     }
@@ -344,7 +385,6 @@ class DailyChartFragment: Fragment() {
                         drugTitle.visibility = View.VISIBLE
                     }
                 }
-
                 drugRecyclerView.adapter = drugAdapter
             }
         }
@@ -378,12 +418,12 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Sleep API: Connection success")
+//                    Log.e("API Connection", "Sleep API connection success")
                 } else {
-                    Log.e("API Connection", "Sleep API: Connection failed")
+//                    Log.e("API Connection", "Sleep API connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Sleep API: Service not found")
+//                Log.e("API Connection", "Sleep API not found")
             }
         }
     }
@@ -405,7 +445,6 @@ class DailyChartFragment: Fragment() {
                         sleepTitle.visibility = View.VISIBLE
                     }
                 }
-
                 sleepRecyclerView.adapter = sleepAdapter
             }
         }
@@ -437,12 +476,12 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Food API: Connection success")
+//                    Log.e("API Connection", "Food API connection success")
                 } else {
-                    Log.e("API Connection", "Food API: Connection failed")
+//                    Log.e("API Connection", "Food API connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Food API: Service not found $e")
+//                Log.e("API Connection", "Food API not found")
             }
         }
     }
@@ -464,7 +503,6 @@ class DailyChartFragment: Fragment() {
                         foodTitle.visibility = View.VISIBLE
                     }
                 }
-
                 foodRecyclerView.adapter = foodAdapter
             }
         }
@@ -496,11 +534,12 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
-                } else
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Event API connection success")
+                } else {
+//                    Log.e("API Connection", "Event API connection failed")
+                }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Event API not found")
             }
         }
     }
@@ -522,7 +561,6 @@ class DailyChartFragment: Fragment() {
                         eventTitle.visibility = View.VISIBLE
                     }
                 }
-
                 eventRecyclerView.adapter = eventAdapter
             }
         }
@@ -547,8 +585,8 @@ class DailyChartFragment: Fragment() {
             threadSleepCurrent.join()
             threadFoodCurrent.join()
             threadEventCurrent.join()
+            setDone = true
         } catch (_: InterruptedException) {
-
         }
     }
 
@@ -568,7 +606,6 @@ class DailyChartFragment: Fragment() {
         if(inc != 0) {
             calendar.add(Calendar.DAY_OF_YEAR, inc)
         }
-
         current = getString(R.string.input_time_format, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
     }
 }

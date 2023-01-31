@@ -177,6 +177,7 @@
     <string name="add_note">新增備註</string>
 
     <!-- string for chart -->
+    <string name="time_table">時間表</string>
     <string name="daily_chart_date_title">%d 年 %d 月 %d 日</string>
     <string name="weekly_chart_date_title">%d 年 %d 月 %d 日 ~ %d 年 %d 月 %d 日</string>
     <string name="monthly_chart_date_title">%d 年 %d 月</string>
