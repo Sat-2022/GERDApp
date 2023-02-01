@@ -17,6 +17,7 @@
     <string name="get_notification_url">http://%s/GERD_API/api/ReturnMachine/%s</string>
     <string name="get_user_data_url">http://%s/GERD_API/api/Personal/%s</string>
     <string name="get_questionnaire_status_url">http://%s/GERD_API/api/DiaryQuestionnaireCheck/%s</string>
+    <string name="get_remind_check_url">http://%s/GERD_API/api/RemindCheck/%s|%s</string>
 
     <!-- get record urls -->
     <string name="get_sleep_record_url">http://%s/GERD_API/api/SleepRecord/%s|%s|%s|%s</string>

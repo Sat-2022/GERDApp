@@ -155,23 +155,6 @@ class CalendarFragment: Fragment() {
         }
     }
 
-    private fun dateTimeString(dateTime: String?): String{
-        var formatted = ""
-
-        // 0123456789012345678901
-        // yyyy-mm-ddTHH:mm:ss.ss
-        if(dateTime != null){
-            for (i in 0..21) {
-                if (i == 5 && dateTime[i] != '0') formatted += dateTime[i]
-                else if (i == 6) formatted += dateTime[i] + " " + getString(R.string.month) + " "
-                else if (i == 8 && dateTime[i] != '0') formatted += dateTime[i]
-                else if (i == 9) formatted += dateTime[i] + " " + getString(R.string.date)
-            }
-        }
-
-        return formatted
-    }
-
     private fun getQuestionnaireResultApi(): Thread {
         return Thread {
             try {

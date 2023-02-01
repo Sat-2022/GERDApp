@@ -48,6 +48,12 @@
             android:layout_height="wrap_content"
             android:text="log out"/>
 
+        <Button
+            android:id="@+id/notification_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="notification"/>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
