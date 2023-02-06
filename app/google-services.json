@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "168872776834",
+    "project_id": "gerd-ai",
+    "storage_bucket": "gerd-ai.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:168872776834:android:8a153ccda29513af7c509b",
+        "android_client_info": {
+          "package_name": "com.example.gerdapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "168872776834-5abvf8rdu2p2gd41oqn0to8br9erccku.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAthdypKJi4ju0mgoqItEzc2c9O6MB2rl0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "168872776834-5abvf8rdu2p2gd41oqn0to8br9erccku.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
