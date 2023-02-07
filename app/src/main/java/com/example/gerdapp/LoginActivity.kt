@@ -193,7 +193,10 @@ class LoginActivity : AppCompatActivity() {
                     val result = list.first()
 
                     editor.putString("nickname", result.Nickname)
-                    editor.putString("gender", result.Gender)
+                    when(result.Gender) {
+                        "1" -> editor.putString("gender", "男")
+                        "2" -> editor.putString("gender", "女")
+                    }
 
                     editor.commit()
 

@@ -79,12 +79,7 @@ class AlarmReceiver: BroadcastReceiver() {
         }
 
         // reschedule the reminder
-        val calendar = Calendar.getInstance()
-        if(calendar[Calendar.HOUR_OF_DAY] in 12..21) {
-            BasicApplication.RemindersManager.startReminder(context, context.getString(R.string.evening_reminder_time))
-        } else {
-            BasicApplication.RemindersManager.startReminder(context, context.getString(R.string.morning_reminder_time))
-        }
+        BasicApplication.RemindersManager.notificationOn(context)
     }
 }
 

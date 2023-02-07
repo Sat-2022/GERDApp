@@ -1,11 +1,13 @@
 package com.example.gerdapp.ui.settings
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.MainActivity
 import com.example.gerdapp.R
 import com.example.gerdapp.adapter.SettingsAdapter
@@ -63,6 +65,7 @@ class SettingsFragment: Fragment() {
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val adapter = SettingsAdapter { item ->
+
             val action = when(item.id) {
 //                R.string.setting_voice_setting -> SettingsListFragmentDirections.actionSettingsListFragmentToVoiceSettingsListFragment()
 //                R.string.setting_more_setting -> SettingsListFragmentDirections.actionSettingsListFragmentToMoreSettingsFragment()

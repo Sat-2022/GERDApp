@@ -98,6 +98,9 @@
     <string name="text_size_large">大</string>
     <string name="text_size_medium">中</string>
     <string name="text_size_small">小</string>
+    <string name="reminder_on_off_title">通知</string>
+    <string name="reminder_on">開</string>
+    <string name="reminder_off">關</string>
 
     <!-- time selection -->
     <string name="time_headline">時間</string>
@@ -124,6 +127,11 @@
     <string name="data_format1">%s - %s</string>
     <string name="data_format2">%s 至 %s</string>
 
+    <!-- strings for profile fragment -->
+    <string name="profile_title">使用者資料：</string>
+    <string name="profile_user_id">案號：%s</string>
+    <string name="profile_user_nickname">暱稱：%s</string>
+    <string name="profile_user_gender">性別：%s</string>
 
     <!-- strings for time record -->
     <string name="year">年</string>

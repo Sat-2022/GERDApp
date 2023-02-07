@@ -3,18 +3,19 @@ package com.example.gerdapp
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Build
 import android.util.Log
+import com.example.gerdapp.BasicApplication.RemindersManager.notificationOff
+import com.example.gerdapp.BasicApplication.RemindersManager.notificationOn
 import com.example.gerdapp.ui.profile.ProfileFragment
 import java.util.*
 
 class BasicApplication: Application() {
 
-    private var sendNotification: ProfileFragment.RemindCheck?= null
-
     object RemindersManager {
         const val REMINDER_NOTIFICATION_REQUEST_CODE = 123
-        fun startReminder(
+        private fun startReminder(
             context: Context,
             reminderTime: String = "08:00",
             reminderId: Int = REMINDER_NOTIFICATION_REQUEST_CODE
@@ -53,7 +54,7 @@ class BasicApplication: Application() {
             )
         }
 
-        fun stopReminder(
+        private fun stopReminder(
             context: Context,
             reminderId: Int = REMINDER_NOTIFICATION_REQUEST_CODE
         ) {
@@ -68,14 +69,31 @@ class BasicApplication: Application() {
             }
             alarmManager.cancel(intent)
         }
+
+        fun notificationOn(context: Context) {
+            val calendar = Calendar.getInstance()
+            if(calendar[Calendar.HOUR_OF_DAY] in 12..21) {
+                startReminder(context, context.getString(R.string.evening_reminder_time))
+            } else {
+                startReminder(context, context.getString(R.string.morning_reminder_time))
+            }
+        }
+
+        fun notificationOff(context: Context) {
+            stopReminder(context)
+        }
     }
 
     override fun onCreate() {
         super.onCreate()
         createNotificationChannel()
-        Log.e("Reminder", "set")
 
-        notificationOn()
+        val preferences: SharedPreferences = getSharedPreferences("config", 0)
+        if(preferences.getString("reminder", "on") == "on") {
+            notificationOn(this)
+        } else {
+            notificationOff(this)
+        }
     }
 
     private fun createNotificationChannel() {
@@ -88,18 +106,5 @@ class BasicApplication: Application() {
             val manager = getSystemService(NotificationManager::class.java)!!
             manager!!.createNotificationChannel(channel)
         }
-    }
-
-    fun notificationOn() {
-        val calendar = Calendar.getInstance()
-        if(calendar[Calendar.HOUR_OF_DAY] in 5..14) {
-            RemindersManager.startReminder(this, getString(R.string.morning_reminder_time))
-        } else {
-            RemindersManager.startReminder(this, getString(R.string.evening_reminder_time))
-        }
-    }
-
-    fun notificationOff() {
-        RemindersManager.stopReminder(this)
     }
 }

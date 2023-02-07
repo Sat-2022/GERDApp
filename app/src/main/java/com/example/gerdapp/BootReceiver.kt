@@ -3,6 +3,7 @@ package com.example.gerdapp
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import java.util.*
 
 class BootReceiver : BroadcastReceiver() {
@@ -11,11 +12,11 @@ class BootReceiver : BroadcastReceiver() {
     * */
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
-            val calendar = Calendar.getInstance()
-            if(calendar[Calendar.HOUR_OF_DAY] in 5..14) {
-                BasicApplication.RemindersManager.startReminder(context, context.getString(R.string.morning_reminder_time))
+            val preferences: SharedPreferences = context.getSharedPreferences("config", 0)
+            if(preferences.getString("reminder", "on") == "on") {
+                BasicApplication.RemindersManager.notificationOn(context)
             } else {
-                BasicApplication.RemindersManager.startReminder(context, context.getString(R.string.evening_reminder_time))
+                BasicApplication.RemindersManager.notificationOff(context)
             }
         }
     }
