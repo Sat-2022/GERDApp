@@ -222,11 +222,11 @@ class SleepRecordFragment: Fragment() {
     private fun setDateTimePicker() {
         binding.apply {
             timeCard.startDate.setOnClickListener {
-                setDatePicker(timeCard.startDate, SleepRecord.startTime, 0).show()
+                setDatePicker(timeCard.startDate, SleepRecord.startTime, SleepRecord.endTime, 0).show()
             }
 
             timeCard.endDate.setOnClickListener {
-                setDatePicker(timeCard.endDate, SleepRecord.endTime).show()
+                setDatePicker(timeCard.endDate, SleepRecord.startTime, SleepRecord.endTime, 1).show()
             }
 
             timeCard.startTime.setOnClickListener {
@@ -239,17 +239,34 @@ class SleepRecordFragment: Fragment() {
         }
     }
 
-    private fun setDatePicker(textView: TextView, timeRecord: TimeRecord, tag: Int = 0): DatePickerDialog {
-        val datePicker = DatePickerDialog(requireContext(), { _, year, month, day ->
-            run {DatePickerDialog.THEME_HOLO_LIGHT
-                textView.text = getString(R.string.date_format, year, month+1, day)
-                timeRecord.YEAR = year
-                timeRecord.MONTH = month
-                timeRecord.DAY = day
-            }
-        }, timeRecord.YEAR, timeRecord.MONTH, timeRecord.DAY)
-
-        return datePicker
+    private fun setDatePicker(textView: TextView, startTimeRecord: TimeRecord, endTimeRecord: TimeRecord, tag: Int = 0): DatePickerDialog {
+        if(tag == 0) {
+            val datePicker = DatePickerDialog(requireContext(), { _, year, month, day ->
+                run {
+                    textView.text = getString(R.string.date_format, year, month+1, day)
+                    startTimeRecord.YEAR = year
+                    startTimeRecord.MONTH = month
+                    startTimeRecord.DAY = day
+                }
+            }, startTimeRecord.YEAR, startTimeRecord.MONTH, startTimeRecord.DAY)
+            val calendar = Calendar.getInstance()
+            calendar.set(endTimeRecord.YEAR, endTimeRecord.MONTH, endTimeRecord.DAY, 0, 0, 0)
+            datePicker.datePicker.maxDate = calendar.timeInMillis
+            return datePicker
+        } else {
+            val datePicker = DatePickerDialog(requireContext(), { _, year, month, day ->
+                run {
+                    textView.text = getString(R.string.date_format, year, month+1, day)
+                    endTimeRecord.YEAR = year
+                    endTimeRecord.MONTH = month
+                    endTimeRecord.DAY = day
+                }
+            }, endTimeRecord.YEAR, endTimeRecord.MONTH, endTimeRecord.DAY)
+            val calendar = Calendar.getInstance()
+            calendar.set(startTimeRecord.YEAR, startTimeRecord.MONTH, startTimeRecord.DAY, 0, 0, 0)
+            datePicker.datePicker.minDate = calendar.timeInMillis
+            return datePicker
+        }
     }
 
     private fun setTimePicker(textView: TextView, timeRecord: TimeRecord, tag: Int = 0): TimePickerDialog {
