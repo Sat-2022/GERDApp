@@ -8,6 +8,12 @@
     <string name="check_alphabetic">[A-Za-z]</string>
     <string name="check_numeric">[0-9]</string>
 
+    <!-- reminders -->
+    <string name="morning_reminder_time">12:00</string>
+    <string name="evening_reminder_time">22:00</string>
+    <string name="reminder_title">填寫問卷通知</string>
+    <string name="reminder_text">記得填寫問卷喔！</string>
+
     <!-- urls -->
     <string name="server_url">120.126.104.107</string>
     <string name="login_url">http://%s/GERD_API/api/LoginCheck/%s|%s</string>

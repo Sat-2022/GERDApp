@@ -90,7 +90,7 @@ class ProfileFragment: Fragment() {
 
             tvUserAcc.text = "\t案號：" + User.caseNumber
             tvUserNickname.text = "\t暱稱：" + User.nickname
-            if(User.gender == "1") tvUserGender.text = "\t性別：男"
+            if (User.gender == "1") tvUserGender.text = "\t性別：男"
             else if(User.gender == "2") tvUserGender.text = "\t性別：女"
             else tvUserGender.text = "\t性別："
 

@@ -1,21 +1,24 @@
 package com.example.gerdapp
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.gerdapp.databinding.ActivityMainBinding
+import com.example.gerdapp.ui.profile.ProfileFragment
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 
 
@@ -95,8 +98,6 @@ class MainActivity : AppCompatActivity() {
 
 //        val intent = Intent(this, LoginActivity::class.java)
 //        startActivity(intent)
-
-        createNotificationChannel()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -173,18 +174,6 @@ class MainActivity : AppCompatActivity() {
     fun setActionBarTitleEnable(boolean: Boolean) {
         binding.apply {
             toolbarLayout.isTitleEnabled = boolean
-        }
-    }
-
-    private fun createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "default", "DemoCode", NotificationManager.IMPORTANCE_DEFAULT
-            )
-            val manager = getSystemService(NotificationManager::class.java)!!
-            manager!!.createNotificationChannel(channel)
         }
     }
 }
