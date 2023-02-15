@@ -21,6 +21,7 @@ import com.example.gerdapp.ui.chart.MonthlyChartFragment.DateRange.currentStart
 import com.example.gerdapp.ui.chart.MonthlyChartFragment.DateRange.maxDate
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.ScatterChart
+import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
 import com.github.mikephil.charting.formatter.IAxisValueFormatter
@@ -166,15 +167,15 @@ class MonthlyChartFragment: Fragment() {
         val tempCalendar = startCalendar.clone() as Calendar
         var dayOfMonth = 1
 
-        if(!sleepCurrent!!.first().isEmpty()) {
-            for(sleepData in sleepCurrent!!) {
-                while (!sleepData.isSameDate(tempCalendar)) {
+        if(!symptomCurrent!!.first().isEmpty()) {
+            for(symptomData in symptomCurrent!!) {
+                while (!symptomData.isSameDate(tempCalendar)) {
                     entries.add(BarEntry(dayOfMonth.toFloat() - 1, -5f))
                     tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
                     dayOfMonth += 1
                 }
 
-                val startTimeRecord = TimeRecord().stringToTimeRecord(sleepData.StartDate)
+                val startTimeRecord = TimeRecord().stringToTimeRecord(symptomData.StartDate)
                 entries.add(BarEntry(dayOfMonth.toFloat() - 1, startTimeRecord.timeRecordToFloat()))
             }
         } else {
@@ -192,9 +193,8 @@ class MonthlyChartFragment: Fragment() {
 
         val barData = ScatterData(barDataSet)
 
-        /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-        mv.chartView = lineChart
-        lineChart.marker = mv*/
+        val mv = CandleStickChartMarkerView(context, R.layout.markerview_candle_stick_chart)
+        symptomsChart.markerView = mv
 
         barData.setDrawValues(false)
 
