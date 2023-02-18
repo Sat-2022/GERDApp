@@ -10,31 +10,42 @@ data class SymptomCurrent(
     val EndDate: String,
     val SymptomNote: String
 ) {
+    /*
+     * Check if the record is empty.
+     */
     fun isEmpty(): Boolean {
         val time = TimeRecord().stringToTimeRecord(StartDate)
         return time.isTimeRecordEmpty()
     }
 
+    /*
+     * Check if the record is at the same date as a given time.
+     * Or, the record overlaps the given time (tag = 1).
+     */
     fun isSameDate(calendar: Calendar, tag: Int = 0): Boolean {
         var cal = calendar.clone() as Calendar
         val time = when(tag) {
-            1 -> {
+            1 -> { // If the end date overlaps the given time, return true
                 cal.add(Calendar.DAY_OF_YEAR, 1)
                 TimeRecord().stringToTimeRecord(EndDate)
             }
-            else -> TimeRecord().stringToTimeRecord(StartDate)
+            else -> TimeRecord().stringToTimeRecord(StartDate) // If the start date is at the given time
         }
         return time.isSameDate(cal)
     }
 
+
+    /*
+     * Return the record in string.
+     */
     fun symptomToString(): String {
         var symptomItemString = ""
-        if(SymptomItem != "") {
+        if(SymptomItem != "") { // Show default symptoms
             val symptomItem = SymptomItem.split(",").toTypedArray()
             var itemCount = 0
             for (i in symptomItem) {
 
-                if (itemCount > 2) {
+                if (itemCount > 2) { // If there is more than 2 symptoms recorded, show with "..."
                     symptomItemString += ", ..."
                     break
                 }
@@ -76,7 +87,7 @@ data class SymptomCurrent(
                     }
                 }
             }
-        } else {
+        } else { // If there is no default symptom recorded, show symptoms recorded in others
             symptomItemString = "$SymptomOther"
         }
 
