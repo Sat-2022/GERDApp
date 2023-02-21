@@ -20,23 +20,14 @@ data class SymptomCurrent(
 
     /*
      * Check if the record is at the same date as a given time.
-     * Or, the record overlaps the given time (tag = 1).
      */
-    fun isSameDate(calendar: Calendar, tag: Int = 0): Boolean {
-        var cal = calendar.clone() as Calendar
-        val time = when(tag) {
-            1 -> { // If the end date overlaps the given time, return true
-                cal.add(Calendar.DAY_OF_YEAR, 1)
-                TimeRecord().stringToTimeRecord(EndDate)
-            }
-            else -> TimeRecord().stringToTimeRecord(StartDate) // If the start date is at the given time
-        }
-        return time.isSameDate(cal)
+    fun isSameDate(calendar: Calendar): Boolean {
+        val time = TimeRecord().stringToTimeRecord(StartDate) // If the start date is at the given time
+        return time.isEqual(calendar)
     }
 
-
     /*
-     * Return the record in string.
+     * Format the record to string.
      */
     fun symptomToString(): String {
         var symptomItemString = ""
@@ -88,7 +79,7 @@ data class SymptomCurrent(
                 }
             }
         } else { // If there is no default symptom recorded, show symptoms recorded in others
-            symptomItemString = "$SymptomOther"
+            symptomItemString = SymptomOther
         }
 
         return symptomItemString

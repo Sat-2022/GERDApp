@@ -68,6 +68,7 @@ class CalendarFragment: Fragment() {
         editor = preferences.edit()
 
         User.caseNumber = preferences.getString("caseNumber", "").toString()
+
         // Connect to Api
         getQuestionnaireResultApi().start()
         getQuestionnaireStatus().start()
@@ -76,8 +77,6 @@ class CalendarFragment: Fragment() {
     override fun onResume() {
         super.onResume()
         setBottomNavigationVisibility()
-//        testApi().start()
-//        getMachineReturnApi().start()
         updateBarChart()
         updateQuestionnaireStatus()
     }
@@ -275,7 +274,7 @@ class CalendarFragment: Fragment() {
         xAxis.valueFormatter = formatter
 
         val yAxis = barChart.axisLeft
-        yAxis.axisMaximum = 5f
+        yAxis.axisMaximum = 5.5f
         yAxis.axisMinimum = 0f
         yAxis.setLabelCount(4, false)
         yAxis.setDrawAxisLine(false)

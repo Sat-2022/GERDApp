@@ -3,6 +3,7 @@ package com.example.gerdapp.ui.chart
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,8 +43,6 @@ class DailyChartFragment: Fragment() {
     private var sleepList: List<SleepCurrent>? = null
     private var foodList: List<FoodCurrent>? = null
     private var eventList: List<EventCurrent>? = null
-
-    private var setDone = false
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
@@ -196,15 +195,21 @@ class DailyChartFragment: Fragment() {
         if(!foodList!!.first().isEmpty()){
             val foodEntries: ArrayList<BarEntry> = ArrayList()
             for (d in foodList!!) {
-                if(d.isSameDate(calendar, 1)) {
+                if(d.isEqual(calendar)) {
                     val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-                    val end = 240000
+                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
                     for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
                 } else {
-                    val start =
-                        TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                    for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 2f))
+                    if(d.isBefore(calendar)) {
+                        val start = 0
+                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
+                    }
+                    if(d.isAfter(calendar)) {
+                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                        val end = 240000
+                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
+                    }
                 }
             }
             val foodDataSet = ScatterDataSet(foodEntries as List<Entry>?, "")
@@ -215,14 +220,21 @@ class DailyChartFragment: Fragment() {
         if(!sleepList!!.first().isEmpty()){
             val sleepEntries: ArrayList<BarEntry> = ArrayList()
             for (d in sleepList!!) {
-                if(d.isSameDate(calendar, 1)) {
-                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-                    val end = 240000
-                    for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
-                } else {
+                if(d.isEqual(calendar)) {
                     val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
                     val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
                     for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+                } else {
+                    if(d.isBefore(calendar)) {
+                        val start = 0
+                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+                    }
+                    if(d.isAfter(calendar)) {
+                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                        val end = 240000
+                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+                    }
                 }
             }
             val sleepDataSet = ScatterDataSet(sleepEntries as List<Entry>?, "")
@@ -418,7 +430,7 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-//                    Log.e("API Connection", "Sleep API connection success")
+                    Log.e("API Connection", "Sleep API connection success")
                 } else {
 //                    Log.e("API Connection", "Sleep API connection failed")
                 }
@@ -585,7 +597,6 @@ class DailyChartFragment: Fragment() {
             threadSleepCurrent.join()
             threadFoodCurrent.join()
             threadEventCurrent.join()
-            setDone = true
         } catch (_: InterruptedException) {
         }
     }
