@@ -109,7 +109,7 @@ fun NotificationManager.sendReminderNotification(
         applicationContext,
         1,
         contentIntent,
-        PendingIntent.FLAG_UPDATE_CURRENT
+        PendingIntent.FLAG_IMMUTABLE
     )
     val builder = NotificationCompat.Builder(applicationContext, channelId)
         .setContentTitle(applicationContext.getString(R.string.reminder_title))

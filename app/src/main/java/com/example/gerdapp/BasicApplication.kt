@@ -29,7 +29,7 @@ class BasicApplication: Application() {
                         context.applicationContext,
                         reminderId,
                         intent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
+                        PendingIntent.FLAG_IMMUTABLE
                     )
                 }
 

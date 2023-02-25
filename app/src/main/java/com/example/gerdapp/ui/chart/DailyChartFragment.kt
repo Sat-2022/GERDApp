@@ -66,15 +66,16 @@ class DailyChartFragment: Fragment() {
 
         User.caseNumber = preferences.getString("caseNumber", "").toString()
 
+        // get current date
         calendar = Calendar.getInstance()
         updateCurrent()
 
-        callApi()
+        callApi() // get records
     }
 
     override fun onResume() {
         super.onResume()
-        callApi()
+        callApi() // get records
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -82,7 +83,6 @@ class DailyChartFragment: Fragment() {
         _binding = FragmentDailyChartBinding.inflate(inflater, container, false)
 
         scatterChart = binding.scatterChart
-//        initScatterChart()
 
         return binding.root
     }
@@ -92,27 +92,19 @@ class DailyChartFragment: Fragment() {
 
         binding.apply {
             selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
-//            progressBar.visibility = View.VISIBLE
-//            chartLayout.visibility = View.GONE
 
+            // Proceed to the next day
             rightArrow.setOnClickListener {
-//                progressBar.visibility = View.VISIBLE
-//                chartLayout.visibility = View.GONE
                 updateCurrent(1)
                 selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
-                callApi()
-//                progressBar.visibility = View.GONE
-//                chartLayout.visibility = View.VISIBLE
+                callApi() // refresh records
             }
 
+            // Proceed to previous day
             leftArrow.setOnClickListener {
-//                progressBar.visibility = View.VISIBLE
-//                chartLayout.visibility = View.GONE
                 updateCurrent(-1)
                 selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
-                callApi()
-//                progressBar.visibility = View.GONE
-//                chartLayout.visibility = View.VISIBLE
+                callApi() // refresh records
             }
         }
     }
@@ -122,15 +114,22 @@ class DailyChartFragment: Fragment() {
         _binding = null
     }
 
+    /*
+     * Call the UI thread to update scatter chart
+     */
     private fun updateScatterChart() {
         activity?.runOnUiThread {
             initScatterChart()
         }
     }
 
+    /*
+     * Set the scatter chart
+     */
     private fun initScatterChart() {
         initScatterChartData()
 
+        // scatter chart settings
         scatterChart.isHighlightPerDragEnabled = false
         scatterChart.description.isEnabled = false
 
@@ -168,33 +167,31 @@ class DailyChartFragment: Fragment() {
         l.isEnabled = false
     }
 
+    /*
+     * Init the dataset for scatter plot
+     */
     private fun initScatterChartData() {
         val scatterChartDataList = ArrayList<ScatterDataSet>()
 
-        if(!symptomList!!.first().isEmpty()){
+        if(!symptomList!!.first().isEmpty()) {
             val symptomsEntries: ArrayList<BarEntry> = ArrayList()
-            for (d in symptomList!!) {
-                symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 3f))
-            }
+            for(d in symptomList!!) symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 3f))
             val symptomsDataSet = ScatterDataSet(symptomsEntries as List<Entry>?, "")
             symptomsDataSet.color = Color.rgb(147, 208, 109)
             scatterChartDataList.add(symptomsDataSet)
         }
 
-
-        if(!drugList!!.first().isEmpty()){
+        if(!drugList!!.first().isEmpty()) {
             val drugEntries: ArrayList<BarEntry> = ArrayList()
-            for (d in drugList!!) {
-                drugEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
-            }
+            for(d in drugList!!) drugEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
             val drugDataSet = ScatterDataSet(drugEntries as List<Entry>?, "")
             drugDataSet.color = Color.rgb(241, 43, 43)
             scatterChartDataList.add(drugDataSet)
         }
 
-        if(!foodList!!.first().isEmpty()){
+        if(!foodList!!.first().isEmpty()) {
             val foodEntries: ArrayList<BarEntry> = ArrayList()
-            for (d in foodList!!) {
+            for(d in foodList!!) {
                 if(d.isEqual(calendar)) {
                     val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
                     val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
@@ -217,9 +214,9 @@ class DailyChartFragment: Fragment() {
             scatterChartDataList.add(foodDataSet)
         }
 
-        if(!sleepList!!.first().isEmpty()){
+        if(!sleepList!!.first().isEmpty()) {
             val sleepEntries: ArrayList<BarEntry> = ArrayList()
-            for (d in sleepList!!) {
+            for(d in sleepList!!) {
                 if(d.isEqual(calendar)) {
                     val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
                     val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
@@ -242,11 +239,9 @@ class DailyChartFragment: Fragment() {
             scatterChartDataList.add(sleepDataSet)
         }
 
-        if(!eventList!!.first().isEmpty()){
+        if(!eventList!!.first().isEmpty()) {
             val eventEntries: ArrayList<BarEntry> = ArrayList()
-            for (d in eventList!!) {
-                eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
-            }
+            for(d in eventList!!) eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
             val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
             eventDataSet.color = Color.rgb(245, 166, 29)
             scatterChartDataList.add(eventDataSet)
@@ -255,12 +250,9 @@ class DailyChartFragment: Fragment() {
         if(scatterChartDataList.isNotEmpty()) {
             val barData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
 
-            /*val mv = RadarMarkerView(this, R.layout.radar_markerview, entries)
-            mv.chartView = lineChart
-            lineChart.marker = mv*/
-            val mv = MarkerView(context, R.layout.markerview_daily_chart)
+            /*val mv = MarkerView(context, R.layout.markerview_daily_chart)
             mv.chartView = scatterChart
-            scatterChart.marker = mv
+            scatterChart.marker = mv*/
 
             barData.setDrawValues(false)
             barData.notifyDataChanged()
@@ -285,6 +277,9 @@ class DailyChartFragment: Fragment() {
         }
     }
 
+    /*
+     * Thread for calling symptom record API
+     */
     private fun getSymptomsCurrentApi(): Thread {
         return Thread {
             try {
@@ -301,7 +296,6 @@ class DailyChartFragment: Fragment() {
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
-
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
                     val type: java.lang.reflect.Type? = object : TypeToken<List<SymptomCurrent>>() {}.type
@@ -311,23 +305,27 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-//                    Log.e("API Connection", "Symptom API connection success")
+                    // Log.e("API Connection", "Symptom API connection success")
                 } else {
-//                    Log.e("API Connection", "Symptom API connection failed")
+                    // Connection failed
+                    // Log.e("API Connection", "Symptom API connection failed")
                 }
             } catch (e: Exception) {
-//                Log.e("API Connection", "Symptom API not found")
+                // Handle exception
+                // Log.e("API Connection", "Symptom API not found")
             }
         }
     }
 
+    /*
+     * Update the symptom list
+     */
     private fun updateSymptoms() {
         activity?.runOnUiThread {
             binding.apply {
                 val symptomsAdapter = SymptomsAdapter { symptomItem -> }
 
                 if(symptomList != null) {
-
                     symptomsAdapter.updateSymptomList(symptomList!!)
 
                     if(symptomList!!.first().isEmpty()) {
@@ -344,6 +342,9 @@ class DailyChartFragment: Fragment() {
         }
     }
 
+    /*
+     * Thread for calling dug record API
+     */
     private fun getDrugCurrentApi(): Thread {
         return Thread {
             try {
@@ -360,7 +361,6 @@ class DailyChartFragment: Fragment() {
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
-
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
                     val type: java.lang.reflect.Type? = object : TypeToken<List<DrugCurrent>>() {}.type
@@ -370,16 +370,21 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-//                    Log.e("API Connection", "Drug API connection success")
+                    // Log.e("API Connection", "Drug API connection success")
                 } else {
-//                    Log.e("API Connection", "Drug API connection failed")
+                    // Connection failed
+                    // Log.e("API Connection", "Drug API connection failed")
                 }
             } catch (e: Exception) {
-//                Log.e("API Connection", "Drug API not found")
+                // Handle exception
+                // Log.e("API Connection", "Drug API not found")
             }
         }
     }
 
+    /*
+     * Update the drug list
+     */
     private fun updateDrug() {
         activity?.runOnUiThread {
             binding.apply {
@@ -402,6 +407,9 @@ class DailyChartFragment: Fragment() {
         }
     }
 
+    /*
+     * Thread for calling sleep record API
+     */
     private fun getSleepCurrentApi(): Thread {
         return Thread {
             try {
@@ -418,7 +426,6 @@ class DailyChartFragment: Fragment() {
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
-
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
                     val type: java.lang.reflect.Type? = object : TypeToken<List<SleepCurrent>>() {}.type
@@ -430,16 +437,21 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Sleep API connection success")
+                    // Log.e("API Connection", "Sleep API connection success")
                 } else {
-//                    Log.e("API Connection", "Sleep API connection failed")
+                    // Connection failed
+                    // Log.e("API Connection", "Sleep API connection failed")
                 }
             } catch (e: Exception) {
-//                Log.e("API Connection", "Sleep API not found")
+                // Handle exception
+                // Log.e("API Connection", "Sleep API not found")
             }
         }
     }
 
+    /*
+     * Update the sleep list
+     */
     private fun updateSleep() {
         activity?.runOnUiThread {
             binding.apply {
@@ -462,6 +474,9 @@ class DailyChartFragment: Fragment() {
         }
     }
 
+    /*
+     * Thread for calling food record API
+     */
     private fun getFoodCurrentApi(): Thread {
         return Thread {
             try {
@@ -478,7 +493,6 @@ class DailyChartFragment: Fragment() {
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
-
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
                     val type: java.lang.reflect.Type? = object : TypeToken<List<FoodCurrent>>() {}.type
@@ -488,16 +502,21 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-//                    Log.e("API Connection", "Food API connection success")
+                    // Log.e("API Connection", "Food API connection success")
                 } else {
-//                    Log.e("API Connection", "Food API connection failed")
+                    // Connection failed
+                    // Log.e("API Connection", "Food API connection failed")
                 }
             } catch (e: Exception) {
-//                Log.e("API Connection", "Food API not found")
+                // Handle exception
+                // Log.e("API Connection", "Food API not found")
             }
         }
     }
 
+    /*
+     * Update the food list
+     */
     private fun updateFood() {
         activity?.runOnUiThread {
             binding.apply {
@@ -520,6 +539,9 @@ class DailyChartFragment: Fragment() {
         }
     }
 
+    /*
+     * Thread for calling event record API
+     */
     private fun getEventCurrentApi(): Thread {
         return Thread {
             try {
@@ -536,7 +558,6 @@ class DailyChartFragment: Fragment() {
                 val connection = url.openConnection() as HttpURLConnection
 
                 if (connection.responseCode == 200) {
-
                     val inputSystem = connection.inputStream
                     val inputStreamReader = InputStreamReader(inputSystem, "UTF-8")
                     val type: java.lang.reflect.Type? = object : TypeToken<List<EventCurrent>>() {}.type
@@ -546,16 +567,21 @@ class DailyChartFragment: Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-//                    Log.e("API Connection", "Event API connection success")
+                    // Log.e("API Connection", "Event API connection success")
                 } else {
-//                    Log.e("API Connection", "Event API connection failed")
+                    // Connection failed
+                    // Log.e("API Connection", "Event API connection failed")
                 }
             } catch (e: Exception) {
-//                Log.e("API Connection", "Event API not found")
+                // Handle exception
+                // Log.e("API Connection", "Event API not found")
             }
         }
     }
 
+    /*
+     * Update the event list
+     */
     private fun updateEvent() {
         activity?.runOnUiThread {
             binding.apply {
@@ -578,6 +604,9 @@ class DailyChartFragment: Fragment() {
         }
     }
 
+    /*
+     * Call APIs to get the records
+     */
     private fun callApi() {
         val threadSymptomCurrent = getSymptomsCurrentApi()
         val threadDrugCurrent = getDrugCurrentApi()
@@ -592,15 +621,20 @@ class DailyChartFragment: Fragment() {
         threadEventCurrent.start()
 
         try {
+            // Wait for all threads joining
             threadSymptomCurrent.join()
             threadDrugCurrent.join()
             threadSleepCurrent.join()
             threadFoodCurrent.join()
             threadEventCurrent.join()
         } catch (_: InterruptedException) {
+            // Handle exception
         }
     }
 
+    /*
+     * Check if there is any data and show the text
+     */
     private fun checkNullData() {
         binding.apply {
             if (symptomList!!.first().isEmpty() && drugList!!.first().isEmpty() &&
@@ -613,6 +647,9 @@ class DailyChartFragment: Fragment() {
         }
     }
 
+    /*
+     * Update the calendar by inc and then update current
+     */
     private fun updateCurrent(inc: Int = 0) {
         if(inc != 0) {
             calendar.add(Calendar.DAY_OF_YEAR, inc)
