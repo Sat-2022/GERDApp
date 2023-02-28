@@ -16,7 +16,6 @@ import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.calendar
 import com.example.gerdapp.ui.chart.DailyChartFragment.DateRange.current
 import com.example.gerdapp.ui.chart.adapter.*
 import com.github.mikephil.charting.charts.ScatterChart
-import com.github.mikephil.charting.components.MarkerView
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
@@ -46,6 +45,8 @@ class DailyChartFragment: Fragment() {
 
     private lateinit var preferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+
+    private val STEP = 5
 
     object User {
         var caseNumber = ""
@@ -83,6 +84,7 @@ class DailyChartFragment: Fragment() {
         _binding = FragmentDailyChartBinding.inflate(inflater, container, false)
 
         scatterChart = binding.scatterChart
+        initScatterChart()
 
         return binding.root
     }
@@ -97,6 +99,7 @@ class DailyChartFragment: Fragment() {
             rightArrow.setOnClickListener {
                 updateCurrent(1)
                 selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+                clearScatterChart()
                 callApi() // refresh records
             }
 
@@ -104,6 +107,7 @@ class DailyChartFragment: Fragment() {
             leftArrow.setOnClickListener {
                 updateCurrent(-1)
                 selectedDateTv.text = getString(R.string.daily_chart_date_title, calendar[Calendar.YEAR], calendar[Calendar.MONTH]+1, calendar[Calendar.DAY_OF_MONTH])
+                clearScatterChart()
                 callApi() // refresh records
             }
         }
@@ -114,13 +118,10 @@ class DailyChartFragment: Fragment() {
         _binding = null
     }
 
-    /*
-     * Call the UI thread to update scatter chart
-     */
-    private fun updateScatterChart() {
-        activity?.runOnUiThread {
-            initScatterChart()
-        }
+    private fun clearScatterChart() {
+        scatterChart.clear()
+        scatterChart.invalidate()
+        initScatterChart()
     }
 
     /*
@@ -172,109 +173,114 @@ class DailyChartFragment: Fragment() {
      */
     private fun initScatterChartData() {
         val scatterChartDataList = ArrayList<ScatterDataSet>()
+//        if(!symptomList!!.first().isEmpty()) {
+//            Log.e("", "symptom")
+//            val symptomsEntries: ArrayList<BarEntry> = ArrayList()
+//            for(d in symptomList!!) symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 3f))
+//            val symptomsDataSet = ScatterDataSet(symptomsEntries as List<Entry>?, "")
+//            symptomsDataSet.color = Color.rgb(147, 208, 109)
+//            scatterChartDataList.add(symptomsDataSet)
+//        }
 
-        if(!symptomList!!.first().isEmpty()) {
-            val symptomsEntries: ArrayList<BarEntry> = ArrayList()
-            for(d in symptomList!!) symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 3f))
-            val symptomsDataSet = ScatterDataSet(symptomsEntries as List<Entry>?, "")
-            symptomsDataSet.color = Color.rgb(147, 208, 109)
-            scatterChartDataList.add(symptomsDataSet)
-        }
+//        if(!drugList!!.first().isEmpty()) {
+//            Log.e("", "drug")
+//            val drugEntries: ArrayList<BarEntry> = ArrayList()
+//            for(d in drugList!!) drugEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
+//            val drugDataSet = ScatterDataSet(drugEntries as List<Entry>?, "")
+//            drugDataSet.color = Color.rgb(241, 43, 43)
+//            scatterChartDataList.add(drugDataSet)
+//        }
 
-        if(!drugList!!.first().isEmpty()) {
-            val drugEntries: ArrayList<BarEntry> = ArrayList()
-            for(d in drugList!!) drugEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
-            val drugDataSet = ScatterDataSet(drugEntries as List<Entry>?, "")
-            drugDataSet.color = Color.rgb(241, 43, 43)
-            scatterChartDataList.add(drugDataSet)
-        }
+//        if(!foodList!!.first().isEmpty()) {
+//            Log.e("", "food")
+//            val foodEntries: ArrayList<BarEntry> = ArrayList()
+//            for(d in foodList!!) {
+//                if(d.isEqual(calendar)) {
+//                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+//                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+//                    for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
+//                } else {
+//                    if(d.isBefore(calendar)) {
+//                        val start = 0
+//                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+//                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
+//                    }
+//                    if(d.isAfter(calendar)) {
+//                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+//                        val end = 240000
+//                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
+//                    }
+//                }
+//            }
+//            val foodDataSet = ScatterDataSet(foodEntries as List<Entry>?, "")
+//            foodDataSet.color = Color.rgb(9, 173, 234)
+//            scatterChartDataList.add(foodDataSet)
+//        }
 
-        if(!foodList!!.first().isEmpty()) {
-            val foodEntries: ArrayList<BarEntry> = ArrayList()
-            for(d in foodList!!) {
-                if(d.isEqual(calendar)) {
-                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                    for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
-                } else {
-                    if(d.isBefore(calendar)) {
-                        val start = 0
-                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
-                    }
-                    if(d.isAfter(calendar)) {
-                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-                        val end = 240000
-                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
-                    }
-                }
-            }
-            val foodDataSet = ScatterDataSet(foodEntries as List<Entry>?, "")
-            foodDataSet.color = Color.rgb(9, 173, 234)
-            scatterChartDataList.add(foodDataSet)
-        }
+//        if(!sleepList!!.first().isEmpty()) {
+//            Log.e("", "sleep")
+//            val sleepEntries: ArrayList<BarEntry> = ArrayList()
+//            for(d in sleepList!!) {
+//                if(d.isEqual(calendar)) {
+//                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+//                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+//                    for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+//                } else {
+//                    if(d.isBefore(calendar)) {
+//                        val start = 0
+//                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+//                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+//                    }
+//                    if(d.isAfter(calendar)) {
+//                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+//                        val end = 240000
+//                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
+//                    }
+//                }
+//            }
+//            val sleepDataSet = ScatterDataSet(sleepEntries as List<Entry>?, "")
+//            sleepDataSet.color = Color.rgb(8, 66, 160)
+//            scatterChartDataList.add(sleepDataSet)
+//        }
 
-        if(!sleepList!!.first().isEmpty()) {
-            val sleepEntries: ArrayList<BarEntry> = ArrayList()
-            for(d in sleepList!!) {
-                if(d.isEqual(calendar)) {
-                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                    for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
-                } else {
-                    if(d.isBefore(calendar)) {
-                        val start = 0
-                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
-                    }
-                    if(d.isAfter(calendar)) {
-                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-                        val end = 240000
-                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
-                    }
-                }
-            }
-            val sleepDataSet = ScatterDataSet(sleepEntries as List<Entry>?, "")
-            sleepDataSet.color = Color.rgb(8, 66, 160)
-            scatterChartDataList.add(sleepDataSet)
-        }
+//        if(!eventList!!.first().isEmpty()) {
+//            Log.e("", "event")
+//            val eventEntries: ArrayList<BarEntry> = ArrayList()
+//            for(d in eventList!!) eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+//            val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
+//            eventDataSet.color = Color.rgb(245, 166, 29)
+//            scatterChartDataList.add(eventDataSet)
+//        }
 
-        if(!eventList!!.first().isEmpty()) {
-            val eventEntries: ArrayList<BarEntry> = ArrayList()
-            for(d in eventList!!) eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
-            val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
-            eventDataSet.color = Color.rgb(245, 166, 29)
-            scatterChartDataList.add(eventDataSet)
-        }
+//        if(scatterChartDataList.isNotEmpty()) {
+//            Log.e("", "data list")
+//            val barData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
+//
+//            /*val mv = MarkerView(context, R.layout.markerview_daily_chart)
+//            mv.chartView = scatterChart
+//            scatterChart.marker = mv*/
+//
+//            barData.setDrawValues(false)
+//            barData.notifyDataChanged()
+//
+//            scatterChart.data = barData
+//            scatterChart.notifyDataSetChanged()
+//            scatterChart.invalidate()
+//        } else {
+            val entries: ArrayList<BarEntry> = ArrayList()
+            entries.add(BarEntry(-5f, -5f))
+            val dataSet = ScatterDataSet(entries as List<Entry>?, "")
+            dataSet.color = Color.TRANSPARENT
+            scatterChartDataList.add(dataSet)
 
-        if(scatterChartDataList.isNotEmpty()) {
-            val barData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
+            val scatterData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
+            scatterData.setDrawValues(false)
+            scatterData.notifyDataChanged()
 
-            /*val mv = MarkerView(context, R.layout.markerview_daily_chart)
-            mv.chartView = scatterChart
-            scatterChart.marker = mv*/
-
-            barData.setDrawValues(false)
-            barData.notifyDataChanged()
-
-            scatterChart.data = barData
+            scatterChart.data = scatterData
             scatterChart.notifyDataSetChanged()
             scatterChart.invalidate()
-        } else {
-            val eventEntries: ArrayList<BarEntry> = ArrayList()
-            eventEntries.add(BarEntry(0f, 0f))
-            val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
-            eventDataSet.color = Color.TRANSPARENT
-            scatterChartDataList.add(eventDataSet)
-
-            val barData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
-            barData.setDrawValues(false)
-            barData.notifyDataChanged()
-
-            scatterChart.data = barData
-            scatterChart.notifyDataSetChanged()
-            scatterChart.invalidate()
-        }
+//        }
     }
 
     /*
@@ -338,6 +344,20 @@ class DailyChartFragment: Fragment() {
                     }
                 }
                 symptomsRecyclerView.adapter = symptomsAdapter
+
+                val data = scatterChart.data
+                if(!symptomList!!.first().isEmpty()) {
+                    Log.e("", "symptom")
+                    val entries: ArrayList<BarEntry> = ArrayList()
+                    for(d in symptomList!!) entries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+                    val dataSet = ScatterDataSet(entries as List<Entry>?, "")
+                    dataSet.color = Color.rgb(147, 208, 109)
+                    data.addDataSet(dataSet)
+                    data.setDrawValues(false)
+                    data.notifyDataChanged()
+                    scatterChart.notifyDataSetChanged()
+                    scatterChart.invalidate()
+                }
             }
         }
     }
@@ -403,6 +423,20 @@ class DailyChartFragment: Fragment() {
                     }
                 }
                 drugRecyclerView.adapter = drugAdapter
+
+                val data = scatterChart.data
+                if(!drugList!!.first().isEmpty()) {
+                    Log.e("", "drug")
+                    val entries: ArrayList<BarEntry> = ArrayList()
+                    for(d in drugList!!) entries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
+                    val dataSet = ScatterDataSet(entries as List<Entry>?, "")
+                    dataSet.color = Color.rgb(147, 208, 109)
+                    data.addDataSet(dataSet)
+                    data.setDrawValues(false)
+                    data.notifyDataChanged()
+                    scatterChart.notifyDataSetChanged()
+                    scatterChart.invalidate()
+                }
             }
         }
     }
@@ -433,7 +467,6 @@ class DailyChartFragment: Fragment() {
                     sleepList = Gson().fromJson(inputStreamReader, type)
 
                     updateSleep()
-                    updateScatterChart()
 
                     inputStreamReader.close()
                     inputSystem.close()
@@ -470,6 +503,35 @@ class DailyChartFragment: Fragment() {
                     }
                 }
                 sleepRecyclerView.adapter = sleepAdapter
+
+                val data = scatterChart.data
+                if(!sleepList!!.first().isEmpty()) {
+                    val entries: ArrayList<BarEntry> = ArrayList()
+                    for(d in sleepList!!) {
+                        if(d.isEqual(calendar) && d.isSameDate()) {
+                            val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                            val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                            for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                        } else {
+                            if(d.isBefore(calendar)) {
+                                val start = 0
+                                val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                            } else if(d.isAfter(calendar)) {
+                                val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                                val end = 240000
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                            }
+                        }
+                    }
+                    val dataSet = ScatterDataSet(entries as List<Entry>?, "")
+                    dataSet.color = Color.rgb(8, 66, 160)
+                    data.addDataSet(dataSet)
+                    data.setDrawValues(false)
+                    data.notifyDataChanged()
+                    scatterChart.notifyDataSetChanged()
+                    scatterChart.invalidate()
+                }
             }
         }
     }
@@ -535,6 +597,38 @@ class DailyChartFragment: Fragment() {
                     }
                 }
                 foodRecyclerView.adapter = foodAdapter
+
+
+                val data = scatterChart.data
+                if(!foodList!!.first().isEmpty()) {
+                    Log.e("", "food")
+                    val entries: ArrayList<BarEntry> = ArrayList()
+                    for(d in foodList!!) {
+                        if(d.isEqual(calendar) && d.isSameDate()) {
+                            val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                            val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                            for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                        } else {
+                            if(d.isBefore(calendar)) {
+                                val start = 0
+                                val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                            }
+                            if(d.isAfter(calendar)) {
+                                val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
+                                val end = 240000
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                            }
+                        }
+                    }
+                    val dataSet = ScatterDataSet(entries as List<Entry>?, "")
+                    dataSet.color = Color.rgb(8, 66, 160)
+                    data.addDataSet(dataSet)
+                    data.setDrawValues(false)
+                    data.notifyDataChanged()
+                    scatterChart.notifyDataSetChanged()
+                    scatterChart.invalidate()
+                }
             }
         }
     }
@@ -600,6 +694,20 @@ class DailyChartFragment: Fragment() {
                     }
                 }
                 eventRecyclerView.adapter = eventAdapter
+
+                val data = scatterChart.data
+                if(!eventList!!.first().isEmpty()) {
+                    Log.e("", "event")
+                    val eventEntries: ArrayList<BarEntry> = ArrayList()
+                    for(d in eventList!!) eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+                    val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
+                    eventDataSet.color = Color.rgb(245, 166, 29)
+                    data.addDataSet(eventDataSet)
+                    data.setDrawValues(false)
+                    data.notifyDataChanged()
+                    scatterChart.notifyDataSetChanged()
+                    scatterChart.invalidate()
+                }
             }
         }
     }

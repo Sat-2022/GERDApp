@@ -163,7 +163,7 @@ class MonthlyChartFragment: Fragment() {
     }
 
     private fun initSymptomsChartData() {
-        val entries: java.util.ArrayList<BarEntry> = java.util.ArrayList()
+        val entries: ArrayList<BarEntry> = ArrayList()
 
         val tempCalendar = startCalendar.clone() as Calendar
         var dayOfMonth = 1
@@ -247,7 +247,7 @@ class MonthlyChartFragment: Fragment() {
     }
 
     private fun initDrugChartData() {
-        val entries: java.util.ArrayList<BarEntry> = java.util.ArrayList()
+        val entries: ArrayList<BarEntry> = ArrayList()
 
         val tempCalendar = startCalendar.clone() as Calendar
         var dayOfMonth = 1
@@ -332,7 +332,7 @@ class MonthlyChartFragment: Fragment() {
     }
 
     private fun initEventChartData() {
-        val entries: java.util.ArrayList<BarEntry> = java.util.ArrayList()
+        val entries: ArrayList<BarEntry> = ArrayList()
 
         val tempCalendar = startCalendar.clone() as Calendar
         var dayOfMonth = 1
