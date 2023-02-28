@@ -173,114 +173,19 @@ class DailyChartFragment: Fragment() {
      */
     private fun initScatterChartData() {
         val scatterChartDataList = ArrayList<ScatterDataSet>()
-//        if(!symptomList!!.first().isEmpty()) {
-//            Log.e("", "symptom")
-//            val symptomsEntries: ArrayList<BarEntry> = ArrayList()
-//            for(d in symptomList!!) symptomsEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 3f))
-//            val symptomsDataSet = ScatterDataSet(symptomsEntries as List<Entry>?, "")
-//            symptomsDataSet.color = Color.rgb(147, 208, 109)
-//            scatterChartDataList.add(symptomsDataSet)
-//        }
+        val entries: ArrayList<BarEntry> = ArrayList()
+        entries.add(BarEntry(-5f, -5f))
+        val dataSet = ScatterDataSet(entries as List<Entry>?, "")
+        dataSet.color = Color.TRANSPARENT
+        scatterChartDataList.add(dataSet)
 
-//        if(!drugList!!.first().isEmpty()) {
-//            Log.e("", "drug")
-//            val drugEntries: ArrayList<BarEntry> = ArrayList()
-//            for(d in drugList!!) drugEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
-//            val drugDataSet = ScatterDataSet(drugEntries as List<Entry>?, "")
-//            drugDataSet.color = Color.rgb(241, 43, 43)
-//            scatterChartDataList.add(drugDataSet)
-//        }
+        val scatterData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
+        scatterData.setDrawValues(false)
+        scatterData.notifyDataChanged()
 
-//        if(!foodList!!.first().isEmpty()) {
-//            Log.e("", "food")
-//            val foodEntries: ArrayList<BarEntry> = ArrayList()
-//            for(d in foodList!!) {
-//                if(d.isEqual(calendar)) {
-//                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-//                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-//                    for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
-//                } else {
-//                    if(d.isBefore(calendar)) {
-//                        val start = 0
-//                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-//                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
-//                    }
-//                    if(d.isAfter(calendar)) {
-//                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-//                        val end = 240000
-//                        for (i in start..end) foodEntries.add(BarEntry(i.toFloat(), 1.5f))
-//                    }
-//                }
-//            }
-//            val foodDataSet = ScatterDataSet(foodEntries as List<Entry>?, "")
-//            foodDataSet.color = Color.rgb(9, 173, 234)
-//            scatterChartDataList.add(foodDataSet)
-//        }
-
-//        if(!sleepList!!.first().isEmpty()) {
-//            Log.e("", "sleep")
-//            val sleepEntries: ArrayList<BarEntry> = ArrayList()
-//            for(d in sleepList!!) {
-//                if(d.isEqual(calendar)) {
-//                    val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-//                    val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-//                    for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
-//                } else {
-//                    if(d.isBefore(calendar)) {
-//                        val start = 0
-//                        val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-//                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
-//                    }
-//                    if(d.isAfter(calendar)) {
-//                        val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
-//                        val end = 240000
-//                        for (i in start..end) sleepEntries.add(BarEntry(i.toFloat(), 1.5f))
-//                    }
-//                }
-//            }
-//            val sleepDataSet = ScatterDataSet(sleepEntries as List<Entry>?, "")
-//            sleepDataSet.color = Color.rgb(8, 66, 160)
-//            scatterChartDataList.add(sleepDataSet)
-//        }
-
-//        if(!eventList!!.first().isEmpty()) {
-//            Log.e("", "event")
-//            val eventEntries: ArrayList<BarEntry> = ArrayList()
-//            for(d in eventList!!) eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
-//            val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
-//            eventDataSet.color = Color.rgb(245, 166, 29)
-//            scatterChartDataList.add(eventDataSet)
-//        }
-
-//        if(scatterChartDataList.isNotEmpty()) {
-//            Log.e("", "data list")
-//            val barData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
-//
-//            /*val mv = MarkerView(context, R.layout.markerview_daily_chart)
-//            mv.chartView = scatterChart
-//            scatterChart.marker = mv*/
-//
-//            barData.setDrawValues(false)
-//            barData.notifyDataChanged()
-//
-//            scatterChart.data = barData
-//            scatterChart.notifyDataSetChanged()
-//            scatterChart.invalidate()
-//        } else {
-            val entries: ArrayList<BarEntry> = ArrayList()
-            entries.add(BarEntry(-5f, -5f))
-            val dataSet = ScatterDataSet(entries as List<Entry>?, "")
-            dataSet.color = Color.TRANSPARENT
-            scatterChartDataList.add(dataSet)
-
-            val scatterData = ScatterData(scatterChartDataList as List<IScatterDataSet>?)
-            scatterData.setDrawValues(false)
-            scatterData.notifyDataChanged()
-
-            scatterChart.data = scatterData
-            scatterChart.notifyDataSetChanged()
-            scatterChart.invalidate()
-//        }
+        scatterChart.data = scatterData
+        scatterChart.notifyDataSetChanged()
+        scatterChart.invalidate()
     }
 
     /*

@@ -142,6 +142,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_gravity="center"
+                    android:layout_margin="6dp"
                     app:srcCompat="@drawable/sour_mouth" />
 
                 <View
