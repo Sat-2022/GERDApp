@@ -2,6 +2,7 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -10,7 +11,8 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center">
+        android:gravity="center"
+        tools:ignore="UselessParent">
 
         <TableRow
             android:layout_width="match_parent"
@@ -27,7 +29,8 @@
                     android:id="@+id/symptoms_cough"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/cough" />
+                    app:srcCompat="@drawable/cough"
+                    android:contentDescription="@string/symptoms" />
 
                 <View
                     android:layout_width="1dp"
@@ -54,7 +57,8 @@
                     android:id="@+id/symptoms_heart_burn"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/heart_burn" />
+                    app:srcCompat="@drawable/heart_burn"
+                    android:contentDescription="@string/heart_burn" />
 
                 <View
                     android:layout_width="1dp"
@@ -81,7 +85,8 @@
                     android:id="@+id/symptoms_acid_reflux"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/acid_reflux" />
+                    app:srcCompat="@drawable/acid_reflux"
+                    android:contentDescription="@string/acid_reflux" />
 
                 <View
                     android:layout_width="1dp"
@@ -108,7 +113,8 @@
                     android:id="@+id/symptoms_chest_pain"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/chest_pain" />
+                    app:srcCompat="@drawable/chest_pain"
+                    android:contentDescription="@string/chest_pain" />
 
                 <View
                     android:layout_width="1dp"
@@ -143,7 +149,8 @@
                     android:layout_height="60dp"
                     android:layout_gravity="center"
                     android:layout_margin="6dp"
-                    app:srcCompat="@drawable/sour_mouth" />
+                    app:srcCompat="@drawable/sour_mouth"
+                    android:contentDescription="@string/sour_mouth" />
 
                 <View
                     android:layout_width="1dp"
@@ -170,7 +177,8 @@
                     android:id="@+id/symptoms_hoarseness"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/hoarseness" />
+                    app:srcCompat="@drawable/hoarseness"
+                    android:contentDescription="@string/hoarseness" />
 
                 <View
                     android:layout_width="1dp"
@@ -197,7 +205,8 @@
                     android:id="@+id/symptoms_appetite_loss"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/appetite_loss_1" />
+                    app:srcCompat="@drawable/appetite_loss_1"
+                    android:contentDescription="@string/appetite_loss" />
 
                 <View
                     android:layout_width="1dp"
@@ -224,7 +233,8 @@
                     android:id="@+id/symptoms_stomach_gas"
                     android:layout_width="72dp"
                     android:layout_height="72dp"
-                    app:srcCompat="@drawable/stomach_gas" />
+                    app:srcCompat="@drawable/stomach_gas"
+                    android:contentDescription="@string/stomach_gas" />
 
                 <View
                     android:layout_width="1dp"
