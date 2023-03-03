@@ -34,6 +34,8 @@ class SymptomsRecordFragment: Fragment() {
 
     private lateinit var preferences: SharedPreferences
 
+    private var timeRecordValid = true
+
     val COUGH = 0
     val HEART_BURN = 1
     val ACID_REFLUX = 2
@@ -172,7 +174,20 @@ class SymptomsRecordFragment: Fragment() {
 
     private fun postRecordApi(): Thread {
         return Thread {
-            if(!isRecordEmpty()){
+            if(isRecordEmpty()){
+                activity?.runOnUiThread {
+                    binding.apply {
+                        symptomsCard.addOtherSymptoms.layout.visibility = View.VISIBLE
+                        symptomsCard.addSymptomsButton.visibility = View.GONE
+                        symptomsCard.addOtherSymptoms.userInputText.error = getString(R.string.input_null)
+                    }
+                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+                }
+            } else if(!timeRecordValid) {
+                activity?.runOnUiThread {
+                    Toast.makeText(context, R.string.error_end_time_is_not_before_start_time, Toast.LENGTH_SHORT).show()
+                }
+            } else {
                 try {
                     val url = URL(getString(R.string.post_symptoms_record_url, getString(R.string.server_url)))
                     val connection = url.openConnection() as HttpURLConnection
@@ -200,15 +215,24 @@ class SymptomsRecordFragment: Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } catch (e: FileNotFoundException) {
-                    Log.e("API Connection", "Service not found")
-                }
-            } else {
-                activity?.runOnUiThread {
-                    Toast.makeText(context, R.string.symptoms_added_failed, Toast.LENGTH_SHORT).show()
+//                    Log.e("API Connection", "Service not found")
                 }
             }
+        }
+    }
+
+    private fun validateTimeRecord(startDate: TextView, startTime: TextView, endDate: TextView, endTime: TextView) {
+        val timeRecord = TimeRecord()
+        val start = startDate.text.toString() + " " + startTime.text.toString() + ":00"
+        val end = endDate.text.toString() + " " + endTime.text.toString() + ":00"
+
+        if(!timeRecord.isAfter(start, end)) {
+            endTime.error = getString(R.string.error_end_time_is_not_before_start_time)
+            timeRecordValid = false
+        } else {
+            timeRecordValid = true
         }
     }
 
@@ -221,6 +245,8 @@ class SymptomsRecordFragment: Fragment() {
             if (validateInputText(noteCard.addNote.userInputText)) {
                 SymptomsRecord.note = noteCard.addNote.userInputText.text.toString()
             }
+
+            validateTimeRecord(timeCard.startDate, timeCard.startTime, timeCard.endDate, timeCard.endTime)
         }
     }
 

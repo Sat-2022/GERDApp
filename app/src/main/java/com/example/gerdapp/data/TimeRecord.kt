@@ -67,6 +67,18 @@ class TimeRecord {
         return true
     }
 
+    fun isAfter(start: String, end: String): Boolean {
+        val startTimeRecord = this.stringToTimeRecord(start)
+        val endTimeRecord = this.stringToTimeRecord(end)
+
+        if(startTimeRecord.YEAR > endTimeRecord.YEAR) return false
+        if(startTimeRecord.MONTH > endTimeRecord.MONTH) return false
+        if(startTimeRecord.DAY > endTimeRecord.DAY) return false
+        if(startTimeRecord.HOUR > endTimeRecord.HOUR) return false
+        if(startTimeRecord.MIN > endTimeRecord.MIN) return false
+        return true
+    }
+
     override fun toString(): String {
         var string = ""
 

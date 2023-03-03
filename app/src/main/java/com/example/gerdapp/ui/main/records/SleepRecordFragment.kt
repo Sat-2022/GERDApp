@@ -33,6 +33,8 @@ class SleepRecordFragment: Fragment() {
 
     private lateinit var preferences: SharedPreferences
 
+    private var timeRecordValid = true
+
     private object SleepRecord {
         var note: String? = null
         var startTime: TimeRecord = TimeRecord()
@@ -126,12 +128,20 @@ class SleepRecordFragment: Fragment() {
 
     private fun postRecordApi(): Thread {
         return Thread {
-            if(!isRecordEmpty()){
+            if(isRecordEmpty()){
+                activity?.runOnUiThread {
+                    Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()
+                }
+            } else if(!timeRecordValid) {
+                activity?.runOnUiThread {
+                    Toast.makeText(context, R.string.error_end_time_is_not_before_start_time, Toast.LENGTH_SHORT).show()
+                }
+            } else {
                 try {
                     val url = URL(getString(
-                            R.string.post_sleep_record_url,
-                            getString(R.string.server_url)
-                        ))
+                        R.string.post_sleep_record_url,
+                        getString(R.string.server_url)
+                    ))
                     val connection = url.openConnection() as HttpURLConnection
 
                     connection.requestMethod = "POST"
@@ -157,12 +167,10 @@ class SleepRecordFragment: Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } catch (e: FileNotFoundException) {
-                    Log.e("API Connection", "Service not found")
+//                    Log.e("API Connection", "Service not found")
                 }
-            } else {
-                Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -172,6 +180,21 @@ class SleepRecordFragment: Fragment() {
             if (validateInputText(noteCard.addNote.userInputText)) {
                 SleepRecord.note = noteCard.addNote.userInputText.text.toString()
             }
+
+            validateTimeRecord(timeCard.startDate, timeCard.startTime, timeCard.endDate, timeCard.endTime)
+        }
+    }
+
+    private fun validateTimeRecord(startDate: TextView, startTime: TextView, endDate: TextView, endTime: TextView) {
+        val timeRecord = TimeRecord()
+        val start = startDate.text.toString() + " " + startTime.text.toString() + ":00"
+        val end = endDate.text.toString() + " " + endTime.text.toString() + ":00"
+
+        if(!timeRecord.isAfter(start, end)) {
+            endTime.error = getString(R.string.error_end_time_is_not_before_start_time)
+            timeRecordValid = false
+        } else {
+            timeRecordValid = true
         }
     }
 
@@ -194,7 +217,7 @@ class SleepRecordFragment: Fragment() {
                     setRecord()
                     findNavController().navigate(R.id.action_sleepFragment_to_mainFragment)
                     Toast.makeText(context, R.string.sleep_record_added_successfully, Toast.LENGTH_SHORT).show()
-                }else {
+                } else {
                     setRecord()
                     Toast.makeText(context, R.string.sleep_record_added_failed, Toast.LENGTH_SHORT).show()
                 }

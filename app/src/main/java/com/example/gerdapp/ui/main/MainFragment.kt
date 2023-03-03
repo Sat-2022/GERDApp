@@ -257,9 +257,9 @@ class MainFragment : Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } catch (e: Exception) {
-                    Log.e("API Connection", "Service not found")
+//                    Log.e("API Connection", "Service not found")
                 }
             } else {
                 activity?.runOnUiThread {
@@ -334,40 +334,6 @@ class MainFragment : Fragment() {
                 }
 
                 notificationRecyclerView.adapter = notificationAdapter
-//                val timeRecord = TimeRecord().stringToTimeRecord(notificationCardItem?.ReturnDate!!)
-//
-//                cardItemRecentTime.text = timeRecord.toString()
-//
-//                notificationCard.setOnClickListener {
-//                    // val popupWindow = PopupWindow(layoutInflater.inflate(R.layout.pop_up_window))
-//                    var notificationClosed = false
-//                    val inflater = requireActivity().layoutInflater
-//                    val checkBoxView = inflater.inflate(R.layout.checkbox, null)
-//                    val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
-//                    checkBox.setOnCheckedChangeListener { compoundButton, b ->
-//                        editor.putBoolean("showNotification", !b)
-//                        editor.commit()
-//                        notificationClosed = b
-//                    }
-//
-//                    val dialogBuilder = AlertDialog.Builder(context)
-//                    dialogBuilder.setView(checkBoxView)
-//                        .setTitle(R.string.notification_title)
-//                        .setMessage(getString(R.string.notification_message, timeRecord.toString()))
-//                        .setPositiveButton(R.string.notification_neutral_button) { dialog, _ ->
-//                            dialog.dismiss()
-//                            if(notificationClosed) {
-//                                notificationCard.visibility = View.GONE
-//                                notificationHeadline.visibility = View.GONE
-//                            }
-//                        }
-////                        .setOnDismissListener {
-////                            (checkBoxView.parent as ViewGroup).removeView(checkBoxView)
-////                        }
-//                    dialogBuilder.create()
-//                    dialogBuilder.show()
-//                }
-
             }
         }
     }
@@ -393,12 +359,12 @@ class MainFragment : Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Service not found")
             }
         }
     }
@@ -645,12 +611,12 @@ class MainFragment : Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Service not found")
             }
         }
     }
@@ -673,12 +639,12 @@ class MainFragment : Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Service not found")
             }
         }
     }
@@ -702,11 +668,12 @@ class MainFragment : Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                    Log.e("API Connection", "Connection success")
-                } else
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Connection success")
+                } else {
+//                    Log.e("API Connection", "Connection failed")
+                }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Service not found")
             }
         }
     }
@@ -729,12 +696,12 @@ class MainFragment : Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Service not found")
             }
         }
     }
@@ -757,12 +724,12 @@ class MainFragment : Fragment() {
 
                     inputStreamReader.close()
                     inputSystem.close()
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } else {
-                    Log.e("API Connection", "Connection failed")
+//                    Log.e("API Connection", "Connection failed")
                 }
             } catch (e: Exception) {
-                Log.e("API Connection", "Service not found")
+//                Log.e("API Connection", "Service not found")
             }
         }
     }

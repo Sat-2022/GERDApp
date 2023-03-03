@@ -31,6 +31,8 @@ class FoodRecordFragment: Fragment() {
 
     private lateinit var preferences: SharedPreferences
 
+    private var timeRecordValid = true
+
     private object FoodRecord {
         var food: String? = null
         var note: String? = null
@@ -152,7 +154,20 @@ class FoodRecordFragment: Fragment() {
 
     private fun postRecordApi(): Thread {
         return Thread {
-            if(!isRecordEmpty()){
+            if(isRecordEmpty()){
+                activity?.runOnUiThread {
+                    binding.apply {
+                        foodCard.addFood.layout.visibility = View.VISIBLE
+                        foodCard.addFoodButton.visibility = View.GONE
+                        foodCard.addFood.userInputText.error = getString(R.string.input_null)
+                    }
+                    Toast.makeText(context, R.string.food_record_added_failed, Toast.LENGTH_SHORT).show()
+                }
+            } else if(!timeRecordValid) {
+                activity?.runOnUiThread {
+                    Toast.makeText(context, R.string.error_end_time_is_not_before_start_time, Toast.LENGTH_SHORT).show()
+                }
+            } else {
                 try {
                     val url = URL(getString(R.string.post_food_record_url, getString(R.string.server_url)))
                     val connection = url.openConnection() as HttpURLConnection
@@ -184,14 +199,6 @@ class FoodRecordFragment: Fragment() {
                 } catch (e: Exception) {
                     Log.e("API Connection", "Service not found")
                 }
-            } else {
-                activity?.runOnUiThread {
-                    binding.apply {
-                        foodCard.addFood.layout.visibility = View.VISIBLE
-                        foodCard.addFoodButton.visibility = View.GONE
-                        foodCard.addFood.userInputText.error = getString(R.string.input_null)
-                    }
-                }
             }
         }
     }
@@ -205,6 +212,24 @@ class FoodRecordFragment: Fragment() {
             if (validateInputText(noteCard.addNote.userInputText)) {
                 FoodRecord.note = noteCard.addNote.userInputText.text.toString()
             }
+
+            validateTimeRecord(timeCard.startDate, timeCard.startTime, timeCard.endDate, timeCard.endTime)
+        }
+    }
+
+    private fun validateTimeRecord(startDate: TextView, startTime: TextView, endDate: TextView, endTime: TextView) {
+        val timeRecord = TimeRecord()
+        val start = startDate.text.toString() + " " + startTime.text.toString() + ":00"
+        val end = endDate.text.toString() + " " + endTime.text.toString() + ":00"
+
+        Log.e("", start)
+        Log.e("", end)
+
+        if(!timeRecord.isAfter(start, end)) {
+            endTime.error = getString(R.string.error_end_time_is_not_before_start_time)
+            timeRecordValid = false
+        } else {
+            timeRecordValid = true
         }
     }
 

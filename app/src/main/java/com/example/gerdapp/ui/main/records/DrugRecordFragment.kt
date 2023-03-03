@@ -187,9 +187,9 @@ class DrugRecordFragment: Fragment() {
                     inputStreamReader.close()
                     inputSystem.close()
 
-                    Log.e("API Connection", "Connection success")
+//                    Log.e("API Connection", "Connection success")
                 } catch (e: Exception) {
-                    Log.e("API Connection", "Service not found")
+//                    Log.e("API Connection", "Service not found")
                 }
             } else {
                 activity?.runOnUiThread {
