@@ -2,6 +2,10 @@ package com.example.gerdapp.data
 
 import java.util.*
 
+/*
+ * A data structure to maintain a time record.
+ * Contains date, time, and day of week.
+ */
 class TimeRecord {
     var YEAR = 1911
     var MONTH = 1
@@ -11,6 +15,9 @@ class TimeRecord {
     var SEC = 0
     var DAY_OF_WEEK = 0
 
+    /*
+     * This is a function to set the time record with the given date and time.
+     */
     fun setTimeRecord(year: Int, month: Int, day: Int, hour: Int, min: Int, sec: Int) {
         YEAR = year
         MONTH = month
@@ -20,11 +27,19 @@ class TimeRecord {
         SEC = sec
     }
 
+    /*
+     * This is a function to check if the time record is empty.
+     * If the time record equals 1911/1/1 00:00:00, then it's empty.
+     * Else, its not.
+     */
     fun isTimeRecordEmpty(): Boolean {
         if(YEAR == 1911 && MONTH == 1 && DAY == 1 && HOUR == 0 && MIN == 0 && SEC == 0) return true
         return false
     }
 
+    /*
+     *
+     */
     fun stringToTimeRecord(string: String): TimeRecord {
         var timeRecord = TimeRecord()
 
@@ -77,11 +92,11 @@ class TimeRecord {
             if(startTimeRecord.MONTH > endTimeRecord.MONTH) {
                 return false
             } else if(startTimeRecord.MONTH == endTimeRecord.MONTH) {
-                return if(startTimeRecord.DAY < endTimeRecord.DAY) {
-                    true
+                return if(startTimeRecord.DAY > endTimeRecord.DAY) {
+                    false
                 } else if (startTimeRecord.DAY == endTimeRecord.DAY) {
-                    if(startTimeRecord.HOUR < endTimeRecord.HOUR) {
-                        true
+                    if(startTimeRecord.HOUR > endTimeRecord.HOUR) {
+                        false
                     } else if(startTimeRecord.HOUR == endTimeRecord.HOUR) {
                         startTimeRecord.MIN < endTimeRecord.MIN
                     } else {
