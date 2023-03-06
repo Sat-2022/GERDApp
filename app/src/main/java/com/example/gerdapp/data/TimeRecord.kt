@@ -71,12 +71,31 @@ class TimeRecord {
         val startTimeRecord = this.stringToTimeRecord(start)
         val endTimeRecord = this.stringToTimeRecord(end)
 
-        if(startTimeRecord.YEAR > endTimeRecord.YEAR) return false
-        if(startTimeRecord.MONTH > endTimeRecord.MONTH) return false
-        if(startTimeRecord.DAY > endTimeRecord.DAY) return false
-        if(startTimeRecord.HOUR > endTimeRecord.HOUR) return false
-        if(startTimeRecord.MIN > endTimeRecord.MIN) return false
-        return true
+        if(startTimeRecord.YEAR > endTimeRecord.YEAR) {
+            return false
+        } else if(startTimeRecord.YEAR == endTimeRecord.YEAR) {
+            if(startTimeRecord.MONTH > endTimeRecord.MONTH) {
+                return false
+            } else if(startTimeRecord.MONTH == endTimeRecord.MONTH) {
+                return if(startTimeRecord.DAY < endTimeRecord.DAY) {
+                    true
+                } else if (startTimeRecord.DAY == endTimeRecord.DAY) {
+                    if(startTimeRecord.HOUR < endTimeRecord.HOUR) {
+                        true
+                    } else if(startTimeRecord.HOUR == endTimeRecord.HOUR) {
+                        startTimeRecord.MIN < endTimeRecord.MIN
+                    } else {
+                        true
+                    }
+                } else {
+                    true
+                }
+            } else {
+                return true
+            }
+        } else {
+            return true
+        }
     }
 
     override fun toString(): String {

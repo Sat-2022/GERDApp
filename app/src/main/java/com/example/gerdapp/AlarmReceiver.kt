@@ -74,17 +74,16 @@ private fun getAlarmStatusApi(context: Context, notificationManager: Notificatio
                 val sendNotification = list.first()
                 when (sendNotification.ResultContent) {
                     "1" -> {
-
                         notificationManager.sendReminderNotification(
                             applicationContext = context,
                             channelId = "default"// context.getString(R.string.reminders_notification_channel_id)
                         )
                     }
                     else -> {
-                        notificationManager.sendReminderNotification(
-                            applicationContext = context,
-                            channelId = "default"// context.getString(R.string.reminders_notification_channel_id)
-                        )
+//                        notificationManager.sendReminderNotification(
+//                            applicationContext = context,
+//                            channelId = "default"// context.getString(R.string.reminders_notification_channel_id)
+//                        )
                     }
                 }
                 inputStreamReader.close()

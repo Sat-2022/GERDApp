@@ -48,6 +48,12 @@ class DailyChartFragment: Fragment() {
 
     private val STEP = 5
 
+    private val symptomY = 2.5f
+    private val sleepY = 2f
+    private val foodY = 1.5f
+    private val eventY = 1f
+    private val drugY = 0.5f
+
     object User {
         var caseNumber = ""
         var gender = ""
@@ -138,13 +144,14 @@ class DailyChartFragment: Fragment() {
         val rightAxis = scatterChart.axisRight
 
         rightAxis.setDrawLabels(false)
+        rightAxis.axisMaximum = 4f
+        rightAxis.axisMinimum = 0f
 
-        yAxis.axisMaximum = 5f
+        yAxis.axisMaximum = 4f
         yAxis.axisMinimum = 0f
         yAxis.setDrawLabels(false)
         yAxis.setDrawGridLines(false)
         scatterChart.requestDisallowInterceptTouchEvent(true)
-
 
         val xAxis = scatterChart.xAxis
 
@@ -254,7 +261,7 @@ class DailyChartFragment: Fragment() {
                 if(!symptomList!!.first().isEmpty()) {
                     Log.e("", "symptom")
                     val entries: ArrayList<BarEntry> = ArrayList()
-                    for(d in symptomList!!) entries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+                    for(d in symptomList!!) entries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), symptomY))
                     val dataSet = ScatterDataSet(entries as List<Entry>?, "")
                     dataSet.color = Color.rgb(147, 208, 109)
                     data.addDataSet(dataSet)
@@ -333,9 +340,9 @@ class DailyChartFragment: Fragment() {
                 if(!drugList!!.first().isEmpty()) {
                     Log.e("", "drug")
                     val entries: ArrayList<BarEntry> = ArrayList()
-                    for(d in drugList!!) entries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), 1f))
+                    for(d in drugList!!) entries.add(BarEntry(TimeRecord().stringToTimeRecord(d.MedicationTime).timeRecordToFloat(), drugY))
                     val dataSet = ScatterDataSet(entries as List<Entry>?, "")
-                    dataSet.color = Color.rgb(147, 208, 109)
+                    dataSet.color = Color.rgb(241, 43, 43)
                     data.addDataSet(dataSet)
                     data.setDrawValues(false)
                     data.notifyDataChanged()
@@ -416,16 +423,16 @@ class DailyChartFragment: Fragment() {
                         if(d.isEqual(calendar) && d.isSameDate()) {
                             val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
                             val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                            for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                            for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), sleepY))
                         } else {
                             if(d.isBefore(calendar)) {
                                 val start = 0
                                 val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), sleepY))
                             } else if(d.isAfter(calendar)) {
                                 val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
                                 val end = 240000
-                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), sleepY))
                             }
                         }
                     }
@@ -512,22 +519,22 @@ class DailyChartFragment: Fragment() {
                         if(d.isEqual(calendar) && d.isSameDate()) {
                             val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
                             val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                            for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                            for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), foodY))
                         } else {
                             if(d.isBefore(calendar)) {
                                 val start = 0
                                 val end = TimeRecord().stringToTimeRecord(d.EndDate).timeRecordToFloat().toInt()
-                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), foodY))
                             }
                             if(d.isAfter(calendar)) {
                                 val start = TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat().toInt()
                                 val end = 240000
-                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), 1.5f))
+                                for (i in start..end step STEP) entries.add(BarEntry(i.toFloat(), foodY))
                             }
                         }
                     }
                     val dataSet = ScatterDataSet(entries as List<Entry>?, "")
-                    dataSet.color = Color.rgb(8, 66, 160)
+                    dataSet.color = Color.rgb(9, 173, 234)
                     data.addDataSet(dataSet)
                     data.setDrawValues(false)
                     data.notifyDataChanged()
@@ -604,7 +611,7 @@ class DailyChartFragment: Fragment() {
                 if(!eventList!!.first().isEmpty()) {
                     Log.e("", "event")
                     val eventEntries: ArrayList<BarEntry> = ArrayList()
-                    for(d in eventList!!) eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), 1f))
+                    for(d in eventList!!) eventEntries.add(BarEntry(TimeRecord().stringToTimeRecord(d.StartDate).timeRecordToFloat(), eventY))
                     val eventDataSet = ScatterDataSet(eventEntries as List<Entry>?, "")
                     eventDataSet.color = Color.rgb(245, 166, 29)
                     data.addDataSet(eventDataSet)
