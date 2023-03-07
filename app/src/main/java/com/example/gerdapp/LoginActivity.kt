@@ -15,6 +15,10 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
+/**********************************************
+ * Perform log in
+ * The activity is launched if the user is not logged in
+ **********************************************/
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
@@ -35,7 +39,7 @@ class LoginActivity : AppCompatActivity() {
 
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Set preferences
         preferences = getSharedPreferences("config", MODE_PRIVATE)
@@ -68,14 +72,17 @@ class LoginActivity : AppCompatActivity() {
         isMinimized = true
     }
 
-
+    /*
+     * Navigate to ForgotPasswordActivity
+     */
     private fun performForgotPassword() {
         val intent = Intent(this, ForgotPasswordActivity::class.java)
         startActivity(intent)
     }
 
-
-    // Checking if the input in form is valid
+    /*
+     * Check if the input is valid
+     */
     private fun validateInput(): Boolean {
         binding.apply {
             // TODO: Handle login event here
@@ -115,7 +122,9 @@ class LoginActivity : AppCompatActivity() {
         return true
     }
 
-    // Hook Click Event
+    /*
+     * Call API to check if login successes
+     */
     private fun performLogin() {
         if (validateInput()) {
             val account: String?
@@ -125,16 +134,11 @@ class LoginActivity : AppCompatActivity() {
                 account = etAccount.text.toString()
                 password = etPassword.text.toString()
 
-//                editor.putString("account", account)
-//                editor.putString("password", password)
-
                 // TODO: Get user information from API
                 getLoginStatusApi(account, password).start()
-
             }
 
-            // Toast.makeText(this, R.string.login_success, Toast.LENGTH_SHORT).show()
-            // Here you can call you API
+            // Here you can call your API
             // Check this tutorial to call server api through Google Volley Library https://handyopinion.com
 
         } else {
@@ -142,6 +146,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Navigate to SignUpActivity
+     */
     private fun goToSignup() {
         // Open your SignUp Activity if the user wants to signup
         // Visit this article to get SignupActivity code https://handyopinion.com/signup-activity-in-android-studio-kotlin-java/
@@ -149,6 +156,9 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
+    /*
+     * Connects to API to check if login successes
+     */
     private fun getLoginStatusApi(account: String, password: String): Thread {
         return Thread {
             try {
@@ -177,6 +187,9 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Connect to API to get user's information
+     */
     private fun getUserInfoApi(): Thread {
         return Thread {
             try {
@@ -213,12 +226,16 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Update UI after login
+     */
     private fun updateUi(result: LoginResult) {
         this.runOnUiThread {
             binding.apply {
-                if(result.ResultContent == "1") {
+                if(result.ResultContent == "1") { // If login success
                     Toast.makeText(this@LoginActivity, R.string.login_success, Toast.LENGTH_SHORT).show()
 
+                    // Store user information in shared preference
                     editor.putString("caseNumber", etAccount.text.toString())
 
                     editor.putBoolean("loggedIn", true)
@@ -230,7 +247,7 @@ class LoginActivity : AppCompatActivity() {
 
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
-                } else {
+                } else { // Login failed
                     Log.e("API Connection", "$result")
                     Toast.makeText(this@LoginActivity, R.string.login_failed, Toast.LENGTH_SHORT).show()
                 }

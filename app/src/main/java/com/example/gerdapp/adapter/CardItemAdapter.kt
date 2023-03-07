@@ -10,6 +10,9 @@ import com.example.gerdapp.R
 import com.example.gerdapp.data.CardDataSource
 import com.example.gerdapp.data.CardItem
 
+/**********************************************
+ * The adapter for card items.
+ **********************************************/
 class CardItemAdapter(
     private val clickListener: (CardItem) -> Unit,
     private val subtitle: (CardItem) -> String?
@@ -39,7 +42,7 @@ class CardItemAdapter(
         val recentRecord = subtitle(item)
 
         holder.recentTextView.text = when(recentRecord) {
-            "", null -> "no data"
+            "", null -> "no data"   // If the recentRecord is empty, show no data
             else -> recentRecord
         }
 

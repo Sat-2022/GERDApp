@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.widget.Toast
 import com.example.gerdapp.databinding.ActivitySignUpBinding
 
+/**********************************************
+ * Perform sign up
+ * This activity is launched when the user pressed on sign-up button in login page
+ **********************************************/
 class SignUpActivity : AppCompatActivity() {
     val MIN_PASSWORD_LENGTH = 6;
     val MAX_PASSWORD_LENGTH = 12
@@ -23,7 +27,7 @@ class SignUpActivity : AppCompatActivity() {
 
         binding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        //        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        // supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         // Set preferences
         preferences = getSharedPreferences("config", MODE_PRIVATE)
@@ -54,7 +58,9 @@ class SignUpActivity : AppCompatActivity() {
     }
 
 
-    // Checking if the input in form is valid
+    /*
+     * Checking if the input is valid
+     */
     private fun validateInput(): Boolean {
         binding.apply {
             // TODO: Handle register event here
@@ -123,6 +129,9 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Checking if email is valid
+     */
     private fun isEmailValid(email: String): Boolean {
         if(email[0] == 'R') return false
 
@@ -130,6 +139,9 @@ class SignUpActivity : AppCompatActivity() {
 //        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 
+    /*
+     * Checking if the input string is valid
+     */
     private fun isInvalidString(string: String): Boolean {
         if(string.contains(getString(R.string.check_input_valid).toRegex())) {
             return true
@@ -137,6 +149,9 @@ class SignUpActivity : AppCompatActivity() {
         return false
     }
 
+    /*
+     * Checking if the input password is valid
+     */
     private fun isPasswordValid(password: String): Boolean {
         if(password.contains(getString(R.string.check_alphabetic).toRegex())
             && password.contains(getString(R.string.check_numeric).toRegex())) {
@@ -145,8 +160,9 @@ class SignUpActivity : AppCompatActivity() {
         return false
     }
 
-    // Hook Click Event
-
+    /*
+     * handle sign up event
+     */
     private fun performSignUp() {
         if (validateInput()) {
             val nickname: String?
@@ -180,6 +196,9 @@ class SignUpActivity : AppCompatActivity() {
         }
     }
 
+    /*
+     * Navigate to LoginActivity
+     */
     private fun goToLogin() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)

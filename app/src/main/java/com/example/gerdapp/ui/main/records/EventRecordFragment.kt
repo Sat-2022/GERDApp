@@ -23,6 +23,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
+/**********************************************
+ * Fragments for user to add event record
+ **********************************************/
 class EventRecordFragment: Fragment() {
     private var _binding: FragmentEventRecordBinding? = null
     private val binding get() = _binding!!

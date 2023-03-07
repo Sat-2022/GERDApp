@@ -2,6 +2,15 @@ package com.example.gerdapp.data
 
 import java.util.*
 
+/**********************************************
+ * A data structure of event record.
+ * parameters:
+ *  CaseNumber: String - The case number of the patient with this record
+ *  ActivityItem: String - The activity the patients participates in
+ *  StartDate: String - The time the patient starts the activity
+ *  EndDate: String - The time the patient ends the activity
+ *  ActivityNote: String - Some additional notes for this record
+ **********************************************/
 data class EventCurrent(
     val CaseNumber: String,
     val ActivityItem: String,

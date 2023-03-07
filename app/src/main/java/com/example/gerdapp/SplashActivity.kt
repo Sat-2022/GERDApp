@@ -10,6 +10,10 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.example.gerdapp.databinding.ActivitySplashBinding
 
+/**********************************************
+ * Perform splash.
+ * This activity is launched immediately after open the app
+ **********************************************/
 class SplashActivity: AppCompatActivity() {
 
     private val SPLASH_TIME_OUT: Long = 3000 // 1 sec
@@ -59,8 +63,10 @@ class SplashActivity: AppCompatActivity() {
         var startActivity: Intent
         val preferences: SharedPreferences = getSharedPreferences("config", 0)
 
+        // Create a thread that updates the progress bar
         progressThread().start()
 
+        // Let the app delay for 1 sec
         Handler().postDelayed({
             startActivity = if (preferences.getBoolean("loggedIn", false)) {
                 Intent(this, MainActivity::class.java)
@@ -72,6 +78,9 @@ class SplashActivity: AppCompatActivity() {
         }, SPLASH_TIME_OUT)
     }
 
+    /*
+     * Thread for updating progress bar
+     */
     private fun progressThread(): Thread {
         return Thread {
             while(true) {
@@ -92,6 +101,9 @@ class SplashActivity: AppCompatActivity() {
         }
     }
 
+    /*
+     * Update progress bar on UI thread
+     */
     private fun setProgress() {
         runOnUiThread {
             binding.apply {

@@ -3,6 +3,9 @@ package com.example.gerdapp.data
 import android.graphics.Color
 import com.example.gerdapp.R
 
+/**********************************************
+ * Data source for cards in the main page
+ **********************************************/
 class CardDataSource {
     fun loadCards(): List<CardItem> {
         return listOf(

@@ -1,5 +1,8 @@
 package com.example.gerdapp.data
 
+/**********************************************
+ * Data structure of questionnaire results
+ **********************************************/
 data class Questions (
     val CaseNumber: String,
     val QuestionDate: String,

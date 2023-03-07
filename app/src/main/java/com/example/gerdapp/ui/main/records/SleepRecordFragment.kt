@@ -24,6 +24,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
+/**********************************************
+ * Fragments for user to add sleep record
+ **********************************************/
 class SleepRecordFragment: Fragment() {
     private var _binding: FragmentSleepRecordBinding? = null
     private val binding get() = _binding!!

@@ -11,10 +11,16 @@ import com.example.gerdapp.BasicApplication
 import com.example.gerdapp.R
 import com.example.gerdapp.data.SettingsItem
 
+/**********************************************
+ * The adapter for settings.
+ **********************************************/
 class SettingsAdapter(
     private val clickListener: (SettingsItem) -> Unit
 ) : RecyclerView.Adapter<SettingsAdapter.SettingsViewHolder>(){
 
+    /*
+     * Dataset for settings
+     */
     private var dataset: List<SettingsItem> = listOf(
         SettingsItem(1, R.string.text_size_title),
         SettingsItem(2, R.string.reminder_on_off_title),
@@ -40,12 +46,11 @@ class SettingsAdapter(
 
     override fun onBindViewHolder(holder: SettingsViewHolder, position: Int) {
         val item = dataset[position]
-//        Log.e("", holder.nameView.context.getString(dataset[1].description))
-//        Log.e("", dataset.toString())
 
         val preferences: SharedPreferences = holder.nameView.context.getSharedPreferences("config", 0)
         val editor: SharedPreferences.Editor = preferences.edit()
 
+        // Shows the corresponding values of each setting options respectively
         holder.nameView.text = holder.nameView.context.getString(item.title)
         when(item.id) {
             1 -> {
@@ -67,8 +72,10 @@ class SettingsAdapter(
                 holder.descriptionView.text = holder.nameView.context.getString(R.string.version_number)
             }
         }
-        if(position == dataset.size-1) holder.divider.visibility = View.GONE
 
+        if(position == dataset.size-1) holder.divider.visibility = View.GONE // Don't show the last divider
+
+        // Take actions on each click event on the specific setting options
         holder.itemView.setOnClickListener{
             when(item.id) {
                 1 -> {

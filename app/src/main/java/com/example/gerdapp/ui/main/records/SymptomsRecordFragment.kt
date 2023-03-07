@@ -25,6 +25,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
+/**********************************************
+ * Fragments for user to add symptom record
+ **********************************************/
 class SymptomsRecordFragment: Fragment() {
     private var _binding: FragmentSymptomsRecordBinding? = null
     private val binding get() = _binding!!

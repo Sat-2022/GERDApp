@@ -6,6 +6,10 @@ import android.os.Bundle
 import android.view.View
 import com.example.gerdapp.databinding.ActivityForgotPasswordBinding
 
+/**********************************************
+ * Perform forgot password
+ * This activity is launched when the user pressed on forgot-password button in login page
+ **********************************************/
 class ForgotPasswordActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityForgotPasswordBinding

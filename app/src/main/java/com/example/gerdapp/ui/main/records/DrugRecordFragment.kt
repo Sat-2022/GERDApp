@@ -23,6 +23,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
+/**********************************************
+ * Fragments for user to add drug record
+ **********************************************/
 class DrugRecordFragment: Fragment() {
     private var _binding: FragmentDrugRecordBinding? = null
     private val binding get() = _binding!!

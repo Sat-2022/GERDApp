@@ -16,6 +16,9 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
+/**********************************************
+ * Handles alarm event
+ **********************************************/
 class AlarmReceiver: BroadcastReceiver() {
 
     data class RemindCheck(
@@ -30,7 +33,7 @@ class AlarmReceiver: BroadcastReceiver() {
         var nickname = ""
     }
 
-    /**
+    /*
      * sends notification when receives alarm
      * and then reschedule the reminder again
      */

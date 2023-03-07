@@ -29,6 +29,9 @@ import java.net.URL
 import java.util.*
 import kotlin.concurrent.thread
 
+/**********************************************
+ * Fragment of home page
+ **********************************************/
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null

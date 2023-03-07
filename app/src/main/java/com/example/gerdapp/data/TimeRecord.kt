@@ -2,10 +2,10 @@ package com.example.gerdapp.data
 
 import java.util.*
 
-/*
+/**********************************************
  * A data structure to maintain a time record.
  * Contains date, time, and day of week.
- */
+ **********************************************/
 class TimeRecord {
     var YEAR = 1911
     var MONTH = 1
@@ -38,7 +38,8 @@ class TimeRecord {
     }
 
     /*
-     *
+     * This is a function that convert the given string to a time record.
+     * The string must be in the format of yyyy-mm-ddTHH:mm:ss.ss.
      */
     fun stringToTimeRecord(string: String): TimeRecord {
         var timeRecord = TimeRecord()
@@ -56,6 +57,9 @@ class TimeRecord {
         return timeRecord
     }
 
+    /*
+     * This is a function that check if the time record is at the same date as the current date.
+     */
     private fun isToday(): Boolean {
         val calendar = Calendar.getInstance()
 
@@ -66,6 +70,9 @@ class TimeRecord {
         return true
     }
 
+    /*
+     * This is a function that check if the time record is at the same date as the given date.
+     */
     fun isEqual(calendar: Calendar): Boolean {
         if(this.YEAR != calendar[Calendar.YEAR]) return false
         if(this.MONTH != calendar[Calendar.MONTH]+1) return false
@@ -74,6 +81,9 @@ class TimeRecord {
         return true
     }
 
+    /*
+     * This is a function that check if the time record is at the same date as the given time record.
+     */
     fun isEqual(timeRecord: TimeRecord): Boolean {
         if(this.YEAR != timeRecord.YEAR) return false
         if(this.MONTH != timeRecord.MONTH) return false
@@ -82,6 +92,10 @@ class TimeRecord {
         return true
     }
 
+    /*
+     * This is a function that compares to given string which are in the format of yyyy-mm-ddTHH:mm:ss.ss.
+     * If the end time is after the start time, then returns true. Else, it returns false.
+     */
     fun isAfter(start: String, end: String): Boolean {
         val startTimeRecord = this.stringToTimeRecord(start)
         val endTimeRecord = this.stringToTimeRecord(end)
@@ -113,6 +127,11 @@ class TimeRecord {
         }
     }
 
+    /*
+     * This is a function that overrides toString(), which convert the time record to a string.
+     * If the time record is at today, then the format will be XX 時 XX 分.
+     * If not, the format will be XX 月 XX 日
+     */
     override fun toString(): String {
         var string = ""
 
@@ -126,10 +145,15 @@ class TimeRecord {
 //            string += this.HOUR.toString() + " 時 "
 //            string += this.MIN.toString() + "分"
         }
-
         return string
     }
 
+    /*
+     * This is a function that convert the time record to a string.
+     * If the flag is set to 0, then return the overridden toString() function
+     * If the flag is set to 1, return the string in the format of XX 月 XX 日
+     * If the flag is set to 2, return the string in the format of XX 時 XX 分
+     */
     fun toString(flag: Int = 0): String {
         if(flag == 0){
             return this.toString()
@@ -147,6 +171,10 @@ class TimeRecord {
         return string
     }
 
+    /*
+     * This is a function that convert the time record to float.
+     * The time record is rescaled to fit the decimal numbers
+     */
     fun timeRecordToFloat(): Float {
         return (this.HOUR*10000 + this.MIN*10000/60 + this.SEC*100/60).toFloat()
     }

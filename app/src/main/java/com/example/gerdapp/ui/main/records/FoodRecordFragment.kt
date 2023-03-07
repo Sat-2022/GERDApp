@@ -22,6 +22,9 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
+/**********************************************
+ * Fragments for user to add food record
+ **********************************************/
 class FoodRecordFragment: Fragment() {
     private var _binding: FragmentFoodRecordBinding? = null
     private val binding get() = _binding!!

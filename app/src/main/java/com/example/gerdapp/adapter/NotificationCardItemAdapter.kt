@@ -9,6 +9,9 @@ import com.example.gerdapp.R
 import com.example.gerdapp.data.NotificationCardItem
 import com.example.gerdapp.data.TimeRecord
 
+/**********************************************
+ * The adapter for notification cards.
+ **********************************************/
 class NotificationCardItemAdapter(
     private val clickListener: (NotificationCardItem) -> Unit
 ): RecyclerView.Adapter<NotificationCardItemAdapter.NotificationViewHolder>() {
@@ -21,10 +24,10 @@ class NotificationCardItemAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotificationViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_notification, parent, false)
-        val viewHolder = NotificationViewHolder(view)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_item_notification, parent, false)
 
-        return viewHolder
+        return NotificationViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: NotificationViewHolder, position: Int) {
