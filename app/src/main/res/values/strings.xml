@@ -75,7 +75,7 @@
     <string name="error_wrong_password">密碼錯誤</string>
     <string name="error_wrong_account">帳號錯誤或不存在</string>
     <string name="error_input_too_long">超過字數限制</string>
-    <string name="error_end_time_is_not_before_start_time">結束時間不得小於開始時間</string>
+    <string name="error_end_time_is_not_before_start_time">結束時間不得少於開始時間</string>
 
     <!-- strings for dialog -->
     <string name="notification_title">繳回機器通知</string>
