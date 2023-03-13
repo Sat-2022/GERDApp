@@ -30,6 +30,10 @@ import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**********************************************
+ * Fragment of monthly chart
+ * Shows all records of a month in scatter charts
+ **********************************************/
 class MonthlyChartFragment: Fragment() {
     private var _binding: FragmentMonthlyChartBinding? = null
     private val binding get() = _binding!!

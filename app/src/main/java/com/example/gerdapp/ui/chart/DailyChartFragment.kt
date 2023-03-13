@@ -31,6 +31,11 @@ import java.net.URL
 import java.util.*
 import kotlin.collections.ArrayList
 
+/**********************************************
+ * Fragment of daily chart
+ * Shows a chart of all records in a day,
+ * and a list with more in formations of records
+ **********************************************/
 class DailyChartFragment: Fragment() {
     private var _binding: FragmentDailyChartBinding? = null
     private val binding get() = _binding!!

@@ -22,7 +22,9 @@ com.intellij.lang.jsgraphql (3.1.2)
 your_dir> GERDApp/app/build/output/apk/debug/app-debug.apk
 ```
 2. installation guide (android) at 
-
+```
+your_dir> GERDApp/app/build/output/apk/debug/app-debug.apk
+```
 
 ## References
 

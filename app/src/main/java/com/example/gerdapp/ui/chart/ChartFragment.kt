@@ -10,6 +10,11 @@ import com.example.gerdapp.databinding.FragmentChartBinding
 import com.example.gerdapp.ui.chart.adapter.ChartAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 
+/**********************************************
+ * A collection of daily, weekly and monthly chart.
+ * Users can navigate between three kinds of chart by swiping horizontally
+ * or click on the indicated buttons
+ **********************************************/
 class ChartFragment: Fragment() {
     private var _binding: FragmentChartBinding? = null
     private val binding get() = _binding!!

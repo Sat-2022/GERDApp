@@ -12,6 +12,10 @@ import androidx.fragment.app.Fragment
 import com.example.gerdapp.*
 import com.example.gerdapp.databinding.FragmentProfileBinding
 
+/**********************************************
+ * Fragment of profile
+ * Shows some basic information of the user
+ **********************************************/
 class ProfileFragment: Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!

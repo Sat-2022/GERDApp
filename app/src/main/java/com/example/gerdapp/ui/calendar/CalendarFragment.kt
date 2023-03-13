@@ -24,6 +24,10 @@ import java.io.InputStreamReader
 import java.net.HttpURLConnection
 import java.net.URL
 
+/**********************************************
+ * Fragment of questionnaire results
+ * Provides a chart for questionnaire result and a shortcut to the questionnaire website
+ **********************************************/
 class CalendarFragment: Fragment() {
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!

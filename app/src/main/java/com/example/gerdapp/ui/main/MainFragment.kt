@@ -31,6 +31,8 @@ import kotlin.concurrent.thread
 
 /**********************************************
  * Fragment of home page
+ * Provides a shortcut to symptom record, list of notifications,
+ * and cards that shows some simple information of records
  **********************************************/
 class MainFragment : Fragment() {
 

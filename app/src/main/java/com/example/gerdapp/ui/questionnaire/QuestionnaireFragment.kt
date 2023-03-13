@@ -18,6 +18,10 @@ import com.example.gerdapp.R
 import com.example.gerdapp.databinding.FragmentQuestionnaireBinding
 import com.google.android.material.snackbar.Snackbar
 
+/**********************************************
+ * Fragment of questionnaire page
+ * Connects to the website of the questionnaire
+ **********************************************/
 class QuestionnaireFragment: Fragment() {
 
     private var _binding: FragmentQuestionnaireBinding? = null

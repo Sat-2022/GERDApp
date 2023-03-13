@@ -28,6 +28,10 @@ import java.net.HttpURLConnection
 import java.net.URL
 import java.util.*
 
+/**********************************************
+ * Fragment of weekly chart
+ * Shows all records of a week in scatter charts
+ **********************************************/
 class WeeklyChartFragment: Fragment() {
     private var _binding: FragmentWeeklyChartBinding? = null
     private val binding get() = _binding!!
