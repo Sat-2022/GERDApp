@@ -27,7 +27,7 @@ class SleepAdapter(
 
     override fun onBindViewHolder(holder: SleepViewHolder, position: Int) {
         val current = items[position]
-        holder.titleView.text = "sleep"
+        holder.titleView.text = holder.titleView.context.getString(R.string.sleep)
         holder.timeView.text = TimeRecord().stringToTimeRecord(current.StartDate).toString(2)
 
         holder.itemView.setOnClickListener {
