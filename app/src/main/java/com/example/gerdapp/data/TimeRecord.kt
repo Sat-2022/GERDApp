@@ -1,5 +1,6 @@
 package com.example.gerdapp.data
 
+import com.example.gerdapp.R
 import java.util.*
 
 /**********************************************
@@ -133,19 +134,18 @@ class TimeRecord {
      * If not, the format will be XX 月 XX 日
      */
     override fun toString(): String {
-        var string = ""
-
-        if(this.isToday()) {
-            string += this.HOUR.toString() + " 時 "
-            string += this.MIN.toString() + "分"
+        return if(this.isToday()) {
+    //            string += this.HOUR.toString() + " 時 "
+    //            string += this.MIN.toString() + "分"
+            String.format("%d 時 %02d 分", this.HOUR, this.MIN)
         } else {
-//            string += this.YEAR.toString() + " 年 "
-            string += this.MONTH.toString() + " 月 "
-            string += this.DAY.toString() + " 日 "
-//            string += this.HOUR.toString() + " 時 "
-//            string += this.MIN.toString() + "分"
+    //            string += this.YEAR.toString() + " 年 "
+    //            string += this.MONTH.toString() + " 月 "
+    //            string += this.DAY.toString() + " 日 "
+            String.format("%d 月 %d 日", this.MONTH, this.DAY)
+    //            string += this.HOUR.toString() + " 時 "
+    //            string += this.MIN.toString() + "分"
         }
-        return string
     }
 
     /*
@@ -155,20 +155,24 @@ class TimeRecord {
      * If the flag is set to 2, return the string in the format of XX 時 XX 分
      */
     fun toString(flag: Int = 0): String {
-        if(flag == 0){
-            return this.toString()
+        return when (flag) {
+            0 -> {
+                return this.toString()
+            }
+            1 -> {
+                // string += this.MONTH.toString() + " 月 "
+                // string += this.DAY.toString() + " 日 "
+                String.format("%d 月 %d 日", this.MONTH, this.DAY)
+            }
+            2 -> {
+                // string += this.HOUR.toString() + " 時 "
+                //  string += this.MIN.toString() + "分"
+                String.format("%d 時 %02d 分", this.HOUR, this.MIN)
+            }
+            else -> {
+                ""
+            }
         }
-
-        var string = ""
-
-        if(flag == 1) {
-            string += this.MONTH.toString() + " 月 "
-            string += this.DAY.toString() + " 日 "
-        } else if(flag == 2) {
-            string += this.HOUR.toString() + " 時 "
-            string += this.MIN.toString() + "分"
-        }
-        return string
     }
 
     /*

@@ -15,7 +15,7 @@
     <string name="reminder_text">記得填寫問卷喔！</string>
 
     <!-- urls -->
-    <string name="server_url">120.126.104.107</string>
+    <string name="server_url">120.126.104.106</string>
     <string name="login_url">http://%s/GERD_API/api/LoginCheck/%s|%s</string>
     <string name="questionnaire_url">http://%s/GERD/UserInfo?account=%s</string>
     <string name="get_record_url">http://%s/GERD_API/api/DiaryQuestionnaire/%s</string>
@@ -111,7 +111,8 @@
     <string name="simple_time_format">HH:mm</string>
     <string name="simple_date_time_format">yyyy-MM-ddTHH:mm</string>
     <string name="date_time_format_ch">%d 年 %d 月 %d 日</string>
-    <string name="time_format_ch">%d 時 %d 分</string>
+    <string name="month_date_format">%d 月 %d 日</string>>
+    <string name="time_format_ch">%d 時 %02d 分</string>
     <string name="date_format">%04d/%02d/%02d</string>
     <string name="time_format">%02d:%02d</string>
     <string name="date_time_format">%04d-%02d-%02dT%02d:%02d:%02d</string>
